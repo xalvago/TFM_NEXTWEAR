@@ -1,6 +1,6 @@
 # Esquema BD Nextwear — schema `public`
 
-Proyecto Supabase `EBIS_TFM_RETAIL_NEXTWEAR` (ref `rnmidwhumdrpxulfsbjo`, `eu-west-3`). Extraído en vivo (MCP Supabase) el 2026-07-13; ampliado el mismo día tras aplicar la migración de `ejemplo/CLAUDE_CODE_mejoras.md` (ver `supabase/migrations/`). RLS activo en las 21 tablas (sin políticas: acceso solo vía `service_role` desde route handlers backend).
+Proyecto Supabase `EBIS_TFM_RETAIL_NEXTWEAR` (ref `rnmidwhumdrpxulfsbjo`, `eu-west-3`). Extraído en vivo (MCP Supabase) el 2026-07-13; ampliado el mismo día tras aplicar la migración de `ejemplo/CLAUDE_CODE_mejoras.md` (ver `supabase/migrations/01`–`08`). RLS activo en las 21 tablas (sin políticas: acceso solo vía `service_role` desde route handlers backend). Auditoría de seguridad el mismo día (`supabase/migrations/09_fix_security_definer_views.sql`): las 2 vistas eran `SECURITY DEFINER` y filtraban datos reales a la `anon` key sin autenticación (confirmado con una petición REST real) — corregidas con `security_invoker = on`.
 
 Cadena del proceso: **Proveedor → Pedido → Albarán → Factura → Asiento contable → Pago**, con `productos`, `centros_coste`, `tipos_cambio` y `cuentas_contables` como dimensiones, `casos_excepcion` para conciliación, `stock_movimientos` para inventario, `aprobaciones`/`comunicaciones` para HITL y `log_agentes` como base del Copiloto RAG.
 
@@ -94,7 +94,7 @@ Sin FKs entrantes/salientes declaradas (se cruza por `fecha`+`moneda_origen` des
 | sku | text | PK, FK → productos |
 | cantidad_entregada | integer | |
 
-### `facturas` (334 filas) — PK `factura_id` — tabla central
+### `facturas` (334 filas, 2 en estado `pagada` vía seed demo) — PK `factura_id` — tabla central
 | Campo | Tipo | Notas |
 |---|---|---|
 | factura_id | text | PK |
@@ -262,7 +262,7 @@ Debe cuadrar: `sum(debe_eur) = sum(haber_eur)` por asiento (control vía vista `
 | haber_eur | numeric | default 0 |
 | concepto | text | nullable |
 
-### `pagos` (0 filas) — PK `pago_id` *(migración)*
+### `pagos` (2 filas, seed demo) — PK `pago_id` *(migración)*
 Cancelación de la obligación registrada en `asientos_contables` (400 contra 572). Relación 1:N con `facturas` (pagos parciales). Notas de crédito no generan fila aquí.
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -364,7 +364,7 @@ centros_coste 1───N asientos_lineas
 
 ### Qué permite cada relación (consultas típicas)
 
-- **Proveedor → Pedido → Albarán → Factura**: seguir el ciclo completo de un proveedor (`proveedor_id`) para conciliar cantidad pedida vs. entregada vs. facturada. `pedidos.pedido_id` conecta con `albaranes.pedido_id` y `facturas.pedido_id_ref`; el vínculo factura↔albarán es débil (texto en `albaran_ids_ref`), requiere parseo si se quiere JOIN real.
+- **Proveedor → Pedido → Albarán → Factura**: seguir el ciclo completo de un proveedor (`proveedor_id`) para conciliar cantidad pedida vs. entregada vs. facturada. `pedidos.pedido_id` conecta con `albaranes.pedido_id` y `facturas.pedido_id_ref`; el vínculo factura↔albarán es un JOIN real vía `facturas_albaranes` (ya no requiere parsear `albaran_ids_ref`, deprecado — ver regla 6). Usado por `getFacturaDetalle()` en el dashboard.
 - **Conciliación a 3 bandas**: `pedidos_lineas` (cantidad_pedida, precio acordado) vs `albaranes_lineas` (cantidad_entregada) vs `facturas_lineas` (cantidad, precio, total) por `sku` — permite detectar discrepancias de cantidad/precio.
 - **Excepciones**: `casos_excepcion` polimórfica enlaza a factura, albarán o pedido según `tipo_excepcion`; JOIN condicional según qué FK está rellena.
 - **Gasto por centro de coste**: `facturas_lineas.centro_coste_id` → `centros_coste` (tienda física vs ecommerce vs almacén).
@@ -386,3 +386,4 @@ centros_coste 1───N asientos_lineas
 7. `asientos_lineas`: un asiento debe cuadrar (`sum(debe_eur) = sum(haber_eur)`); vigilar via vista `asientos_descuadrados`.
 8. `asientos_contables.clave_idempotencia` es UNIQUE NOT NULL — la idempotencia del registro contable vive en la BD, no solo en código.
 9. `pagos` no es control antifraude (eso vive en la conciliación IBAN); es el cierre contable de la obligación registrada en `asientos_contables`.
+10. Vistas nuevas (`asientos_descuadrados`) deben crearse con `security_invoker = on` explícito — por defecto Postgres las crea `SECURITY DEFINER`, lo que salta el RLS de las tablas base y expone datos a `anon`/`authenticated` sin querer (ver hallazgo de auditoría arriba).
