@@ -12,6 +12,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Supabase (`@supabase/supabase-js`) — acceso solo desde route handlers del backend.
 - Copiloto: capa agnóstica de proveedor, en modo mock (sin LLM conectado todavía).
 
+## Control de versiones — regla obligatoria
+
+Repositorio remoto: `https://github.com/xalvago/TFM_NEXTWEAR.git` (branch `main`), conectado a Vercel para despliegue automático.
+
+**Cada vez que se implemente un cambio en ficheros del proyecto (código, esquema, docs), hacer `git add` + `git commit` + `git push origin main` al terminar ese cambio**, sin esperar a que el usuario lo pida explícitamente. Mensajes de commit breves y descriptivos (qué cambió y por qué), nunca vacíos. No incluir nunca `.env.local` ni credenciales (ya cubierto por `.gitignore`). Si el push falla (conflicto, sin red, sin auth), avisar al usuario en vez de forzarlo (`--force`) o silenciarlo.
+
 ## Comandos
 
 ```bash
