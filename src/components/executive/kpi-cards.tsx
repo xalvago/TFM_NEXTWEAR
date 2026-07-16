@@ -26,6 +26,18 @@ const TONE_ICON_BG: Record<StateTone, string> = {
   neutral: "gradient-brand-soft text-primary",
 };
 
+// Barra de acento superior (gradiente) por tono.
+const TONE_ACCENT: Record<StateTone, string> = {
+  ok: "linear-gradient(90deg, var(--ok), color-mix(in oklab, var(--ok), var(--chart-2) 55%))",
+  exception:
+    "linear-gradient(90deg, var(--exception), color-mix(in oklab, var(--exception), var(--pending) 55%))",
+  pending:
+    "linear-gradient(90deg, var(--pending), color-mix(in oklab, var(--pending), var(--exception) 40%))",
+  credit:
+    "linear-gradient(90deg, var(--credit), color-mix(in oklab, var(--credit), var(--chart-1) 55%))",
+  neutral: "var(--gradient-brand)",
+};
+
 function buildEntries(kpis: Kpis): Entry[] {
   return [
     {
@@ -64,8 +76,8 @@ function buildEntries(kpis: Kpis): Entry[] {
 }
 
 /**
- * Franja compacta de KPIs pensada para integrarse bajo el gráfico de
- * evolución (mismo ancho/alto que la fila hero, no una sección aparte).
+ * Tarjetas de KPI independientes bajo el gráfico de evolución: 5 tarjetas en
+ * dos filas (3 + 2), ocupando el ancho del gráfico.
  */
 export function KpiStrip({ kpis }: { kpis: Kpis }) {
   const entries = buildEntries(kpis);
@@ -73,7 +85,7 @@ export function KpiStrip({ kpis }: { kpis: Kpis }) {
   return (
     <section
       aria-label="Indicadores clave"
-      className="grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border/50 pt-3 sm:grid-cols-5 sm:divide-x sm:divide-border/50"
+      className="grid grid-cols-2 gap-3 sm:grid-cols-3"
     >
       {entries.map((e) => {
         const Icon = e.icon;
@@ -81,19 +93,24 @@ export function KpiStrip({ kpis }: { kpis: Kpis }) {
         return (
           <div
             key={e.label}
-            className="group flex items-start gap-2 sm:pl-4 sm:first:pl-0"
+            className="card-wash hover-lift group relative flex flex-col gap-2 overflow-hidden rounded-xl p-3.5 shadow-card"
           >
             <span
+              aria-hidden
+              className="absolute inset-x-0 top-0 h-[3px]"
+              style={{ background: TONE_ACCENT[tone] }}
+            />
+            <span
               className={cn(
-                "grid size-7 shrink-0 place-items-center rounded-lg",
+                "grid size-7 place-items-center rounded-lg",
                 TONE_ICON_BG[tone]
               )}
             >
               <Icon aria-hidden size={14} strokeWidth={1.85} className="icon-anim" />
             </span>
-            <div className="flex min-w-0 flex-col">
+            <div className="flex flex-col gap-0.5">
               <span className="eyebrow truncate text-[0.65rem]">{e.label}</span>
-              <span className="font-numeric text-base leading-tight sm:text-lg">
+              <span className="font-numeric text-lg leading-tight">
                 {e.value}
               </span>
               {e.note && (

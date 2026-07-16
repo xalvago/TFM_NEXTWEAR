@@ -95,7 +95,7 @@ function TooltipBox({
 export function InteranualChart({ data }: { data: PuntoInteranual[] }) {
   return (
     <div className="w-full animate-in fade-in-0 duration-700">
-      <div className="h-[130px] w-full">
+      <div className="h-[210px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 8 }}>
           <CartesianGrid stroke={GRID} strokeDasharray="2 4" vertical={false} />
