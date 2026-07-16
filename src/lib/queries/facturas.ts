@@ -171,6 +171,7 @@ export interface FacturaLineaDetalle {
   descuento_pct: number | null;
   total_linea_original: number | null;
   total_linea_eur: number | null;
+  tipo_iva_linea: number | null;
   flag_revision: boolean | null;
   motivo_flag: string | null;
 }
@@ -213,6 +214,9 @@ export interface FacturaDetalle {
     proveedor_id: string | null;
     razon_social_proveedor: string | null;
     nif_proveedor: string | null;
+    nif_cliente: string | null;
+    direccion_cliente: string | null;
+    razon_social_cliente: string | null;
     forma_pago: string | null;
     pedido_id_ref: string | null;
     albaran_ids_ref: string | null;
@@ -240,7 +244,7 @@ export async function getFacturaDetalle(
     supabase
       .from("facturas_lineas")
       .select(
-        "linea_id, sku, descripcion, centro_coste_id, cantidad, precio_unitario_original, precio_unitario_eur, descuento_pct, total_linea_original, total_linea_eur, flag_revision, motivo_flag"
+        "linea_id, sku, descripcion, centro_coste_id, cantidad, precio_unitario_original, precio_unitario_eur, descuento_pct, total_linea_original, total_linea_eur, tipo_iva_linea, flag_revision, motivo_flag"
       )
       .eq("factura_id", facturaId)
       .order("linea_id"),
@@ -306,6 +310,9 @@ export async function getFacturaDetalle(
       proveedor_id: factura.proveedor_id,
       razon_social_proveedor: factura.razon_social_proveedor,
       nif_proveedor: factura.nif_proveedor,
+      nif_cliente: factura.nif_cliente,
+      direccion_cliente: factura.direccion_cliente,
+      razon_social_cliente: factura.razon_social_cliente,
       forma_pago: factura.forma_pago,
       pedido_id_ref: factura.pedido_id_ref,
       albaran_ids_ref: factura.albaran_ids_ref,

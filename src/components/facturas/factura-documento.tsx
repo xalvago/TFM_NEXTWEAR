@@ -39,6 +39,26 @@ export function FacturaDocumento({
       ? Math.round((f.cuota_iva_original / f.base_imponible_original) * 100)
       : null;
 
+  // Desglose de IVA por tipo: si todas las líneas comparten tipo, basta con el
+  // total único de arriba; si hay tipos distintos (p.ej. 21% y 10% mezclados),
+  // el documento necesita una tabla de IVA por tipo para ser correcto.
+  const tiposIva = new Set(
+    lineas.map((l) => l.tipo_iva_linea).filter((t): t is number => t != null)
+  );
+  const desgloseIva =
+    tiposIva.size > 1
+      ? Array.from(tiposIva)
+          .sort((a, b) => a - b)
+          .map((tipo) => {
+            const lineasTipo = lineas.filter((l) => l.tipo_iva_linea === tipo);
+            const base = lineasTipo.reduce(
+              (acc, l) => acc + (l.total_linea_original ?? 0),
+              0
+            );
+            return { tipo, base, cuota: base * (tipo / 100) };
+          })
+      : null;
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex justify-end print:hidden">
@@ -91,8 +111,11 @@ export function FacturaDocumento({
           />
           <Party
             rol="Cliente"
-            nombre={CLIENTE.nombre}
-            lineas={[`NIF ${CLIENTE.nif}`, CLIENTE.direccion]}
+            nombre={f.razon_social_cliente ?? CLIENTE.nombre}
+            lineas={[
+              `NIF ${f.nif_cliente ?? CLIENTE.nif}`,
+              f.direccion_cliente ?? CLIENTE.direccion,
+            ]}
           />
         </div>
 
@@ -156,10 +179,20 @@ export function FacturaDocumento({
               label="Base imponible"
               value={formatMoneda(f.base_imponible_original, moneda)}
             />
-            <TotalRow
-              label={`IVA${ivaPct != null ? ` (${ivaPct} %)` : ""}`}
-              value={formatMoneda(f.cuota_iva_original, moneda)}
-            />
+            {desgloseIva ? (
+              desgloseIva.map((d) => (
+                <TotalRow
+                  key={d.tipo}
+                  label={`IVA (${d.tipo} %)`}
+                  value={formatMoneda(d.cuota, moneda)}
+                />
+              ))
+            ) : (
+              <TotalRow
+                label={`IVA${ivaPct != null ? ` (${ivaPct} %)` : ""}`}
+                value={formatMoneda(f.cuota_iva_original, moneda)}
+              />
+            )}
             <TotalRow
               label="Total"
               value={formatMoneda(f.total_factura_original, moneda)}

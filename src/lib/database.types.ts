@@ -457,6 +457,7 @@ export type Database = {
           numero_factura: string | null
           pedido_id_ref: string | null
           proveedor_id: string | null
+          razon_social_cliente: string | null
           razon_social_proveedor: string | null
           saldo_pendiente_eur: number | null
           serie: string | null
@@ -497,6 +498,7 @@ export type Database = {
           numero_factura?: string | null
           pedido_id_ref?: string | null
           proveedor_id?: string | null
+          razon_social_cliente?: string | null
           razon_social_proveedor?: string | null
           saldo_pendiente_eur?: number | null
           serie?: string | null
@@ -537,6 +539,7 @@ export type Database = {
           numero_factura?: string | null
           pedido_id_ref?: string | null
           proveedor_id?: string | null
+          razon_social_cliente?: string | null
           razon_social_proveedor?: string | null
           saldo_pendiente_eur?: number | null
           serie?: string | null
