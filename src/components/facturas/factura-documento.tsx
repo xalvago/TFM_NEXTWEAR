@@ -136,28 +136,26 @@ export function FacturaDocumento({
         <div className="grid grid-cols-2 gap-x-6 gap-y-3 rounded-xl bg-[#faf9f6] px-5 py-4 text-sm sm:grid-cols-4">
           <Meta label="Expedición" value={formatDate(f.fecha_expedicion)} />
           <Meta label="Vencimiento" value={formatDate(f.fecha_vencimiento)} />
-          <Meta label="Forma de pago" value={f.forma_pago ?? "—"} />
+          {esExportacion ? (
+            <Meta label="Incoterm" value={f.incoterm ?? "—"} />
+          ) : (
+            <Meta label="Forma de pago" value={f.forma_pago ?? "—"} />
+          )}
           <Meta label="Moneda" value={moneda} />
-          {f.regimen_iva && (
+        </div>
+
+        {/* Comercio internacional (solo factura de exportación) */}
+        {esExportacion && (
+          <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-3 rounded-xl border border-[#e5e2dc] px-5 py-4 text-sm sm:grid-cols-4">
             <Meta
               label="Régimen IVA"
-              value={REGIMEN_IVA_LABEL[f.regimen_iva] ?? f.regimen_iva}
+              value={f.regimen_iva ? (REGIMEN_IVA_LABEL[f.regimen_iva] ?? f.regimen_iva) : "—"}
             />
-          )}
-          {f.incoterm && <Meta label="Incoterm" value={f.incoterm} />}
-          {f.pais_origen_mercancia && (
-            <Meta label="Origen mercancía" value={f.pais_origen_mercancia} />
-          )}
-          {(f.swift_bic || f.banco_corresponsal) && (
-            <Meta
-              label="SWIFT/BIC"
-              value={
-                [f.swift_bic, f.banco_corresponsal].filter(Boolean).join(" · ") ||
-                "—"
-              }
-            />
-          )}
-        </div>
+            <Meta label="Origen mercancía" value={f.pais_origen_mercancia ?? "—"} />
+            <Meta label="SWIFT/BIC" value={f.swift_bic ?? "—"} />
+            <Meta label="Banco corresponsal" value={f.banco_corresponsal ?? "—"} />
+          </div>
+        )}
 
         {contradiccionIva && (
           <div className="mt-3 flex items-start gap-2 rounded-xl border border-[#f0c46b] bg-[#fdf5e2] px-4 py-3 text-xs text-[#8a6a12]">
