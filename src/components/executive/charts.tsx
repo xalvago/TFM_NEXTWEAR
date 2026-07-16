@@ -95,7 +95,7 @@ function TooltipBox({
 export function InteranualChart({ data }: { data: PuntoInteranual[] }) {
   return (
     <div className="w-full animate-in fade-in-0 duration-700">
-      <div className="h-[210px] w-full">
+      <div className="h-[130px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 8 }}>
           <CartesianGrid stroke={GRID} strokeDasharray="2 4" vertical={false} />
@@ -221,37 +221,39 @@ export function CentroChart({ data }: { data: GastoPorCentro[] }) {
 
 // --- Gasto por proveedor (top 10) ---------------------------------------------
 export function ProveedorChart({ data }: { data: GastoPorProveedor[] }) {
-  const height = Math.max(200, data.length * 34 + 16);
   return (
-    <div className="w-full animate-in fade-in-0 duration-700" style={{ height }}>
+    <div className="w-full animate-in fade-in-0 duration-700" style={{ height: 320 }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
-          layout="vertical"
           data={data}
-          margin={{ top: 4, right: 16, bottom: 4, left: 8 }}
-          barCategoryGap={8}
+          margin={{ top: 4, right: 8, bottom: 48, left: 8 }}
+          barCategoryGap={12}
         >
           <defs>
-            <linearGradient id="grad-proveedor" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.7} />
-              <stop offset="100%" stopColor="var(--chart-2)" stopOpacity={1} />
+            <linearGradient id="grad-proveedor" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--chart-2)" stopOpacity={1} />
+              <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0.7} />
             </linearGradient>
           </defs>
-          <CartesianGrid stroke={GRID} strokeDasharray="2 4" horizontal={false} />
+          <CartesianGrid stroke={GRID} strokeDasharray="2 4" vertical={false} />
           <XAxis
-            type="number"
-            tick={AXIS_TICK}
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={(v) => formatEURCompact(Number(v))}
-          />
-          <YAxis
             type="category"
             dataKey="razonSocial"
             tick={AXIS_TICK_CAT}
             tickLine={false}
             axisLine={{ stroke: GRID }}
-            width={172}
+            interval={0}
+            angle={-35}
+            textAnchor="end"
+            height={60}
+          />
+          <YAxis
+            type="number"
+            tick={AXIS_TICK}
+            tickLine={false}
+            axisLine={false}
+            width={56}
+            tickFormatter={(v) => formatEURCompact(Number(v))}
           />
           <Tooltip
             cursor={{ fill: "var(--accent)", opacity: 0.4 }}
@@ -273,7 +275,7 @@ export function ProveedorChart({ data }: { data: GastoPorProveedor[] }) {
           />
           <Bar
             dataKey="gastoEur"
-            radius={[0, 4, 4, 0]}
+            radius={[4, 4, 0, 0]}
             fill="url(#grad-proveedor)"
             {...ANIM}
           />

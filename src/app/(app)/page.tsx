@@ -1,6 +1,6 @@
 import { getExecutiveData, type PeriodoAnio } from "@/lib/queries/executive";
 import { ANIOS_DATASET } from "@/lib/finance";
-import { KpiCards } from "@/components/executive/kpi-cards";
+import { KpiStrip } from "@/components/executive/kpi-cards";
 import { PeriodSelector } from "@/components/executive/period-selector";
 import { ConversorDivisas } from "@/components/executive/conversor-divisas";
 import { Panel } from "@/components/panel";
@@ -61,7 +61,10 @@ export default async function VistaEjecutivaPage({
             className="h-full"
             tint="violet"
           >
-            <InteranualChart data={data.interanual} />
+            <div className="flex flex-1 flex-col gap-4">
+              <InteranualChart data={data.interanual} />
+              <KpiStrip kpis={data.kpis} />
+            </div>
           </Panel>
         </div>
         <div className="flex flex-col gap-6">
@@ -100,19 +103,11 @@ export default async function VistaEjecutivaPage({
         </div>
       </div>
 
-      {/* Fila 2 — indicadores clave (ya no fijos en la parte superior) */}
-      <div
-        className="animate-in fade-in-0 slide-in-from-bottom-1 duration-500"
-        style={{ animationDelay: "120ms", animationFillMode: "backwards" }}
-      >
-        <KpiCards kpis={data.kpis} />
-      </div>
-
-      {/* Fila 3 — proveedor (top 10) + centro de coste */}
+      {/* Fila 2 — proveedor (top 10) + centro de coste */}
       <div className="grid gap-6 lg:grid-cols-3">
         <div
           className="lg:col-span-2 animate-in fade-in-0 slide-in-from-bottom-1 duration-500"
-          style={{ animationDelay: "180ms", animationFillMode: "backwards" }}
+          style={{ animationDelay: "120ms", animationFillMode: "backwards" }}
         >
           <Panel
             eyebrow="Concentración"
@@ -129,7 +124,7 @@ export default async function VistaEjecutivaPage({
         </div>
         <div
           className="animate-in fade-in-0 slide-in-from-bottom-1 duration-500"
-          style={{ animationDelay: "240ms", animationFillMode: "backwards" }}
+          style={{ animationDelay: "180ms", animationFillMode: "backwards" }}
         >
           <Panel
             eyebrow="Distribución"
