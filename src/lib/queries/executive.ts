@@ -49,6 +49,12 @@ export interface GastoPorMoneda {
   gastoEur: number;
 }
 
+export interface TipoCambioActual {
+  moneda: string; // USD | CNY
+  tasa: number; // unidades de EUR que valen 1 unidad de `moneda` (convención del dataset: original * tasa = EUR)
+  fecha: string;
+}
+
 export interface ExecutiveData {
   anio: PeriodoAnio;
   kpis: Kpis;
@@ -56,6 +62,7 @@ export interface ExecutiveData {
   porCentro: GastoPorCentro[];
   porProveedor: GastoPorProveedor[];
   porMoneda: GastoPorMoneda[];
+  tiposCambio: TipoCambioActual[];
 }
 
 type FacturaRow = {
@@ -74,7 +81,7 @@ export async function getExecutiveData(
 ): Promise<ExecutiveData> {
   const supabase = getSupabaseAdmin();
 
-  const [facturasRes, lineasRes, centrosRes, proveedoresRes, casosRes] =
+  const [facturasRes, lineasRes, centrosRes, proveedoresRes, casosRes, tiposCambioRes] =
     await Promise.all([
       supabase
         .from("facturas")
@@ -89,9 +96,20 @@ export async function getExecutiveData(
         .from("maestro_proveedores")
         .select("proveedor_id, razon_social, moneda_facturacion"),
       supabase.from("casos_excepcion").select("factura_id, tipo_excepcion"),
+      supabase
+        .from("tipos_cambio")
+        .select("fecha, moneda_origen, tasa_cambio")
+        .order("fecha", { ascending: false }),
     ]);
 
-  for (const res of [facturasRes, lineasRes, centrosRes, proveedoresRes, casosRes]) {
+  for (const res of [
+    facturasRes,
+    lineasRes,
+    centrosRes,
+    proveedoresRes,
+    casosRes,
+    tiposCambioRes,
+  ]) {
     if (res.error) throw res.error;
   }
 
@@ -246,7 +264,22 @@ export async function getExecutiveData(
     .map(([moneda, gastoEur]) => ({ moneda, gastoEur: round2(gastoEur) }))
     .sort((a, b) => b.gastoEur - a.gastoEur);
 
-  return { anio, kpis, interanual, porCentro, porProveedor, porMoneda };
+  // --- Tipos de cambio actuales (última fecha por moneda) --------------------
+  const tiposCambioRows = (tiposCambioRes.data ?? []) as {
+    fecha: string;
+    moneda_origen: string;
+    tasa_cambio: number;
+  }[];
+  const tiposCambioVistos = new Set<string>();
+  const tiposCambio: TipoCambioActual[] = [];
+  for (const t of tiposCambioRows) {
+    if (tiposCambioVistos.has(t.moneda_origen)) continue;
+    tiposCambioVistos.add(t.moneda_origen);
+    tiposCambio.push({ moneda: t.moneda_origen, tasa: t.tasa_cambio, fecha: t.fecha });
+  }
+  tiposCambio.sort((a, b) => a.moneda.localeCompare(b.moneda));
+
+  return { anio, kpis, interanual, porCentro, porProveedor, porMoneda, tiposCambio };
 }
 
 // --- utilidades ---------------------------------------------------------------

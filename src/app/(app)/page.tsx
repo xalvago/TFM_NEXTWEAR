@@ -2,6 +2,7 @@ import { getExecutiveData, type PeriodoAnio } from "@/lib/queries/executive";
 import { ANIOS_DATASET } from "@/lib/finance";
 import { KpiCards } from "@/components/executive/kpi-cards";
 import { PeriodSelector } from "@/components/executive/period-selector";
+import { ConversorDivisas } from "@/components/executive/conversor-divisas";
 import { Panel } from "@/components/panel";
 import {
   InteranualChart,
@@ -63,23 +64,39 @@ export default async function VistaEjecutivaPage({
             <InteranualChart data={data.interanual} />
           </Panel>
         </div>
-        <div
-          className="animate-in fade-in-0 slide-in-from-bottom-1 duration-500"
-          style={{ animationDelay: "60ms", animationFillMode: "backwards" }}
-        >
-          <Panel
-            eyebrow="Divisa de origen"
-            title="Gasto por moneda"
-            description="Documentos EUR, USD y CNY, valorados en EUR."
-            className="h-full"
-            tint="sky"
+        <div className="flex flex-col gap-6">
+          <div
+            className="animate-in fade-in-0 slide-in-from-bottom-1 duration-500"
+            style={{ animationDelay: "60ms", animationFillMode: "backwards" }}
           >
-            {data.porMoneda.length > 0 ? (
-              <MonedaChart data={data.porMoneda} />
-            ) : (
-              <EmptyState />
-            )}
-          </Panel>
+            <Panel
+              eyebrow="Divisa de origen"
+              title="Gasto por moneda"
+              description="Documentos EUR, USD y CNY, valorados en EUR."
+              tint="sky"
+            >
+              {data.porMoneda.length > 0 ? (
+                <MonedaChart data={data.porMoneda} />
+              ) : (
+                <EmptyState />
+              )}
+            </Panel>
+          </div>
+          {data.tiposCambio.length > 0 && (
+            <div
+              className="animate-in fade-in-0 slide-in-from-bottom-1 duration-500"
+              style={{ animationDelay: "100ms", animationFillMode: "backwards" }}
+            >
+              <Panel
+                eyebrow="Tipo de cambio"
+                title="Conversor de divisas"
+                description="Última tasa BCE registrada en el sistema."
+                tint="rose"
+              >
+                <ConversorDivisas tasas={data.tiposCambio} />
+              </Panel>
+            </div>
+          )}
         </div>
       </div>
 
