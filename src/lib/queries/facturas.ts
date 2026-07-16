@@ -172,6 +172,7 @@ export interface FacturaLineaDetalle {
   total_linea_original: number | null;
   total_linea_eur: number | null;
   tipo_iva_linea: number | null;
+  codigo_hs: string | null;
   flag_revision: boolean | null;
   motivo_flag: string | null;
 }
@@ -220,6 +221,14 @@ export interface FacturaDetalle {
     forma_pago: string | null;
     pedido_id_ref: string | null;
     albaran_ids_ref: string | null;
+    // Factura de exportación (proveedores asiáticos): nullable, vacío en nacional.
+    id_fiscal_extranjero: string | null;
+    tipo_id_fiscal: string | null;
+    swift_bic: string | null;
+    banco_corresponsal: string | null;
+    incoterm: string | null;
+    pais_origen_mercancia: string | null;
+    regimen_iva: string | null;
   };
   lineas: FacturaLineaDetalle[];
   pedido: PedidoRef | null;
@@ -244,7 +253,7 @@ export async function getFacturaDetalle(
     supabase
       .from("facturas_lineas")
       .select(
-        "linea_id, sku, descripcion, centro_coste_id, cantidad, precio_unitario_original, precio_unitario_eur, descuento_pct, total_linea_original, total_linea_eur, tipo_iva_linea, flag_revision, motivo_flag"
+        "linea_id, sku, descripcion, centro_coste_id, cantidad, precio_unitario_original, precio_unitario_eur, descuento_pct, total_linea_original, total_linea_eur, tipo_iva_linea, codigo_hs, flag_revision, motivo_flag"
       )
       .eq("factura_id", facturaId)
       .order("linea_id"),
@@ -316,6 +325,13 @@ export async function getFacturaDetalle(
       forma_pago: factura.forma_pago,
       pedido_id_ref: factura.pedido_id_ref,
       albaran_ids_ref: factura.albaran_ids_ref,
+      id_fiscal_extranjero: factura.id_fiscal_extranjero,
+      tipo_id_fiscal: factura.tipo_id_fiscal,
+      swift_bic: factura.swift_bic,
+      banco_corresponsal: factura.banco_corresponsal,
+      incoterm: factura.incoterm,
+      pais_origen_mercancia: factura.pais_origen_mercancia,
+      regimen_iva: factura.regimen_iva,
     },
     lineas: (lineasRes.data ?? []) as FacturaLineaDetalle[],
     pedido: (pedidoRes.data as PedidoRef | null) ?? null,

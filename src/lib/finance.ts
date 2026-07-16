@@ -223,6 +223,21 @@ export const MONEDA_SIMBOLO: Record<string, string> = {
   CNY: "¥",
 };
 
+// --- Factura de exportación (proveedores asiáticos) ----------------------------
+
+export const TIPO_ID_FISCAL_LABEL: Record<string, string> = {
+  nif: "NIF",
+  uscc: "USCC",
+  vat: "VAT",
+  otro: "ID fiscal",
+};
+
+export const REGIMEN_IVA_LABEL: Record<string, string> = {
+  nacional: "Nacional",
+  exportacion: "Exportación",
+  intracomunitario: "Intracomunitario",
+};
+
 // --- Periodo / años -----------------------------------------------------------
 
 /** Años presentes en el dataset (abr–jun de cada uno). */

@@ -427,6 +427,7 @@ export type Database = {
       facturas: {
         Row: {
           albaran_ids_ref: string | null
+          banco_corresponsal: string | null
           base_imponible_eur: number | null
           base_imponible_original: number | null
           campos_baja_confianza: Json | null
@@ -448,26 +449,33 @@ export type Database = {
           forma_pago: string | null
           hash_documento: string | null
           iban_proveedor: string | null
+          id_fiscal_extranjero: string | null
           idioma_documento: string | null
+          incoterm: string | null
           moneda_original: string | null
           motivo_excepcion: string | null
           motor_extraccion: string | null
           nif_cliente: string | null
           nif_proveedor: string | null
           numero_factura: string | null
+          pais_origen_mercancia: string | null
           pedido_id_ref: string | null
           proveedor_id: string | null
           razon_social_cliente: string | null
           razon_social_proveedor: string | null
+          regimen_iva: string | null
           saldo_pendiente_eur: number | null
           serie: string | null
+          swift_bic: string | null
           tipo_cambio_aplicado: number | null
+          tipo_id_fiscal: string | null
           tipo_iva: number | null
           total_factura_eur: number | null
           total_factura_original: number | null
         }
         Insert: {
           albaran_ids_ref?: string | null
+          banco_corresponsal?: string | null
           base_imponible_eur?: number | null
           base_imponible_original?: number | null
           campos_baja_confianza?: Json | null
@@ -489,26 +497,33 @@ export type Database = {
           forma_pago?: string | null
           hash_documento?: string | null
           iban_proveedor?: string | null
+          id_fiscal_extranjero?: string | null
           idioma_documento?: string | null
+          incoterm?: string | null
           moneda_original?: string | null
           motivo_excepcion?: string | null
           motor_extraccion?: string | null
           nif_cliente?: string | null
           nif_proveedor?: string | null
           numero_factura?: string | null
+          pais_origen_mercancia?: string | null
           pedido_id_ref?: string | null
           proveedor_id?: string | null
           razon_social_cliente?: string | null
           razon_social_proveedor?: string | null
+          regimen_iva?: string | null
           saldo_pendiente_eur?: number | null
           serie?: string | null
+          swift_bic?: string | null
           tipo_cambio_aplicado?: number | null
+          tipo_id_fiscal?: string | null
           tipo_iva?: number | null
           total_factura_eur?: number | null
           total_factura_original?: number | null
         }
         Update: {
           albaran_ids_ref?: string | null
+          banco_corresponsal?: string | null
           base_imponible_eur?: number | null
           base_imponible_original?: number | null
           campos_baja_confianza?: Json | null
@@ -530,20 +545,26 @@ export type Database = {
           forma_pago?: string | null
           hash_documento?: string | null
           iban_proveedor?: string | null
+          id_fiscal_extranjero?: string | null
           idioma_documento?: string | null
+          incoterm?: string | null
           moneda_original?: string | null
           motivo_excepcion?: string | null
           motor_extraccion?: string | null
           nif_cliente?: string | null
           nif_proveedor?: string | null
           numero_factura?: string | null
+          pais_origen_mercancia?: string | null
           pedido_id_ref?: string | null
           proveedor_id?: string | null
           razon_social_cliente?: string | null
           razon_social_proveedor?: string | null
+          regimen_iva?: string | null
           saldo_pendiente_eur?: number | null
           serie?: string | null
+          swift_bic?: string | null
           tipo_cambio_aplicado?: number | null
+          tipo_id_fiscal?: string | null
           tipo_iva?: number | null
           total_factura_eur?: number | null
           total_factura_original?: number | null
@@ -609,6 +630,7 @@ export type Database = {
           categoria_contable: string | null
           centro_coste_id: string | null
           clasificado_por: string | null
+          codigo_hs: string | null
           coleccion_asignada: string | null
           confianza_clasificacion: number | null
           descripcion: string | null
@@ -630,6 +652,7 @@ export type Database = {
           categoria_contable?: string | null
           centro_coste_id?: string | null
           clasificado_por?: string | null
+          codigo_hs?: string | null
           coleccion_asignada?: string | null
           confianza_clasificacion?: number | null
           descripcion?: string | null
@@ -651,6 +674,7 @@ export type Database = {
           categoria_contable?: string | null
           centro_coste_id?: string | null
           clasificado_por?: string | null
+          codigo_hs?: string | null
           coleccion_asignada?: string | null
           confianza_clasificacion?: number | null
           descripcion?: string | null

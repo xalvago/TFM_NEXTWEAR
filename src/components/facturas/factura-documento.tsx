@@ -1,11 +1,13 @@
 "use client";
 
-import { Printer } from "lucide-react";
+import { Printer, TriangleAlert } from "lucide-react";
 import {
   formatEUR,
   formatMoneda,
   formatDate,
   formatInt,
+  TIPO_ID_FISCAL_LABEL,
+  REGIMEN_IVA_LABEL,
 } from "@/lib/finance";
 import type { FacturaDetalle } from "@/lib/queries/facturas";
 
@@ -59,6 +61,13 @@ export function FacturaDocumento({
           })
       : null;
 
+  // Factura de exportación (proveedores asiáticos): campos nullable, vacíos en
+  // nacional. regimen_iva gobierna si debe haber IVA — una exportación con
+  // cuota de IVA es una contradicción detectable.
+  const esExportacion = f.regimen_iva === "exportacion";
+  const contradiccionIva = esExportacion && (f.cuota_iva_original ?? 0) > 0;
+  const codigosHs = lineas.some((l) => l.codigo_hs);
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex justify-end print:hidden">
@@ -105,7 +114,11 @@ export function FacturaDocumento({
             rol="Emisor"
             nombre={f.razon_social_proveedor ?? f.proveedor_id ?? "—"}
             lineas={[
-              f.nif_proveedor ? `NIF ${f.nif_proveedor}` : null,
+              f.id_fiscal_extranjero
+                ? `${TIPO_ID_FISCAL_LABEL[f.tipo_id_fiscal ?? "otro"]} ${f.id_fiscal_extranjero}`
+                : f.nif_proveedor
+                  ? `NIF ${f.nif_proveedor}`
+                  : null,
               f.proveedor_id ? `Ref. ${f.proveedor_id}` : null,
             ]}
           />
@@ -125,7 +138,36 @@ export function FacturaDocumento({
           <Meta label="Vencimiento" value={formatDate(f.fecha_vencimiento)} />
           <Meta label="Forma de pago" value={f.forma_pago ?? "—"} />
           <Meta label="Moneda" value={moneda} />
+          {f.regimen_iva && (
+            <Meta
+              label="Régimen IVA"
+              value={REGIMEN_IVA_LABEL[f.regimen_iva] ?? f.regimen_iva}
+            />
+          )}
+          {f.incoterm && <Meta label="Incoterm" value={f.incoterm} />}
+          {f.pais_origen_mercancia && (
+            <Meta label="Origen mercancía" value={f.pais_origen_mercancia} />
+          )}
+          {(f.swift_bic || f.banco_corresponsal) && (
+            <Meta
+              label="SWIFT/BIC"
+              value={
+                [f.swift_bic, f.banco_corresponsal].filter(Boolean).join(" · ") ||
+                "—"
+              }
+            />
+          )}
         </div>
+
+        {contradiccionIva && (
+          <div className="mt-3 flex items-start gap-2 rounded-xl border border-[#f0c46b] bg-[#fdf5e2] px-4 py-3 text-xs text-[#8a6a12]">
+            <TriangleAlert size={15} strokeWidth={2} className="mt-0.5 shrink-0" />
+            <p>
+              Régimen de exportación con cuota de IVA distinta de cero — revisar
+              antes de contabilizar (posible caso de excepción).
+            </p>
+          </div>
+        )}
 
         {/* Líneas */}
         <div className="mt-6 overflow-x-auto">
@@ -133,6 +175,9 @@ export function FacturaDocumento({
             <thead>
               <tr className="border-b border-[#ece9e3] text-[0.7rem] uppercase tracking-wide text-[#9b968d]">
                 <th className="py-2 pr-3 text-left font-semibold">Descripción</th>
+                {codigosHs && (
+                  <th className="py-2 px-3 text-left font-semibold">Cód. HS</th>
+                )}
                 <th className="py-2 px-3 text-right font-semibold">Cant.</th>
                 <th className="py-2 px-3 text-right font-semibold">
                   P. unit. ({moneda})
@@ -154,6 +199,11 @@ export function FacturaDocumento({
                       </span>
                     )}
                   </td>
+                  {codigosHs && (
+                    <td className="py-2.5 px-3 font-mono text-xs text-[#807b72]">
+                      {l.codigo_hs ?? "—"}
+                    </td>
+                  )}
                   <td className="py-2.5 px-3 text-right font-mono tabular-nums">
                     {formatInt(l.cantidad)}
                   </td>
