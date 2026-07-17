@@ -142,6 +142,11 @@ export function FacturaDocumento({
             <Meta label="Forma de pago" value={f.forma_pago ?? "—"} />
           )}
           <Meta label="Moneda" value={moneda} />
+          <Meta label="Ref. pedido" value={f.pedido_id_ref ?? "—"} />
+          <Meta label="Ref. albarán(es)" value={f.albaran_ids_ref ?? "—"} />
+          {!esExportacion && (
+            <Meta label="IBAN proveedor" value={f.iban_proveedor ?? "—"} />
+          )}
         </div>
 
         {/* Comercio internacional (solo factura de exportación) */}

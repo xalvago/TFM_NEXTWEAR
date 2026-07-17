@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Receipt, Boxes } from "lucide-react";
+import { LayoutGrid, Receipt, Boxes, Landmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/", label: "Vista ejecutiva", short: "Ejecutiva", icon: LayoutGrid },
   { href: "/facturas", label: "Facturas y conciliación", short: "Facturas", icon: Receipt },
   { href: "/stock", label: "Stock e inventario", short: "Stock", icon: Boxes },
+  { href: "/proveedores", label: "Proveedores", short: "Proveedores", icon: Landmark },
 ] as const;
 
 /** Barra de navegación horizontal superior, fija y con efecto glass. */
