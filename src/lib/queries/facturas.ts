@@ -219,6 +219,7 @@ export interface FacturaDetalle {
     direccion_cliente: string | null;
     razon_social_cliente: string | null;
     forma_pago: string | null;
+    iban_proveedor: string | null;
     pedido_id_ref: string | null;
     albaran_ids_ref: string | null;
     // Factura de exportación (proveedores asiáticos): nullable, vacío en nacional.
@@ -323,6 +324,7 @@ export async function getFacturaDetalle(
       direccion_cliente: factura.direccion_cliente,
       razon_social_cliente: factura.razon_social_cliente,
       forma_pago: factura.forma_pago,
+      iban_proveedor: factura.iban_proveedor,
       pedido_id_ref: factura.pedido_id_ref,
       albaran_ids_ref: factura.albaran_ids_ref,
       id_fiscal_extranjero: factura.id_fiscal_extranjero,
