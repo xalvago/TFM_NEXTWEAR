@@ -61,11 +61,15 @@ export function FacturaDocumento({
           })
       : null;
 
-  // Factura de exportación (proveedores asiáticos): campos nullable, vacíos en
-  // nacional. regimen_iva gobierna si debe haber IVA — una exportación con
-  // cuota de IVA es una contradicción detectable.
+  // Regímenes de IVA no nacionales: campos nullable, vacíos en nacional.
+  // Exportación (extra-UE: China, EEUU) exige aduana/SWIFT; intracomunitario
+  // (UE: Italia, Portugal) es inversión del sujeto pasivo, sin aduana y con
+  // IBAN SEPA igual que nacional. Ambos deberían llevar IVA a cero — si no,
+  // es una contradicción detectable.
   const esExportacion = f.regimen_iva === "exportacion";
-  const contradiccionIva = esExportacion && (f.cuota_iva_original ?? 0) > 0;
+  const esIntracomunitario = f.regimen_iva === "intracomunitario";
+  const contradiccionIva =
+    (esExportacion || esIntracomunitario) && (f.cuota_iva_original ?? 0) > 0;
   const codigosHs = lineas.some((l) => l.codigo_hs);
 
   return (
@@ -149,16 +153,22 @@ export function FacturaDocumento({
           )}
         </div>
 
-        {/* Comercio internacional (solo factura de exportación) */}
-        {esExportacion && (
+        {/* Régimen no nacional: exportación (extra-UE) o intracomunitario (UE) */}
+        {(esExportacion || esIntracomunitario) && (
           <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-3 rounded-xl border border-[#e5e2dc] px-5 py-4 text-sm sm:grid-cols-4">
             <Meta
               label="Régimen IVA"
               value={f.regimen_iva ? (REGIMEN_IVA_LABEL[f.regimen_iva] ?? f.regimen_iva) : "—"}
             />
-            <Meta label="Origen mercancía" value={f.pais_origen_mercancia ?? "—"} />
-            <Meta label="SWIFT/BIC" value={f.swift_bic ?? "—"} />
-            <Meta label="Banco corresponsal" value={f.banco_corresponsal ?? "—"} />
+            {esExportacion ? (
+              <>
+                <Meta label="Origen mercancía" value={f.pais_origen_mercancia ?? "—"} />
+                <Meta label="SWIFT/BIC" value={f.swift_bic ?? "—"} />
+                <Meta label="Banco corresponsal" value={f.banco_corresponsal ?? "—"} />
+              </>
+            ) : (
+              <Meta label="Inversión del sujeto pasivo" value="Sí — IVA no repercutido" />
+            )}
           </div>
         )}
 
@@ -166,8 +176,9 @@ export function FacturaDocumento({
           <div className="mt-3 flex items-start gap-2 rounded-xl border border-[#f0c46b] bg-[#fdf5e2] px-4 py-3 text-xs text-[#8a6a12]">
             <TriangleAlert size={15} strokeWidth={2} className="mt-0.5 shrink-0" />
             <p>
-              Régimen de exportación con cuota de IVA distinta de cero — revisar
-              antes de contabilizar (posible caso de excepción).
+              {esExportacion
+                ? "Régimen de exportación con cuota de IVA distinta de cero — revisar antes de contabilizar (posible caso de excepción)."
+                : "Régimen intracomunitario (inversión del sujeto pasivo) con cuota de IVA distinta de cero — no debería repercutirse IVA español. Revisar antes de contabilizar (posible caso de excepción)."}
             </p>
           </div>
         )}
