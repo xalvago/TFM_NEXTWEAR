@@ -259,50 +259,9 @@ export default async function FacturaDetallePage({
               </Table>
             </div>
           </Panel>
-        </div>
-
-        {/* Rail: importes + casos */}
-        <div className="flex flex-col gap-6">
-          <Panel eyebrow="Importes" title="Doble moneda">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-muted-foreground">
-                  <th className="pb-2 text-left font-medium">Concepto</th>
-                  <th className="pb-2 text-right font-medium">
-                    {f.moneda_original ?? "—"}
-                  </th>
-                  <th className="pb-2 text-right font-medium">EUR</th>
-                </tr>
-              </thead>
-              <tbody className="font-numeric">
-                <MoneyRow
-                  label="Base"
-                  original={formatMoneda(f.base_imponible_original, f.moneda_original)}
-                  eur={formatEUR(f.base_imponible_eur)}
-                />
-                <MoneyRow
-                  label="IVA"
-                  original={formatMoneda(f.cuota_iva_original, f.moneda_original)}
-                  eur={formatEUR(f.cuota_iva_eur)}
-                />
-                <MoneyRow
-                  label="Total"
-                  original={formatMoneda(f.total_factura_original, f.moneda_original)}
-                  eur={formatEUR(f.total_factura_eur)}
-                  emphasis
-                />
-              </tbody>
-            </table>
-            {esExtranjera && (
-              <p className="mt-3 border-t border-border/60 pt-3 text-xs text-muted-foreground">
-                Tipo de cambio {f.tipo_cambio_aplicado ?? "—"} ·{" "}
-                {formatDate(f.fecha_tipo_cambio)}. Importes normalizados a EUR
-                para todos los cálculos.
-              </p>
-            )}
-          </Panel>
 
           <Panel
+            className="mt-6"
             eyebrow="ERP"
             title="Registro contable"
             description={
@@ -312,9 +271,9 @@ export default async function FacturaDetallePage({
             }
           >
             {asientos.length > 0 ? (
-              <ul className="flex flex-col gap-4">
+              <div className="grid gap-4 sm:grid-cols-2">
                 {asientos.map((a) => (
-                  <li
+                  <div
                     key={a.asiento_id}
                     className="rounded-xl border border-border/60 p-3"
                   >
@@ -375,14 +334,56 @@ export default async function FacturaDetallePage({
                         </div>
                       ))}
                     </div>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             ) : (
               <p className="text-sm text-muted-foreground">
                 {f.estado === "en_excepcion"
                   ? "Bloqueada para el ERP hasta resolver la excepción."
                   : "El agente contabilizador aún no ha generado el asiento."}
+              </p>
+            )}
+          </Panel>
+        </div>
+
+        {/* Rail: importes + casos */}
+        <div className="flex flex-col gap-6">
+          <Panel eyebrow="Importes" title="Doble moneda">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-muted-foreground">
+                  <th className="pb-2 text-left font-medium">Concepto</th>
+                  <th className="pb-2 text-right font-medium">
+                    {f.moneda_original ?? "—"}
+                  </th>
+                  <th className="pb-2 text-right font-medium">EUR</th>
+                </tr>
+              </thead>
+              <tbody className="font-numeric">
+                <MoneyRow
+                  label="Base"
+                  original={formatMoneda(f.base_imponible_original, f.moneda_original)}
+                  eur={formatEUR(f.base_imponible_eur)}
+                />
+                <MoneyRow
+                  label="IVA"
+                  original={formatMoneda(f.cuota_iva_original, f.moneda_original)}
+                  eur={formatEUR(f.cuota_iva_eur)}
+                />
+                <MoneyRow
+                  label="Total"
+                  original={formatMoneda(f.total_factura_original, f.moneda_original)}
+                  eur={formatEUR(f.total_factura_eur)}
+                  emphasis
+                />
+              </tbody>
+            </table>
+            {esExtranjera && (
+              <p className="mt-3 border-t border-border/60 pt-3 text-xs text-muted-foreground">
+                Tipo de cambio {f.tipo_cambio_aplicado ?? "—"} ·{" "}
+                {formatDate(f.fecha_tipo_cambio)}. Importes normalizados a EUR
+                para todos los cálculos.
               </p>
             )}
           </Panel>
