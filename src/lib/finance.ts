@@ -209,6 +209,35 @@ export function pagoEstadoTone(estado: string | null | undefined): StateTone {
   }
 }
 
+// --- Asientos contables (registro ERP) -----------------------------------------
+
+export const TIPO_ASIENTO_LABEL: Record<string, string> = {
+  compra: "Compra",
+  rectificativo: "Rectificativo (NC)",
+  pago: "Pago",
+};
+
+export const ESTADO_REGISTRO_LABEL: Record<string, string> = {
+  pendiente: "Pendiente",
+  registrado: "Registrado",
+  error: "Error",
+};
+
+export function estadoRegistroTone(
+  estado: string | null | undefined
+): StateTone {
+  switch (estado) {
+    case "registrado":
+      return "ok";
+    case "error":
+      return "exception";
+    case "pendiente":
+      return "pending";
+    default:
+      return "neutral";
+  }
+}
+
 // --- Divisas ------------------------------------------------------------------
 
 export const MONEDA_LABEL: Record<string, string> = {

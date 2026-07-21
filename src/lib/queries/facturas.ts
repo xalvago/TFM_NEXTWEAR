@@ -191,6 +191,26 @@ export interface PedidoRef {
   moneda: string | null;
 }
 
+export interface AsientoLineaDetalle {
+  linea_num: number;
+  cuenta: string;
+  cuenta_descripcion: string | null;
+  centro_coste_id: string | null;
+  debe_eur: number | null;
+  haber_eur: number | null;
+  concepto: string | null;
+}
+
+export interface AsientoDetalle {
+  asiento_id: string;
+  tipo_asiento: string | null;
+  fecha_asiento: string | null;
+  estado_registro: string | null;
+  id_erp_externo: string | null;
+  fecha_registro: string | null;
+  lineas: AsientoLineaDetalle[];
+}
+
 export interface FacturaDetalle {
   factura: {
     factura_id: string;
@@ -235,6 +255,7 @@ export interface FacturaDetalle {
   pedido: PedidoRef | null;
   albaranes: AlbaranRef[];
   casos: CasoExcepcionItem[];
+  asientos: AsientoDetalle[];
 }
 
 export async function getFacturaDetalle(
@@ -250,7 +271,7 @@ export async function getFacturaDetalle(
   if (facturaError) throw facturaError;
   if (!factura) return null;
 
-  const [lineasRes, pedidoRes, albaranesRes, casosRes] = await Promise.all([
+  const [lineasRes, pedidoRes, albaranesRes, casosRes, asientosRes] = await Promise.all([
     supabase
       .from("facturas_lineas")
       .select(
@@ -277,11 +298,51 @@ export async function getFacturaDetalle(
         "caso_id, tipo_excepcion, descripcion, factura_id, albaran_id, pedido_id, estado_resolucion"
       )
       .eq("factura_id", facturaId),
+    supabase
+      .from("asientos_contables")
+      .select(
+        "asiento_id, tipo_asiento, fecha_asiento, estado_registro, id_erp_externo, fecha_registro, asientos_lineas(linea_num, cuenta, centro_coste_id, debe_eur, haber_eur, concepto, cuentas_contables(descripcion))"
+      )
+      .eq("factura_id", facturaId)
+      .order("asiento_id"),
   ]);
 
-  for (const res of [lineasRes, pedidoRes, albaranesRes, casosRes]) {
+  for (const res of [lineasRes, pedidoRes, albaranesRes, casosRes, asientosRes]) {
     if (res.error) throw res.error;
   }
+
+  type AsientoLineaRow = {
+    linea_num: number;
+    cuenta: string;
+    centro_coste_id: string | null;
+    debe_eur: number | null;
+    haber_eur: number | null;
+    concepto: string | null;
+    cuentas_contables: { descripcion: string | null } | null;
+  };
+
+  const asientos: AsientoDetalle[] = (asientosRes.data ?? []).map((a) => {
+    const asientoLineas = (a.asientos_lineas ?? []) as unknown as AsientoLineaRow[];
+    return {
+      asiento_id: a.asiento_id,
+      tipo_asiento: a.tipo_asiento,
+      fecha_asiento: a.fecha_asiento,
+      estado_registro: a.estado_registro,
+      id_erp_externo: a.id_erp_externo,
+      fecha_registro: a.fecha_registro,
+      lineas: asientoLineas
+        .sort((x, y) => x.linea_num - y.linea_num)
+        .map((l) => ({
+          linea_num: l.linea_num,
+          cuenta: l.cuenta,
+          cuenta_descripcion: l.cuentas_contables?.descripcion ?? null,
+          centro_coste_id: l.centro_coste_id,
+          debe_eur: l.debe_eur,
+          haber_eur: l.haber_eur,
+          concepto: l.concepto,
+        })),
+    };
+  });
 
   const casos: CasoExcepcionItem[] = (casosRes.data ?? []).map((c) => ({
     caso_id: c.caso_id,
@@ -341,5 +402,6 @@ export async function getFacturaDetalle(
       .map((r) => r.albaranes as unknown as AlbaranRef | null)
       .filter((a): a is AlbaranRef => a !== null),
     casos,
+    asientos,
   };
 }

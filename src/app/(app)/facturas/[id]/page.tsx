@@ -11,6 +11,9 @@ import {
   TIPO_EXCEPCION_LABEL,
   ESTADO_RESOLUCION_LABEL,
   estadoResolucionTone,
+  TIPO_ASIENTO_LABEL,
+  ESTADO_REGISTRO_LABEL,
+  estadoRegistroTone,
 } from "@/lib/finance";
 import { StateBadge } from "@/components/state-badge";
 import { Panel } from "@/components/panel";
@@ -36,7 +39,7 @@ export default async function FacturaDetallePage({
   const detalle = await getFacturaDetalle(id);
   if (!detalle) notFound();
 
-  const { factura: f, lineas, pedido, albaranes, casos } = detalle;
+  const { factura: f, lineas, pedido, albaranes, casos, asientos } = detalle;
   const esExtranjera = f.moneda_original && f.moneda_original !== "EUR";
   const lineasFlag = lineas.filter((l) => l.flag_revision).length;
 
@@ -295,6 +298,82 @@ export default async function FacturaDetallePage({
                 Tipo de cambio {f.tipo_cambio_aplicado ?? "—"} ·{" "}
                 {formatDate(f.fecha_tipo_cambio)}. Importes normalizados a EUR
                 para todos los cálculos.
+              </p>
+            )}
+          </Panel>
+
+          <Panel
+            eyebrow="ERP"
+            title="Registro contable"
+            description={
+              asientos.length > 0
+                ? `${formatInt(asientos.length)} asiento(s) registrado(s).`
+                : "Aún no contabilizada."
+            }
+          >
+            {asientos.length > 0 ? (
+              <ul className="flex flex-col gap-4">
+                {asientos.map((a) => (
+                  <li
+                    key={a.asiento_id}
+                    className="rounded-xl border border-border/60 p-3"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <StateBadge tone="neutral" dot={false}>
+                          {TIPO_ASIENTO_LABEL[a.tipo_asiento ?? ""] ??
+                            a.tipo_asiento}
+                        </StateBadge>
+                        <StateBadge
+                          tone={estadoRegistroTone(a.estado_registro)}
+                          dot={false}
+                        >
+                          {ESTADO_REGISTRO_LABEL[a.estado_registro ?? ""] ??
+                            a.estado_registro ??
+                            "—"}
+                        </StateBadge>
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {formatDate(a.fecha_asiento)}
+                      </span>
+                    </div>
+                    {a.id_erp_externo && (
+                      <p className="mt-1 font-numeric text-xs text-muted-foreground">
+                        ID ERP {a.id_erp_externo}
+                        {a.fecha_registro
+                          ? ` · registrado ${formatDate(a.fecha_registro)}`
+                          : ""}
+                      </p>
+                    )}
+                    <table className="mt-2 w-full text-xs">
+                      <tbody className="font-numeric">
+                        {a.lineas.map((l) => (
+                          <tr
+                            key={l.linea_num}
+                            className="border-t border-border/40"
+                          >
+                            <td className="py-1 text-left font-sans text-muted-foreground">
+                              <span className="font-numeric">{l.cuenta}</span>{" "}
+                              {l.cuenta_descripcion}
+                            </td>
+                            <td className="py-1 text-right">
+                              {l.debe_eur ? formatEUR(l.debe_eur) : ""}
+                            </td>
+                            <td className="py-1 text-right">
+                              {l.haber_eur ? formatEUR(l.haber_eur) : ""}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                {f.estado === "en_excepcion"
+                  ? "Bloqueada para el ERP hasta resolver la excepción."
+                  : "El agente contabilizador aún no ha generado el asiento."}
               </p>
             )}
           </Panel>
