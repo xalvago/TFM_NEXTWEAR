@@ -345,27 +345,36 @@ export default async function FacturaDetallePage({
                           : ""}
                       </p>
                     )}
-                    <table className="mt-2 w-full text-xs">
-                      <tbody className="font-numeric">
-                        {a.lineas.map((l) => (
-                          <tr
-                            key={l.linea_num}
-                            className="border-t border-border/40"
+                    <div className="mt-2 flex flex-col text-xs">
+                      <div className="grid grid-cols-[2.5rem_1fr_4.5rem_4.5rem] gap-x-2 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground/70">
+                        <span>Cta.</span>
+                        <span>Concepto</span>
+                        <span className="text-right">Debe</span>
+                        <span className="text-right">Haber</span>
+                      </div>
+                      {a.lineas.map((l) => (
+                        <div
+                          key={l.linea_num}
+                          className="grid grid-cols-[2.5rem_1fr_4.5rem_4.5rem] items-baseline gap-x-2 border-t border-border/40 py-1"
+                        >
+                          <span className="font-numeric text-muted-foreground">
+                            {l.cuenta}
+                          </span>
+                          <span
+                            className="truncate text-muted-foreground"
+                            title={l.cuenta_descripcion ?? undefined}
                           >
-                            <td className="py-1 text-left font-sans text-muted-foreground">
-                              <span className="font-numeric">{l.cuenta}</span>{" "}
-                              {l.cuenta_descripcion}
-                            </td>
-                            <td className="py-1 text-right">
-                              {l.debe_eur ? formatEUR(l.debe_eur) : ""}
-                            </td>
-                            <td className="py-1 text-right">
-                              {l.haber_eur ? formatEUR(l.haber_eur) : ""}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                            {l.cuenta_descripcion}
+                          </span>
+                          <span className="text-right font-numeric">
+                            {l.debe_eur ? formatEUR(l.debe_eur) : ""}
+                          </span>
+                          <span className="text-right font-numeric">
+                            {l.haber_eur ? formatEUR(l.haber_eur) : ""}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </li>
                 ))}
               </ul>
