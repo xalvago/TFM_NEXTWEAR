@@ -8,6 +8,7 @@ import {
   TIPO_EXCEPCION_LABEL,
   ESTADO_RESOLUCION_LABEL,
   estadoResolucionTone,
+  TIPOS_EXCEPCION_AUTOMATICOS,
 } from "@/lib/finance";
 import type { CasoExcepcionItem } from "@/lib/queries/facturas";
 import { cn } from "@/lib/utils";
@@ -32,7 +33,13 @@ export function ExcepcionesPanel({
   totalAutomatico: number;
 }) {
   const total = totalIntervencion + totalAutomatico;
-  const tipos = Object.keys(TIPO_EXCEPCION_LABEL).filter((t) => counts[t] > 0);
+  const tipos = Object.keys(TIPO_EXCEPCION_LABEL)
+    .filter((t) => counts[t] > 0)
+    .sort((a, b) => {
+      const aAuto = TIPOS_EXCEPCION_AUTOMATICOS.has(a) ? 1 : 0;
+      const bAuto = TIPOS_EXCEPCION_AUTOMATICOS.has(b) ? 1 : 0;
+      return aAuto - bAuto;
+    });
   const [q, setQ] = useState("");
 
   const visibles = useMemo(() => {
@@ -85,7 +92,7 @@ export function ExcepcionesPanel({
           </div>
         </div>
 
-        {/* Chips por tipo */}
+        {/* Chips por tipo: primero los que requieren revisión, luego los automáticos */}
         <div className="mt-3 flex flex-wrap gap-1.5">
           <Chip href="/facturas" active={!activeTipo}>
             Todos · {total}
@@ -95,6 +102,7 @@ export function ExcepcionesPanel({
               key={t}
               href={`/facturas?exc=${t}`}
               active={activeTipo === t}
+              muted={TIPOS_EXCEPCION_AUTOMATICOS.has(t)}
             >
               {TIPO_EXCEPCION_LABEL[t]} · {counts[t]}
             </Chip>
@@ -209,10 +217,12 @@ function TargetLink({ caso }: { caso: CasoExcepcionItem }) {
 function Chip({
   href,
   active,
+  muted,
   children,
 }: {
   href: string;
   active: boolean;
+  muted?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -222,7 +232,9 @@ function Chip({
       className={cn(
         "rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors",
         active
-          ? "border-[color:var(--exception)]/40 bg-[color:var(--exception)]/12 text-[color:var(--exception)]"
+          ? muted
+            ? "border-foreground/25 bg-foreground/10 text-foreground/70"
+            : "border-[color:var(--exception)]/40 bg-[color:var(--exception)]/12 text-[color:var(--exception)]"
           : "border-border bg-background text-muted-foreground hover:text-foreground hover:border-foreground/30"
       )}
     >
