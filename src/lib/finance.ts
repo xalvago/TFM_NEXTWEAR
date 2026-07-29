@@ -157,6 +157,18 @@ export const TIPO_EXCEPCION_LABEL: Record<string, string> = {
   iban_no_coincide: "IBAN no coincide",
 };
 
+/**
+ * Tipos que el sistema ya sabe tratar sin intervención (nota de crédito cruzada
+ * automáticamente, entrega parcial/incompleta gestionada por reposición). El
+ * resto (duplicado, importe_distinto, sin_pedido, salto_divisa, iban_no_coincide)
+ * requiere revisión humana. Reflejado en BD por `casos_excepcion.requiere_intervencion_humana`.
+ */
+export const TIPOS_EXCEPCION_AUTOMATICOS = new Set([
+  "nota_credito",
+  "entrega_parcial",
+  "entrega_incompleta",
+]);
+
 export const ESTADO_RESOLUCION_LABEL: Record<string, string> = {
   abierto: "Abierto",
   en_revision: "En revisión",

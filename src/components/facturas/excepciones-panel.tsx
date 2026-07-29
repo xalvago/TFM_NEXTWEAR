@@ -22,13 +22,16 @@ export function ExcepcionesPanel({
   casos,
   counts,
   activeTipo,
-  total,
+  totalIntervencion,
+  totalAutomatico,
 }: {
   casos: CasoExcepcionItem[];
   counts: Record<string, number>;
   activeTipo?: string;
-  total: number;
+  totalIntervencion: number;
+  totalAutomatico: number;
 }) {
+  const total = totalIntervencion + totalAutomatico;
   const tipos = Object.keys(TIPO_EXCEPCION_LABEL).filter((t) => counts[t] > 0);
   const [q, setQ] = useState("");
 
@@ -72,9 +75,14 @@ export function ExcepcionesPanel({
               Casos de excepción
             </h2>
           </div>
-          <span className="font-numeric text-2xl leading-none text-[color:var(--exception)]">
-            {total}
-          </span>
+          <div className="flex flex-col items-end gap-0.5">
+            <span className="font-numeric text-2xl leading-none text-[color:var(--exception)]">
+              {totalIntervencion}
+            </span>
+            <span className="text-[11px] text-muted-foreground">
+              +{totalAutomatico} gestionados solos
+            </span>
+          </div>
         </div>
 
         {/* Chips por tipo */}
@@ -129,18 +137,27 @@ export function ExcepcionesPanel({
           >
             <div className="flex items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-1.5">
-                <StateBadge tone="exception" dot={false}>
+                <StateBadge
+                  tone={c.requiere_intervencion_humana ? "exception" : "neutral"}
+                  dot={false}
+                >
                   {TIPO_EXCEPCION_LABEL[c.tipo_excepcion ?? ""] ??
                     c.tipo_excepcion}
                 </StateBadge>
-                <StateBadge
-                  tone={estadoResolucionTone(c.estado_resolucion)}
-                  dot={false}
-                >
-                  {ESTADO_RESOLUCION_LABEL[c.estado_resolucion ?? ""] ??
-                    c.estado_resolucion ??
-                    "—"}
-                </StateBadge>
+                {c.requiere_intervencion_humana ? (
+                  <StateBadge
+                    tone={estadoResolucionTone(c.estado_resolucion)}
+                    dot={false}
+                  >
+                    {ESTADO_RESOLUCION_LABEL[c.estado_resolucion ?? ""] ??
+                      c.estado_resolucion ??
+                      "—"}
+                  </StateBadge>
+                ) : (
+                  <StateBadge tone="ok" dot={false}>
+                    Automático
+                  </StateBadge>
+                )}
               </div>
               <TargetLink caso={c} />
             </div>

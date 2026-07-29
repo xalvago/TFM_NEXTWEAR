@@ -265,6 +265,7 @@ export type Database = {
           linea_id: string | null
           notas_resolucion: string | null
           pedido_id: string | null
+          requiere_intervencion_humana: boolean
           resuelto_por: string | null
           tipo_excepcion: string | null
         }
@@ -278,6 +279,7 @@ export type Database = {
           linea_id?: string | null
           notas_resolucion?: string | null
           pedido_id?: string | null
+          requiere_intervencion_humana?: boolean
           resuelto_por?: string | null
           tipo_excepcion?: string | null
         }
@@ -291,6 +293,7 @@ export type Database = {
           linea_id?: string | null
           notas_resolucion?: string | null
           pedido_id?: string | null
+          requiere_intervencion_humana?: boolean
           resuelto_por?: string | null
           tipo_excepcion?: string | null
         }

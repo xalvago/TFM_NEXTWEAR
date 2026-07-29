@@ -6,7 +6,7 @@ import {
   type FacturasFiltros,
 } from "@/lib/queries/facturas";
 import { getPagos } from "@/lib/queries/pagos";
-import { formatInt } from "@/lib/finance";
+import { formatInt, TIPOS_EXCEPCION_AUTOMATICOS } from "@/lib/finance";
 import { FacturasFilters } from "@/components/facturas/filters";
 import { FacturasTable } from "@/components/facturas/facturas-table";
 import { ExcepcionesPanel } from "@/components/facturas/excepciones-panel";
@@ -48,6 +48,11 @@ export default async function FacturasPage({
   ]);
 
   const totalCasos = Object.values(counts).reduce((a, b) => a + b, 0);
+  const totalIntervencion = Object.entries(counts).reduce(
+    (a, [tipo, n]) => a + (TIPOS_EXCEPCION_AUTOMATICOS.has(tipo) ? 0 : n),
+    0
+  );
+  const totalAutomatico = totalCasos - totalIntervencion;
 
   return (
     <div className="flex flex-col gap-6">
@@ -78,7 +83,8 @@ export default async function FacturasPage({
               casos={casos}
               counts={counts}
               activeTipo={sp.exc}
-              total={totalCasos}
+              totalIntervencion={totalIntervencion}
+              totalAutomatico={totalAutomatico}
             />
           </div>
         </div>
