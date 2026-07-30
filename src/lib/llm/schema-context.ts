@@ -7,7 +7,7 @@ export function buildSchemaContext(): string {
   return `
 Esquema Postgres (schema public), solo lectura. Cadena: proveedor → pedido → albarán → factura.
 
-- maestro_proveedores(proveedor_id, razon_social, pais, moneda_facturacion, canal_recepcion, activo)
+- maestro_proveedores(proveedor_id, razon_social, pais, direccion_sede, moneda_facturacion, canal_recepcion, activo)
 - productos(sku, descripcion, categoria, coleccion, talla, color, coste_unitario)
 - centros_coste(centro_coste_id, nombre, tipo[tienda_fisica|ecommerce|almacen_central], pais)
 - tipos_cambio(fecha, moneda_origen[USD|CNY], moneda_destino, tasa_cambio)

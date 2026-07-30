@@ -237,6 +237,7 @@ export interface FacturaDetalle {
     proveedor_id: string | null;
     razon_social_proveedor: string | null;
     nif_proveedor: string | null;
+    direccion_proveedor: string | null;
     nif_cliente: string | null;
     direccion_cliente: string | null;
     razon_social_cliente: string | null;
@@ -384,6 +385,7 @@ export async function getFacturaDetalle(
       proveedor_id: factura.proveedor_id,
       razon_social_proveedor: factura.razon_social_proveedor,
       nif_proveedor: factura.nif_proveedor,
+      direccion_proveedor: factura.direccion_proveedor,
       nif_cliente: factura.nif_cliente,
       direccion_cliente: factura.direccion_cliente,
       razon_social_cliente: factura.razon_social_cliente,

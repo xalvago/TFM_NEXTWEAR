@@ -40,6 +40,7 @@ export function ProveedoresTable({ rows }: { rows: ProveedorRow[] }) {
         p.razon_social,
         p.nif,
         p.pais,
+        p.direccion_sede,
         p.moneda_facturacion,
         p.canal_recepcion ? (CANAL_LABEL[p.canal_recepcion] ?? p.canal_recepcion) : null,
         p.portal_url,
@@ -103,6 +104,7 @@ export function ProveedoresTable({ rows }: { rows: ProveedorRow[] }) {
               <TableRow className="hover:bg-transparent">
                 <TableHead className="min-w-[200px] pl-4">Proveedor</TableHead>
                 <TableHead className="w-[90px]">País</TableHead>
+                <TableHead className="min-w-[220px]">Sede</TableHead>
                 <TableHead className="w-[90px]">Moneda</TableHead>
                 <TableHead className="w-[120px]">Canal</TableHead>
                 <TableHead className="w-[130px]">Forma de pago</TableHead>
@@ -137,6 +139,9 @@ export function ProveedoresTable({ rows }: { rows: ProveedorRow[] }) {
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {p.pais ?? "—"}
+                  </TableCell>
+                  <TableCell className="whitespace-normal text-xs text-muted-foreground">
+                    {p.direccion_sede ?? "—"}
                   </TableCell>
                   <TableCell>
                     <span className="font-numeric text-xs text-muted-foreground">

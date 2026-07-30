@@ -123,6 +123,7 @@ export function FacturaDocumento({
                 : f.nif_proveedor
                   ? `NIF ${f.nif_proveedor}`
                   : null,
+              f.direccion_proveedor,
               f.proveedor_id ? `Ref. ${f.proveedor_id}` : null,
             ]}
           />

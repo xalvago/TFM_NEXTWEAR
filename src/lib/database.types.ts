@@ -1,5 +1,4 @@
 // Tipos generados desde Supabase (proyecto rnmidwhumdrpxulfsbjo, schema public).
-// Regenerar tras cambios de esquema: `supabase gen types typescript` o vía MCP Supabase.
 export type Json =
   | string
   | number
@@ -785,6 +784,7 @@ export type Database = {
           activo: boolean | null
           canal_recepcion: string | null
           categorias_habituales: string | null
+          direccion_sede: string | null
           email_recepcion_facturas: string | null
           forma_pago: string | null
           iban: string | null
@@ -800,6 +800,7 @@ export type Database = {
           activo?: boolean | null
           canal_recepcion?: string | null
           categorias_habituales?: string | null
+          direccion_sede?: string | null
           email_recepcion_facturas?: string | null
           forma_pago?: string | null
           iban?: string | null
@@ -815,6 +816,7 @@ export type Database = {
           activo?: boolean | null
           canal_recepcion?: string | null
           categorias_habituales?: string | null
+          direccion_sede?: string | null
           email_recepcion_facturas?: string | null
           forma_pago?: string | null
           iban?: string | null

@@ -14,6 +14,7 @@ export interface ProveedorRow {
   razon_social: string;
   nif: string | null;
   pais: string | null;
+  direccion_sede: string | null;
   moneda_facturacion: string;
   canal_recepcion: string | null;
   portal_url: string | null;
@@ -35,7 +36,7 @@ export async function getProveedores(): Promise<ProveedorRow[]> {
     supabase
       .from("maestro_proveedores")
       .select(
-        "proveedor_id, razon_social, nif, pais, moneda_facturacion, canal_recepcion, portal_url, email_recepcion_facturas, categorias_habituales, forma_pago, iban, iban_fecha_actualizacion, activo"
+        "proveedor_id, razon_social, nif, pais, direccion_sede, moneda_facturacion, canal_recepcion, portal_url, email_recepcion_facturas, categorias_habituales, forma_pago, iban, iban_fecha_actualizacion, activo"
       )
       .order("razon_social"),
     supabase
@@ -70,6 +71,7 @@ export async function getProveedores(): Promise<ProveedorRow[]> {
       razon_social: p.razon_social,
       nif: p.nif,
       pais: p.pais,
+      direccion_sede: p.direccion_sede,
       moneda_facturacion: p.moneda_facturacion,
       canal_recepcion: p.canal_recepcion,
       portal_url: p.portal_url,
