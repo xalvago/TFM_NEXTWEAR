@@ -6,9 +6,6 @@ declare global {
   interface Window {
     botpress?: {
       init: (config: Record<string, unknown>) => void;
-      open: () => void;
-      close: () => void;
-      on: (event: string, cb: (...args: unknown[]) => void) => void;
     };
   }
 }
@@ -16,7 +13,6 @@ declare global {
 const BOTPRESS_CONFIG = {
   botId: "7eca4b6e-dcb2-488b-851d-b774948a8e84",
   clientId: "eb7bdc71-8792-4649-9004-cce4561bf003",
-  hideWidget: true,
   configuration: {
     version: "v2",
     composerPlaceholder: "Escribe tu consulta aquí...",
@@ -28,6 +24,7 @@ const BOTPRESS_CONFIG = {
     termsOfService: {},
     privacyPolicy: {},
     color: "#7c3aed",
+    variant: "solid",
     themeMode: "light",
     fontFamily: "Roboto",
     feedbackEnabled: true,
@@ -95,28 +92,15 @@ const BOTPRESS_CONFIG = {
   },
 };
 
-/** Botón flotante que abre el copiloto Botpress (conectado a Supabase), disponible en todas las pestañas. */
+/** Widget de copiloto Botpress (conectado a Supabase), disponible en todas las pestañas vía su propio botón flotante. */
 export function CopilotLauncher() {
   return (
-    <>
-      <Script
-        src="https://cdn.botpress.cloud/webchat/v5.0/inject.js"
-        strategy="afterInteractive"
-        onReady={() => {
-          window.botpress?.init(BOTPRESS_CONFIG);
-        }}
-      />
-      <button
-        type="button"
-        onClick={() => window.botpress?.open()}
-        aria-label="Abrir copiloto NextWear"
-        className="gradient-brand group fixed bottom-6 right-6 z-30 flex items-center gap-2 rounded-full px-4 py-3 text-sm font-medium text-white shadow-[0_8px_24px_-6px_rgba(124,58,237,0.55)] transition-transform duration-150 [transition-timing-function:var(--ease-out)] hover:-translate-y-0.5 hover:shadow-[0_12px_32px_-6px_rgba(124,58,237,0.6)] active:scale-[0.96]"
-      >
-        <span aria-hidden className="icon-anim font-display text-base leading-none">
-          ✦
-        </span>
-        Copiloto
-      </button>
-    </>
+    <Script
+      src="https://cdn.botpress.cloud/webchat/v5.0/inject.js"
+      strategy="afterInteractive"
+      onReady={() => {
+        window.botpress?.init(BOTPRESS_CONFIG);
+      }}
+    />
   );
 }
