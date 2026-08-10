@@ -104,9 +104,11 @@ export interface CasoExcepcionItem {
   numero_factura: string | null;
   estado_factura: string | null;
   target: "factura" | "albaran" | "pedido" | "desconocido";
-  // Factura que referencia el albarán del caso (derivado, no viene de
-  // casos_excepcion.factura_id: la tabla es polimórfica y solo permite
-  // una referencia rellena por fila — ver chk_una_referencia).
+  // Factura que quedó afectada por el albarán del caso (columna
+  // casos_excepcion.factura_relacionada_id, backfill vía migración 20).
+  // Aparte de factura_id/albaran_id/pedido_id porque esa terna es
+  // polimórfica y solo admite una referencia rellena por fila
+  // (constraint chk_una_referencia).
   factura_id_vinculada: string | null;
   numero_factura_vinculada: string | null;
 }
@@ -118,7 +120,7 @@ export async function getCasosExcepcion(
   let query = supabase
     .from("casos_excepcion")
     .select(
-      "caso_id, tipo_excepcion, descripcion, factura_id, albaran_id, pedido_id, estado_resolucion, requiere_intervencion_humana, facturas(numero_factura, estado)"
+      "caso_id, tipo_excepcion, descripcion, factura_id, albaran_id, pedido_id, estado_resolucion, requiere_intervencion_humana, factura_relacionada_id, facturas!casos_excepcion_factura_id_fkey(numero_factura, estado), facturas_relacionadas:facturas!casos_excepcion_factura_relacionada_id_fkey(numero_factura)"
     )
     .order("caso_id");
   if (tipo) query = query.eq("tipo_excepcion", tipo);
@@ -126,37 +128,13 @@ export async function getCasosExcepcion(
   const { data, error } = await query;
   if (error) throw error;
 
-  const albaranIds = (data ?? [])
-    .filter((c) => !c.factura_id && c.albaran_id)
-    .map((c) => c.albaran_id as string);
-
-  const albaranToFactura = new Map<
-    string,
-    { factura_id: string; numero_factura: string | null }
-  >();
-  if (albaranIds.length > 0) {
-    const { data: facturasRef, error: refError } = await supabase
-      .from("facturas")
-      .select("factura_id, numero_factura, albaran_ids_ref")
-      .not("albaran_ids_ref", "is", null);
-    if (refError) throw refError;
-    for (const f of facturasRef ?? []) {
-      const refs = (f.albaran_ids_ref ?? "").split(/[;,]/).map((r) => r.trim());
-      for (const albId of albaranIds) {
-        if (refs.includes(albId)) {
-          albaranToFactura.set(albId, {
-            factura_id: f.factura_id,
-            numero_factura: f.numero_factura,
-          });
-        }
-      }
-    }
-  }
-
   return (data ?? []).map((c) => {
     const fac = c.facturas as unknown as {
       numero_factura: string | null;
       estado: string | null;
+    } | null;
+    const facVinculada = c.facturas_relacionadas as unknown as {
+      numero_factura: string | null;
     } | null;
     const target: CasoExcepcionItem["target"] = c.factura_id
       ? "factura"
@@ -165,9 +143,6 @@ export async function getCasosExcepcion(
         : c.pedido_id
           ? "pedido"
           : "desconocido";
-    const vinculada = c.albaran_id
-      ? albaranToFactura.get(c.albaran_id)
-      : undefined;
     return {
       caso_id: c.caso_id,
       tipo_excepcion: c.tipo_excepcion,
@@ -180,8 +155,8 @@ export async function getCasosExcepcion(
       numero_factura: fac?.numero_factura ?? null,
       estado_factura: fac?.estado ?? null,
       target,
-      factura_id_vinculada: vinculada?.factura_id ?? null,
-      numero_factura_vinculada: vinculada?.numero_factura ?? null,
+      factura_id_vinculada: c.factura_relacionada_id,
+      numero_factura_vinculada: facVinculada?.numero_factura ?? null,
     };
   });
 }

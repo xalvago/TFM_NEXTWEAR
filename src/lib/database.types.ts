@@ -260,6 +260,7 @@ export type Database = {
           descripcion: string | null
           estado_resolucion: string | null
           factura_id: string | null
+          factura_relacionada_id: string | null
           fecha_resolucion: string | null
           linea_id: string | null
           notas_resolucion: string | null
@@ -274,6 +275,7 @@ export type Database = {
           descripcion?: string | null
           estado_resolucion?: string | null
           factura_id?: string | null
+          factura_relacionada_id?: string | null
           fecha_resolucion?: string | null
           linea_id?: string | null
           notas_resolucion?: string | null
@@ -288,6 +290,7 @@ export type Database = {
           descripcion?: string | null
           estado_resolucion?: string | null
           factura_id?: string | null
+          factura_relacionada_id?: string | null
           fecha_resolucion?: string | null
           linea_id?: string | null
           notas_resolucion?: string | null
@@ -307,6 +310,13 @@ export type Database = {
           {
             foreignKeyName: "casos_excepcion_factura_id_fkey"
             columns: ["factura_id"]
+            isOneToOne: false
+            referencedRelation: "facturas"
+            referencedColumns: ["factura_id"]
+          },
+          {
+            foreignKeyName: "casos_excepcion_factura_relacionada_id_fkey"
+            columns: ["factura_relacionada_id"]
             isOneToOne: false
             referencedRelation: "facturas"
             referencedColumns: ["factura_id"]
