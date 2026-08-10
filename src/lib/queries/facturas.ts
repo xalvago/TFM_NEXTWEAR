@@ -104,6 +104,11 @@ export interface CasoExcepcionItem {
   numero_factura: string | null;
   estado_factura: string | null;
   target: "factura" | "albaran" | "pedido" | "desconocido";
+  // Factura que referencia el albarán del caso (derivado, no viene de
+  // casos_excepcion.factura_id: la tabla es polimórfica y solo permite
+  // una referencia rellena por fila — ver chk_una_referencia).
+  factura_id_vinculada: string | null;
+  numero_factura_vinculada: string | null;
 }
 
 export async function getCasosExcepcion(
@@ -121,6 +126,33 @@ export async function getCasosExcepcion(
   const { data, error } = await query;
   if (error) throw error;
 
+  const albaranIds = (data ?? [])
+    .filter((c) => !c.factura_id && c.albaran_id)
+    .map((c) => c.albaran_id as string);
+
+  const albaranToFactura = new Map<
+    string,
+    { factura_id: string; numero_factura: string | null }
+  >();
+  if (albaranIds.length > 0) {
+    const { data: facturasRef, error: refError } = await supabase
+      .from("facturas")
+      .select("factura_id, numero_factura, albaran_ids_ref")
+      .not("albaran_ids_ref", "is", null);
+    if (refError) throw refError;
+    for (const f of facturasRef ?? []) {
+      const refs = (f.albaran_ids_ref ?? "").split(/[;,]/).map((r) => r.trim());
+      for (const albId of albaranIds) {
+        if (refs.includes(albId)) {
+          albaranToFactura.set(albId, {
+            factura_id: f.factura_id,
+            numero_factura: f.numero_factura,
+          });
+        }
+      }
+    }
+  }
+
   return (data ?? []).map((c) => {
     const fac = c.facturas as unknown as {
       numero_factura: string | null;
@@ -133,6 +165,9 @@ export async function getCasosExcepcion(
         : c.pedido_id
           ? "pedido"
           : "desconocido";
+    const vinculada = c.albaran_id
+      ? albaranToFactura.get(c.albaran_id)
+      : undefined;
     return {
       caso_id: c.caso_id,
       tipo_excepcion: c.tipo_excepcion,
@@ -145,6 +180,8 @@ export async function getCasosExcepcion(
       numero_factura: fac?.numero_factura ?? null,
       estado_factura: fac?.estado ?? null,
       target,
+      factura_id_vinculada: vinculada?.factura_id ?? null,
+      numero_factura_vinculada: vinculada?.numero_factura ?? null,
     };
   });
 }

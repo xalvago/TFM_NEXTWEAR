@@ -51,6 +51,8 @@ export function ExcepcionesPanel({
         c.factura_id,
         c.albaran_id,
         c.pedido_id,
+        c.numero_factura_vinculada,
+        c.factura_id_vinculada,
         c.descripcion,
         TIPO_EXCEPCION_LABEL[c.tipo_excepcion ?? ""],
         ESTADO_RESOLUCION_LABEL[c.estado_resolucion ?? ""],
@@ -207,6 +209,21 @@ function TargetLink({ caso }: { caso: CasoExcepcionItem }) {
       : caso.target === "pedido"
         ? "Pedido"
         : "Doc.";
+  if (caso.target === "albaran" && caso.factura_id_vinculada) {
+    return (
+      <span className="flex items-center gap-1.5 whitespace-nowrap">
+        <span className="font-numeric text-xs text-muted-foreground">
+          {label} {id}
+        </span>
+        <Link
+          href={`/facturas/${caso.factura_id_vinculada}`}
+          className="font-numeric text-xs text-primary hover:underline underline-offset-2"
+        >
+          {caso.numero_factura_vinculada ?? caso.factura_id_vinculada} →
+        </Link>
+      </span>
+    );
+  }
   return (
     <span className="font-numeric text-xs text-muted-foreground whitespace-nowrap">
       {label} {id}
