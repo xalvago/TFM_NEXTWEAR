@@ -1,0 +1,163 @@
+[
+{"factura_id":"FAC-00001","numero_factura":"F-2024-00002","fecha_expedicion":"2024-05-04","fecha_vencimiento":"2024-06-03","nif_proveedor":"B10000001","razon_social_proveedor":"Textil Norte S.L.","direccion_proveedor":"Gran Vía Don Diego López de Haro 45, 48001 Bilbao, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"2338.01","cuota_iva_original":"490.98","total_factura_original":"2828.99","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010001","pedido_id_ref":"PED-00001","albaran_ids_ref":"ALB-00001","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":26,"precio_unitario_original":"24.58","descuento_pct":"0.00","total_linea_original":"639.08"},
+{"sku":"CHA-NG-M","descripcion":"Chaqueta bomber negra","cantidad":29,"precio_unitario_original":"44.44","descuento_pct":"0.00","total_linea_original":"1288.76"},
+{"sku":"CAM-GR-L","descripcion":"Camiseta estampada gris","cantidad":27,"precio_unitario_original":"8.64","descuento_pct":"0.00","total_linea_original":"233.28"},
+{"sku":"PAN-BE-M","descripcion":"Pantalón chino beige","cantidad":7,"precio_unitario_original":"25.27","descuento_pct":"0.00","total_linea_original":"176.89"}
+]},
+{"factura_id":"FAC-00014","numero_factura":"F-2024-00015","fecha_expedicion":"2024-05-09","fecha_vencimiento":"2024-06-08","nif_proveedor":"B10000010","razon_social_proveedor":"Deportes Cantábrico S.L.","direccion_proveedor":"Calle Calvo Sotelo 34, 39002 Santander, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1720.01","cuota_iva_original":"361.20","total_factura_original":"2081.21","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010010","pedido_id_ref":"PED-00016","albaran_ids_ref":"ALB-00014","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":20,"precio_unitario_original":"25.27","descuento_pct":"0.00","total_linea_original":"505.40"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":13,"precio_unitario_original":"26.97","descuento_pct":"0.00","total_linea_original":"350.61"},
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":24,"precio_unitario_original":"36.00","descuento_pct":"0.00","total_linea_original":"864.00"}
+]},
+{"factura_id":"FAC-00030","numero_factura":"F-2024-00031","fecha_expedicion":"2024-05-02","fecha_vencimiento":"2024-06-01","nif_proveedor":"B10000001","razon_social_proveedor":"Textil Norte S.L.","direccion_proveedor":"Gran Vía Don Diego López de Haro 45, 48001 Bilbao, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"293.44","cuota_iva_original":"61.62","total_factura_original":"355.06","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010001","pedido_id_ref":"PED-00035","albaran_ids_ref":"ALB-00030","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":14,"precio_unitario_original":"20.96","descuento_pct":"0.00","total_linea_original":"293.44"}
+]},
+{"factura_id":"FAC-00049","numero_factura":"F-2024-00050","fecha_expedicion":"2024-06-06","fecha_vencimiento":"2024-07-06","nif_proveedor":"B10000010","razon_social_proveedor":"Deportes Cantábrico S.L.","direccion_proveedor":"Calle Calvo Sotelo 34, 39002 Santander, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"3470.82","cuota_iva_original":"728.87","total_factura_original":"4199.69","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010010","pedido_id_ref":"PED-00057","albaran_ids_ref":"ALB-00053","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":29,"precio_unitario_original":"23.58","descuento_pct":"0.00","total_linea_original":"683.82"},
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":46,"precio_unitario_original":"28.27","descuento_pct":"0.00","total_linea_original":"1300.42"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":36,"precio_unitario_original":"28.20","descuento_pct":"0.00","total_linea_original":"1015.20"},
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":13,"precio_unitario_original":"36.26","descuento_pct":"0.00","total_linea_original":"471.38"}
+]},
+{"factura_id":"FAC-00070","numero_factura":"F-2024-00071","fecha_expedicion":"2024-05-21","fecha_vencimiento":"2024-06-20","nif_proveedor":"B10000003","razon_social_proveedor":"Calzados Ibérica S.L.","direccion_proveedor":"Avenida de Elche 112, 03202 Elche, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"2219.19","cuota_iva_original":"466.03","total_factura_original":"2685.22","forma_pago":"transferencia 45 dias","iban_proveedor":"ES1000010001010003","pedido_id_ref":"PED-00081","albaran_ids_ref":"ALB-00078","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":32,"precio_unitario_original":"20.74","descuento_pct":"0.00","total_linea_original":"663.68"},
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":29,"precio_unitario_original":"36.44","descuento_pct":"0.00","total_linea_original":"1056.76"},
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":19,"precio_unitario_original":"26.25","descuento_pct":"0.00","total_linea_original":"498.75"}
+]},
+{"factura_id":"FAC-00078","numero_factura":"F-2024-00079","fecha_expedicion":"2024-07-04","fecha_vencimiento":"2024-08-03","nif_proveedor":"B10000003","razon_social_proveedor":"Calzados Ibérica S.L.","direccion_proveedor":"Avenida de Elche 112, 03202 Elche, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"2403.49","cuota_iva_original":"504.73","total_factura_original":"2908.22","forma_pago":"transferencia 45 dias","iban_proveedor":"ES1000010001010003","pedido_id_ref":"PED-00090","albaran_ids_ref":"ALB-00087;ALB-00088","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":16,"precio_unitario_original":"28.14","descuento_pct":"0.00","total_linea_original":"450.24"},
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":26,"precio_unitario_original":"23.44","descuento_pct":"0.00","total_linea_original":"609.44"},
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":36,"precio_unitario_original":"24.96","descuento_pct":"0.00","total_linea_original":"898.56"},
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":13,"precio_unitario_original":"34.25","descuento_pct":"0.00","total_linea_original":"445.25"}
+]},
+{"factura_id":"FAC-00093","numero_factura":"F-2024-00094","fecha_expedicion":"2024-06-27","fecha_vencimiento":"2024-07-27","nif_proveedor":"B10000006","razon_social_proveedor":"Accesorios Urbanos S.L.","direccion_proveedor":"Calle Fuencarral 89, 28004 Madrid, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1774.75","cuota_iva_original":"372.70","total_factura_original":"2147.45","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010006","pedido_id_ref":"PED-00106","albaran_ids_ref":"ALB-00104","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CHA-VD-L","descripcion":"Chaqueta cortavientos verde","cantidad":28,"precio_unitario_original":"40.68","descuento_pct":"0.00","total_linea_original":"1139.04"},
+{"sku":"PAN-NG-L","descripcion":"Pantalón cargo negro","cantidad":12,"precio_unitario_original":"29.63","descuento_pct":"0.00","total_linea_original":"355.56"},
+{"sku":"PAN-NG-XL","descripcion":"Jogger negro","cantidad":13,"precio_unitario_original":"21.55","descuento_pct":"0.00","total_linea_original":"280.15"}
+]},
+{"factura_id":"FAC-00104","numero_factura":"F-2024-00105","fecha_expedicion":"2024-06-27","fecha_vencimiento":"2024-07-27","nif_proveedor":"B10000010","razon_social_proveedor":"Deportes Cantábrico S.L.","direccion_proveedor":"Calle Calvo Sotelo 34, 39002 Santander, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1948.30","cuota_iva_original":"409.14","total_factura_original":"2357.44","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010010","pedido_id_ref":"PED-00118","albaran_ids_ref":"ALB-00118","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":35,"precio_unitario_original":"20.72","descuento_pct":"0.00","total_linea_original":"725.20"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":45,"precio_unitario_original":"27.18","descuento_pct":"0.00","total_linea_original":"1223.10"}
+]},
+{"factura_id":"FAC-00114","numero_factura":"F-2024-00115","fecha_expedicion":"2024-07-01","fecha_vencimiento":"2024-07-31","nif_proveedor":"B10000010","razon_social_proveedor":"Deportes Cantábrico S.L.","direccion_proveedor":"Calle Calvo Sotelo 34, 39002 Santander, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"2085.92","cuota_iva_original":"438.04","total_factura_original":"2523.96","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010010","pedido_id_ref":"PED-00129","albaran_ids_ref":"ALB-00130","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":8,"precio_unitario_original":"26.95","descuento_pct":"0.00","total_linea_original":"215.60"},
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":34,"precio_unitario_original":"35.13","descuento_pct":"0.00","total_linea_original":"1194.42"},
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":30,"precio_unitario_original":"22.53","descuento_pct":"0.00","total_linea_original":"675.90"}
+]},
+{"factura_id":"FAC-00122","numero_factura":"F-2025-00123","fecha_expedicion":"2025-04-16","fecha_vencimiento":"2025-05-16","nif_proveedor":"B10000010","razon_social_proveedor":"Deportes Cantábrico S.L.","direccion_proveedor":"Calle Calvo Sotelo 34, 39002 Santander, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1145.43","cuota_iva_original":"240.54","total_factura_original":"1385.97","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010010","pedido_id_ref":"PED-00137","albaran_ids_ref":"ALB-00137","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":33,"precio_unitario_original":"34.71","descuento_pct":"0.00","total_linea_original":"1145.43"}
+]},
+{"factura_id":"FAC-00131","numero_factura":"F-2025-00130","fecha_expedicion":"2025-05-06","fecha_vencimiento":"2025-06-05","nif_proveedor":"B10000003","razon_social_proveedor":"Calzados Ibérica S.L.","direccion_proveedor":"Avenida de Elche 112, 03202 Elche, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"414.50","cuota_iva_original":"87.05","total_factura_original":"501.55","forma_pago":"transferencia 45 dias","iban_proveedor":"ES1000010001010003","pedido_id_ref":"PED-00145","albaran_ids_ref":"ALB-00144","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":7,"precio_unitario_original":"23.06","descuento_pct":"0.00","total_linea_original":"161.42"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":9,"precio_unitario_original":"28.12","descuento_pct":"0.00","total_linea_original":"253.08"}
+]},
+{"factura_id":"FAC-00143","numero_factura":"F-2025-00144","fecha_expedicion":"2025-04-26","fecha_vencimiento":"2025-05-26","nif_proveedor":"B10000003","razon_social_proveedor":"Calzados Ibérica S.L.","direccion_proveedor":"Avenida de Elche 112, 03202 Elche, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"3478.36","cuota_iva_original":"730.46","total_factura_original":"4208.82","forma_pago":"transferencia 45 dias","iban_proveedor":"ES1000010001010003","pedido_id_ref":"PED-00163","albaran_ids_ref":"ALB-00159","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":35,"precio_unitario_original":"24.56","descuento_pct":"0.00","total_linea_original":"859.60"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":49,"precio_unitario_original":"26.05","descuento_pct":"0.00","total_linea_original":"1276.45"},
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":9,"precio_unitario_original":"35.09","descuento_pct":"0.00","total_linea_original":"315.81"},
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":50,"precio_unitario_original":"20.53","descuento_pct":"0.00","total_linea_original":"1026.50"}
+]},
+{"factura_id":"FAC-00155","numero_factura":"F-2025-00156","fecha_expedicion":"2025-05-23","fecha_vencimiento":"2025-06-22","nif_proveedor":"B10000001","razon_social_proveedor":"Textil Norte S.L.","direccion_proveedor":"Gran Vía Don Diego López de Haro 45, 48001 Bilbao, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"2434.58","cuota_iva_original":"511.26","total_factura_original":"2945.84","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010001","pedido_id_ref":"PED-00176","albaran_ids_ref":"ALB-00173","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"SUD-AZ-M","descripcion":"Sudadera capucha azul","cantidad":34,"precio_unitario_original":"16.68","descuento_pct":"0.00","total_linea_original":"567.12"},
+{"sku":"CAM-NG-M","descripcion":"Camiseta básica negra","cantidad":32,"precio_unitario_original":"6.19","descuento_pct":"0.00","total_linea_original":"198.08"},
+{"sku":"PAN-NG-L","descripcion":"Pantalón cargo negro","cantidad":49,"precio_unitario_original":"29.30","descuento_pct":"0.00","total_linea_original":"1435.70"},
+{"sku":"ACC-GOR-AZ","descripcion":"Gorra bordada azul","cantidad":46,"precio_unitario_original":"5.08","descuento_pct":"0.00","total_linea_original":"233.68"}
+]},
+{"factura_id":"FAC-00169","numero_factura":"F-2025-00170","fecha_expedicion":"2025-05-25","fecha_vencimiento":"2025-06-24","nif_proveedor":"B10000006","razon_social_proveedor":"Accesorios Urbanos S.L.","direccion_proveedor":"Calle Fuencarral 89, 28004 Madrid, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"2745.36","cuota_iva_original":"576.53","total_factura_original":"3321.89","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010006","pedido_id_ref":"PED-00193","albaran_ids_ref":"ALB-00188","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"PAN-BE-M","descripcion":"Pantalón chino beige","cantidad":34,"precio_unitario_original":"23.46","descuento_pct":"0.00","total_linea_original":"797.64"},
+{"sku":"ACC-GOR-AZ","descripcion":"Gorra bordada azul","cantidad":12,"precio_unitario_original":"4.91","descuento_pct":"0.00","total_linea_original":"58.92"},
+{"sku":"CHA-VD-L","descripcion":"Chaqueta cortavientos verde","cantidad":48,"precio_unitario_original":"39.35","descuento_pct":"0.00","total_linea_original":"1888.80"}
+]},
+{"factura_id":"FAC-00178","numero_factura":"F-2025-00179","fecha_expedicion":"2025-06-01","fecha_vencimiento":"2025-07-01","nif_proveedor":"B10000003","razon_social_proveedor":"Calzados Ibérica S.L.","direccion_proveedor":"Avenida de Elche 112, 03202 Elche, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"3010.91","cuota_iva_original":"632.29","total_factura_original":"3643.20","forma_pago":"transferencia 45 dias","iban_proveedor":"ES1000010001010003","pedido_id_ref":"PED-00201","albaran_ids_ref":"ALB-00197;ALB-00198","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":41,"precio_unitario_original":"22.10","descuento_pct":"0.00","total_linea_original":"906.10"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":41,"precio_unitario_original":"28.13","descuento_pct":"0.00","total_linea_original":"1153.33"},
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":36,"precio_unitario_original":"26.43","descuento_pct":"0.00","total_linea_original":"951.48"}
+]},
+{"factura_id":"FAC-00190","numero_factura":"F-2025-00191","fecha_expedicion":"2025-07-03","fecha_vencimiento":"2025-08-02","nif_proveedor":"B10000002","razon_social_proveedor":"Moda Levante S.A.","direccion_proveedor":"Calle Colón 78, 46004 Valencia, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"2714.55","cuota_iva_original":"570.06","total_factura_original":"3284.61","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010002","pedido_id_ref":null,"albaran_ids_ref":null,"tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"PAN-NG-XL","descripcion":"Jogger negro","cantidad":29,"precio_unitario_original":"23.65","descuento_pct":"0.00","total_linea_original":"685.85"},
+{"sku":"PAN-AZ-S","descripcion":"Vaquero slim azul","cantidad":31,"precio_unitario_original":"32.24","descuento_pct":"0.00","total_linea_original":"999.44"},
+{"sku":"CAM-RO-M","descripcion":"Camiseta rayas roja","cantidad":48,"precio_unitario_original":"8.07","descuento_pct":"0.00","total_linea_original":"387.36"},
+{"sku":"SUD-NG-L","descripcion":"Sudadera capucha negra","cantidad":35,"precio_unitario_original":"18.34","descuento_pct":"0.00","total_linea_original":"641.90"}
+]},
+{"factura_id":"FAC-00201","numero_factura":"F-2025-00202","fecha_expedicion":"2025-06-27","fecha_vencimiento":"2025-07-27","nif_proveedor":"B10000006","razon_social_proveedor":"Accesorios Urbanos S.L.","direccion_proveedor":"Calle Fuencarral 89, 28004 Madrid, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1386.51","cuota_iva_original":"291.17","total_factura_original":"1677.68","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010006","pedido_id_ref":"PED-00223","albaran_ids_ref":"ALB-00225","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"PAN-BE-M","descripcion":"Pantalón chino beige","cantidad":20,"precio_unitario_original":"25.93","descuento_pct":"0.00","total_linea_original":"518.60"},
+{"sku":"CAM-GR-L","descripcion":"Camiseta estampada gris","cantidad":43,"precio_unitario_original":"8.37","descuento_pct":"0.00","total_linea_original":"359.91"},
+{"sku":"SUD-GR-S","descripcion":"Sudadera oversize gris","cantidad":25,"precio_unitario_original":"20.32","descuento_pct":"0.00","total_linea_original":"508.00"}
+]},
+{"factura_id":"FAC-00217","numero_factura":"F-2025-00218","fecha_expedicion":"2025-06-29","fecha_vencimiento":"2025-07-29","nif_proveedor":"B10000010","razon_social_proveedor":"Deportes Cantábrico S.L.","direccion_proveedor":"Calle Calvo Sotelo 34, 39002 Santander, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"3598.71","cuota_iva_original":"755.73","total_factura_original":"4354.44","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010010","pedido_id_ref":"PED-00240","albaran_ids_ref":"ALB-00242;ALB-00243","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":9,"precio_unitario_original":"21.04","descuento_pct":"0.00","total_linea_original":"189.36"},
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":25,"precio_unitario_original":"24.20","descuento_pct":"0.00","total_linea_original":"605.00"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":48,"precio_unitario_original":"26.35","descuento_pct":"0.00","total_linea_original":"1264.80"},
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":41,"precio_unitario_original":"37.55","descuento_pct":"0.00","total_linea_original":"1539.55"}
+]},
+{"factura_id":"FAC-00224","numero_factura":"F-2025-00225","fecha_expedicion":"2025-06-22","fecha_vencimiento":"2025-07-22","nif_proveedor":"B10000010","razon_social_proveedor":"Deportes Cantábrico S.L.","direccion_proveedor":"Calle Calvo Sotelo 34, 39002 Santander, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"3393.80","cuota_iva_original":"712.70","total_factura_original":"4106.50","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010010","pedido_id_ref":"PED-00247","albaran_ids_ref":"ALB-00251;ALB-00252","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":43,"precio_unitario_original":"28.00","descuento_pct":"0.00","total_linea_original":"1204.00"},
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":20,"precio_unitario_original":"34.94","descuento_pct":"0.00","total_linea_original":"698.80"},
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":26,"precio_unitario_original":"28.23","descuento_pct":"0.00","total_linea_original":"733.98"},
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":33,"precio_unitario_original":"22.94","descuento_pct":"0.00","total_linea_original":"757.02"}
+]},
+{"factura_id":"FAC-00244","numero_factura":"F-2026-00245","fecha_expedicion":"2026-05-07","fecha_vencimiento":"2026-06-06","nif_proveedor":"B10000001","razon_social_proveedor":"Textil Norte S.L.","direccion_proveedor":"Gran Vía Don Diego López de Haro 45, 48001 Bilbao, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"3086.70","cuota_iva_original":"648.21","total_factura_original":"3734.91","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010001","pedido_id_ref":"PED-00266","albaran_ids_ref":"ALB-00272","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"PAN-NG-XL","descripcion":"Jogger negro","cantidad":39,"precio_unitario_original":"23.92","descuento_pct":"0.00","total_linea_original":"932.88"},
+{"sku":"PAN-BE-M","descripcion":"Pantalón chino beige","cantidad":39,"precio_unitario_original":"24.27","descuento_pct":"0.00","total_linea_original":"946.53"},
+{"sku":"SUD-NG-L","descripcion":"Sudadera capucha negra","cantidad":14,"precio_unitario_original":"17.74","descuento_pct":"0.00","total_linea_original":"248.36"},
+{"sku":"CHA-NG-M","descripcion":"Chaqueta bomber negra","cantidad":19,"precio_unitario_original":"50.47","descuento_pct":"0.00","total_linea_original":"958.93"}
+]},
+{"factura_id":"FAC-00257","numero_factura":"F-2026-00258","fecha_expedicion":"2026-04-23","fecha_vencimiento":"2026-05-23","nif_proveedor":"B10000003","razon_social_proveedor":"Calzados Ibérica S.L.","direccion_proveedor":"Avenida de Elche 112, 03202 Elche, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1464.66","cuota_iva_original":"307.58","total_factura_original":"1772.24","forma_pago":"transferencia 45 dias","iban_proveedor":"ES1000010001010003","pedido_id_ref":"PED-00279","albaran_ids_ref":"ALB-00287","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":15,"precio_unitario_original":"33.93","descuento_pct":"0.00","total_linea_original":"508.95"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":37,"precio_unitario_original":"25.83","descuento_pct":"0.00","total_linea_original":"955.71"}
+]},
+{"factura_id":"FAC-00272","numero_factura":"F-2026-00273","fecha_expedicion":"2026-05-27","fecha_vencimiento":"2026-06-26","nif_proveedor":"B10000006","razon_social_proveedor":"Accesorios Urbanos S.L.","direccion_proveedor":"Calle Fuencarral 89, 28004 Madrid, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1291.15","cuota_iva_original":"271.14","total_factura_original":"1562.29","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010006","pedido_id_ref":"PED-00294","albaran_ids_ref":"ALB-00303","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":16,"precio_unitario_original":"23.55","descuento_pct":"0.00","total_linea_original":"376.80"},
+{"sku":"PAN-BE-M","descripcion":"Pantalón chino beige","cantidad":23,"precio_unitario_original":"23.81","descuento_pct":"0.00","total_linea_original":"547.63"},
+{"sku":"CAM-RO-M","descripcion":"Camiseta rayas roja","cantidad":48,"precio_unitario_original":"7.64","descuento_pct":"0.00","total_linea_original":"366.72"}
+]},
+{"factura_id":"FAC-00281","numero_factura":"F-2026-00282","fecha_expedicion":"2026-06-03","fecha_vencimiento":"2026-07-03","nif_proveedor":"B10000001","razon_social_proveedor":"Textil Norte S.L.","direccion_proveedor":"Gran Vía Don Diego López de Haro 45, 48001 Bilbao, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"999.69","cuota_iva_original":"209.93","total_factura_original":"1209.62","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010001","pedido_id_ref":"PED-00306","albaran_ids_ref":"ALB-00312","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"SUD-GR-S","descripcion":"Sudadera oversize gris","cantidad":47,"precio_unitario_original":"21.27","descuento_pct":"0.00","total_linea_original":"999.69"}
+]},
+{"factura_id":"FAC-00294","numero_factura":"F-2026-00295","fecha_expedicion":"2026-05-31","fecha_vencimiento":"2026-06-30","nif_proveedor":"B10000002","razon_social_proveedor":"Moda Levante S.A.","direccion_proveedor":"Calle Colón 78, 46004 Valencia, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1162.24","cuota_iva_original":"244.07","total_factura_original":"1406.31","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010002","pedido_id_ref":"PED-00320","albaran_ids_ref":"ALB-00325","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAM-GR-L","descripcion":"Camiseta estampada gris","cantidad":28,"precio_unitario_original":"9.03","descuento_pct":"0.00","total_linea_original":"252.84"},
+{"sku":"CHA-NG-M","descripcion":"Chaqueta bomber negra","cantidad":20,"precio_unitario_original":"45.47","descuento_pct":"0.00","total_linea_original":"909.40"}
+]},
+{"factura_id":"FAC-00304","numero_factura":"F-2026-00305","fecha_expedicion":"2026-07-08","fecha_vencimiento":"2026-08-07","nif_proveedor":"B10000006","razon_social_proveedor":"Accesorios Urbanos S.L.","direccion_proveedor":"Calle Fuencarral 89, 28004 Madrid, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1993.50","cuota_iva_original":"418.63","total_factura_original":"2412.13","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010006","pedido_id_ref":"PED-00330","albaran_ids_ref":"ALB-00335","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"SUD-AZ-M","descripcion":"Sudadera capucha azul","cantidad":48,"precio_unitario_original":"17.70","descuento_pct":"0.00","total_linea_original":"849.60"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":45,"precio_unitario_original":"25.42","descuento_pct":"0.00","total_linea_original":"1143.90"}
+]},
+{"factura_id":"FAC-00319","numero_factura":"F-2026-00320","fecha_expedicion":"2026-06-19","fecha_vencimiento":"2026-07-19","nif_proveedor":"B10000001","razon_social_proveedor":"Textil Norte S.L.","direccion_proveedor":"Gran Vía Don Diego López de Haro 45, 48001 Bilbao, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1158.08","cuota_iva_original":"243.20","total_factura_original":"1401.28","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010001","pedido_id_ref":"PED-00347","albaran_ids_ref":"ALB-00353","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"PAN-BE-M","descripcion":"Pantalón chino beige","cantidad":44,"precio_unitario_original":"26.32","descuento_pct":"0.00","total_linea_original":"1158.08"}
+]},
+{"factura_id":"FAC-00329","numero_factura":"F-2026-00330","fecha_expedicion":"2026-06-25","fecha_vencimiento":"2026-07-25","nif_proveedor":"B10000010","razon_social_proveedor":"Deportes Cantábrico S.L.","direccion_proveedor":"Calle Calvo Sotelo 34, 39002 Santander, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"2124.07","cuota_iva_original":"446.05","total_factura_original":"2570.12","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010010","pedido_id_ref":"PED-00358","albaran_ids_ref":"ALB-00364","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":41,"precio_unitario_original":"20.59","descuento_pct":"0.00","total_linea_original":"844.19"},
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":49,"precio_unitario_original":"26.12","descuento_pct":"0.00","total_linea_original":"1279.88"}
+]},
+{"factura_id":"FAC-00335","numero_factura":"F-2026-00336","fecha_expedicion":"2026-04-10","fecha_vencimiento":"2026-05-10","nif_proveedor":"B10000002","razon_social_proveedor":"Moda Levante S.A.","direccion_proveedor":"Calle Colón 78, 46004 Valencia, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"544.00","cuota_iva_original":"114.24","total_factura_original":"658.24","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":null,"albaran_ids_ref":null,"tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAM-GR-L","descripcion":"Camiseta estampada gris","cantidad":80,"precio_unitario_original":"6.80","descuento_pct":"0.00","total_linea_original":"544.00"}
+]}
+]

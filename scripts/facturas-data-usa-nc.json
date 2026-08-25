@@ -1,0 +1,73 @@
+[
+{"factura_id":"FAC-00003","numero_factura":"F-2024-00004","fecha_expedicion":"2024-05-09","fecha_vencimiento":"2024-06-08","nif_proveedor":"US7000007","razon_social_proveedor":"Denim Coast Inc.","direccion_proveedor":"1201 S Los Angeles St, Los Angeles, CA 90015, Estados Unidos","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"USD","base_imponible_original":"2848.58","cuota_iva_original":"598.20","total_factura_original":"3446.78","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00003","albaran_ids_ref":"ALB-00003","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"PAN-NG-L","descripcion":"Pantalón cargo negro","cantidad":18,"precio_unitario_original":"28.25","descuento_pct":"0.00","total_linea_original":"508.50"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":49,"precio_unitario_original":"28.08","descuento_pct":"0.00","total_linea_original":"1375.92"},
+{"sku":"PAN-NG-XL","descripcion":"Jogger negro","cantidad":46,"precio_unitario_original":"20.96","descuento_pct":"0.00","total_linea_original":"964.16"}
+]},
+{"factura_id":"FAC-00059","numero_factura":"F-2024-00060","fecha_expedicion":"2024-05-26","fecha_vencimiento":"2024-06-25","nif_proveedor":"US7000007","razon_social_proveedor":"Denim Coast Inc.","direccion_proveedor":"1201 S Los Angeles St, Los Angeles, CA 90015, Estados Unidos","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"USD","base_imponible_original":"2615.79","cuota_iva_original":"549.32","total_factura_original":"3165.11","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00068","albaran_ids_ref":"ALB-00065","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":49,"precio_unitario_original":"21.42","descuento_pct":"0.00","total_linea_original":"1049.58"},
+{"sku":"ACC-CIN-NG","descripcion":"Cinturón piel negro","cantidad":33,"precio_unitario_original":"10.53","descuento_pct":"0.00","total_linea_original":"347.49"},
+{"sku":"CHA-NG-M","descripcion":"Chaqueta bomber negra","cantidad":20,"precio_unitario_original":"50.20","descuento_pct":"0.00","total_linea_original":"1004.00"},
+{"sku":"SUD-NG-L","descripcion":"Sudadera capucha negra","cantidad":11,"precio_unitario_original":"19.52","descuento_pct":"0.00","total_linea_original":"214.72"}
+]},
+{"factura_id":"FAC-00108","numero_factura":"F-2024-00109","fecha_expedicion":"2024-07-10","fecha_vencimiento":"2024-08-09","nif_proveedor":"US7000007","razon_social_proveedor":"Denim Coast Inc.","direccion_proveedor":"1201 S Los Angeles St, Los Angeles, CA 90015, Estados Unidos","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"USD","base_imponible_original":"1179.14","cuota_iva_original":"247.62","total_factura_original":"1426.76","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00122","albaran_ids_ref":"ALB-00123","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CHA-VD-L","descripcion":"Chaqueta cortavientos verde","cantidad":23,"precio_unitario_original":"43.58","descuento_pct":"0.00","total_linea_original":"1002.34"},
+{"sku":"SUD-NG-L","descripcion":"Sudadera capucha negra","cantidad":10,"precio_unitario_original":"17.68","descuento_pct":"0.00","total_linea_original":"176.80"}
+]},
+{"factura_id":"FAC-00159","numero_factura":"F-2025-00160","fecha_expedicion":"2025-05-24","fecha_vencimiento":"2025-06-23","nif_proveedor":"US7000007","razon_social_proveedor":"Denim Coast Inc.","direccion_proveedor":"1201 S Los Angeles St, Los Angeles, CA 90015, Estados Unidos","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"USD","base_imponible_original":"1885.59","cuota_iva_original":"395.97","total_factura_original":"2281.56","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00181","albaran_ids_ref":"ALB-00177","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"ACC-MOC-BE","descripcion":"Mochila urbana beige","cantidad":12,"precio_unitario_original":"19.17","descuento_pct":"0.00","total_linea_original":"230.04"},
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":45,"precio_unitario_original":"36.79","descuento_pct":"0.00","total_linea_original":"1655.55"}
+]},
+{"factura_id":"FAC-00202","numero_factura":"F-2025-00203","fecha_expedicion":"2025-06-27","fecha_vencimiento":"2025-07-27","nif_proveedor":"US7000007","razon_social_proveedor":"Denim Coast Inc.","direccion_proveedor":"1201 S Los Angeles St, Los Angeles, CA 90015, Estados Unidos","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"USD","base_imponible_original":"2385.45","cuota_iva_original":"500.94","total_factura_original":"2886.39","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00224","albaran_ids_ref":"ALB-00226","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":48,"precio_unitario_original":"26.40","descuento_pct":"0.00","total_linea_original":"1267.20"},
+{"sku":"PAN-AZ-S","descripcion":"Vaquero slim azul","cantidad":35,"precio_unitario_original":"31.95","descuento_pct":"0.00","total_linea_original":"1118.25"}
+]},
+{"factura_id":"FAC-00222","numero_factura":"F-2025-00223","fecha_expedicion":"2025-07-05","fecha_vencimiento":"2025-08-04","nif_proveedor":"US7000007","razon_social_proveedor":"Denim Coast Inc.","direccion_proveedor":"1201 S Los Angeles St, Los Angeles, CA 90015, Estados Unidos","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"USD","base_imponible_original":"812.51","cuota_iva_original":"170.63","total_factura_original":"983.14","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00245","albaran_ids_ref":"ALB-00248;ALB-00249","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"PAN-BE-M","descripcion":"Pantalón chino beige","cantidad":30,"precio_unitario_original":"23.27","descuento_pct":"0.00","total_linea_original":"698.10"},
+{"sku":"CAM-NG-M","descripcion":"Camiseta básica negra","cantidad":17,"precio_unitario_original":"6.73","descuento_pct":"0.00","total_linea_original":"114.41"}
+]},
+{"factura_id":"FAC-00262","numero_factura":"F-2026-00263","fecha_expedicion":"2026-06-08","fecha_vencimiento":"2026-07-08","nif_proveedor":"US7000007","razon_social_proveedor":"Denim Coast Inc.","direccion_proveedor":"1201 S Los Angeles St, Los Angeles, CA 90015, Estados Unidos","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"USD","base_imponible_original":"1485.42","cuota_iva_original":"311.94","total_factura_original":"1797.36","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00285","albaran_ids_ref":"ALB-00293","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":48,"precio_unitario_original":"26.09","descuento_pct":"0.00","total_linea_original":"1252.32"},
+{"sku":"ACC-GOR-AZ","descripcion":"Gorra bordada azul","cantidad":42,"precio_unitario_original":"5.55","descuento_pct":"0.00","total_linea_original":"233.10"}
+]},
+{"factura_id":"FAC-00291","numero_factura":"F-2026-00292","fecha_expedicion":"2026-05-31","fecha_vencimiento":"2026-06-30","nif_proveedor":"US7000007","razon_social_proveedor":"Denim Coast Inc.","direccion_proveedor":"1201 S Los Angeles St, Los Angeles, CA 90015, Estados Unidos","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"USD","base_imponible_original":"821.66","cuota_iva_original":"172.55","total_factura_original":"994.21","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00317","albaran_ids_ref":"ALB-00322","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAM-RO-M","descripcion":"Camiseta rayas roja","cantidad":37,"precio_unitario_original":"7.43","descuento_pct":"0.00","total_linea_original":"274.91"},
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":15,"precio_unitario_original":"36.45","descuento_pct":"0.00","total_linea_original":"546.75"}
+]},
+{"factura_id":"FAC-00027","numero_factura":"NC-F-2024-00027","fecha_expedicion":"2024-05-06","fecha_vencimiento":"2024-05-06","nif_proveedor":"PT8000005","razon_social_proveedor":"Confeccoes Porto Lda","direccion_proveedor":"Rua de Santa Catarina 156, 4000-443 Porto, Portugal","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"-163.63","cuota_iva_original":"-34.36","total_factura_original":"-197.99","forma_pago":"transferencia 30 dias","iban_proveedor":"PT10001000100010005","pedido_id_ref":"PED-00031","albaran_ids_ref":"ALB-00027","tipo_iva":"21.00","es_nota_credito":true,"factura_original_id_num":"F-2024-00027","factura_original_id_fecha":"2024-05-01",
+"lineas":[
+{"sku":null,"descripcion":"Ajuste factura F-2024-00027 — anulación parcial","cantidad":null,"precio_unitario_original":"-163.63","descuento_pct":"0.00","total_linea_original":"-163.63"}
+]},
+{"factura_id":"FAC-00171","numero_factura":"NC-F-2025-00171","fecha_expedicion":"2025-05-28","fecha_vencimiento":"2025-05-28","nif_proveedor":"B10000003","razon_social_proveedor":"Calzados Ibérica S.L.","direccion_proveedor":"Avenida de Elche 112, 03202 Elche, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"-877.64","cuota_iva_original":"-184.30","total_factura_original":"-1061.94","forma_pago":"transferencia 45 dias","iban_proveedor":"ES1000010001010003","pedido_id_ref":"PED-00194","albaran_ids_ref":"ALB-00189;ALB-00190","tipo_iva":"21.00","es_nota_credito":true,"factura_original_id_num":"F-2025-00171","factura_original_id_fecha":"2025-05-23",
+"lineas":[
+{"sku":null,"descripcion":"Ajuste factura F-2025-00171 — anulación parcial","cantidad":null,"precio_unitario_original":"-877.64","descuento_pct":"0.00","total_linea_original":"-877.64"}
+]},
+{"factura_id":"FAC-00188","numero_factura":"NC-F-2025-00188","fecha_expedicion":"2025-07-17","fecha_vencimiento":"2025-07-17","nif_proveedor":"B10000001","razon_social_proveedor":"Textil Norte S.L.","direccion_proveedor":"Gran Vía Don Diego López de Haro 45, 48001 Bilbao, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"-630.43","cuota_iva_original":"-132.39","total_factura_original":"-762.82","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010001","pedido_id_ref":"PED-00210","albaran_ids_ref":"ALB-00208","tipo_iva":"21.00","es_nota_credito":true,"factura_original_id_num":"F-2025-00188","factura_original_id_fecha":"2025-07-12",
+"lineas":[
+{"sku":null,"descripcion":"Ajuste factura F-2025-00188 — anulación parcial","cantidad":null,"precio_unitario_original":"-630.43","descuento_pct":"0.00","total_linea_original":"-630.43"}
+]},
+{"factura_id":"FAC-00228","numero_factura":"NC-F-2025-00228","fecha_expedicion":"2025-07-07","fecha_vencimiento":"2025-07-07","nif_proveedor":"PT8000005","razon_social_proveedor":"Confeccoes Porto Lda","direccion_proveedor":"Rua de Santa Catarina 156, 4000-443 Porto, Portugal","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"-196.09","cuota_iva_original":"-41.18","total_factura_original":"-237.27","forma_pago":"transferencia 30 dias","iban_proveedor":"PT10001000100010005","pedido_id_ref":"PED-00250","albaran_ids_ref":"ALB-00256","tipo_iva":"21.00","es_nota_credito":true,"factura_original_id_num":"F-2025-00228","factura_original_id_fecha":"2025-07-02",
+"lineas":[
+{"sku":null,"descripcion":"Ajuste factura F-2025-00228 — anulación parcial","cantidad":null,"precio_unitario_original":"-196.09","descuento_pct":"0.00","total_linea_original":"-196.09"}
+]},
+{"factura_id":"FAC-00240","numero_factura":"NC-F-2026-00240","fecha_expedicion":"2026-05-07","fecha_vencimiento":"2026-05-07","nif_proveedor":"CN6000008","razon_social_proveedor":"Guangzhou Fashion Co. Ltd","direccion_proveedor":"Zhongshan Avenue 88, Tianhe District, Guangzhou 510630, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"-695.71","cuota_iva_original":"-146.10","total_factura_original":"-841.81","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00263","albaran_ids_ref":"ALB-00268","tipo_iva":"21.00","es_nota_credito":true,"factura_original_id_num":"F-2026-00240","factura_original_id_fecha":"2026-05-02",
+"lineas":[
+{"sku":null,"descripcion":"Ajuste factura F-2026-00240 — anulación parcial","cantidad":null,"precio_unitario_original":"-695.71","descuento_pct":"0.00","total_linea_original":"-695.71"}
+]},
+{"factura_id":"FAC-00269","numero_factura":"NC-F-2026-00269","fecha_expedicion":"2026-05-30","fecha_vencimiento":"2026-05-30","nif_proveedor":"CN6000008","razon_social_proveedor":"Guangzhou Fashion Co. Ltd","direccion_proveedor":"Zhongshan Avenue 88, Tianhe District, Guangzhou 510630, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"-408.92","cuota_iva_original":"-85.87","total_factura_original":"-494.79","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00291","albaran_ids_ref":"ALB-00300","tipo_iva":"21.00","es_nota_credito":true,"factura_original_id_num":"F-2026-00269","factura_original_id_fecha":"2026-05-25",
+"lineas":[
+{"sku":null,"descripcion":"Ajuste factura F-2026-00269 — anulación parcial","cantidad":null,"precio_unitario_original":"-408.92","descuento_pct":"0.00","total_linea_original":"-408.92"}
+]},
+{"factura_id":"FAC-00296","numero_factura":"NC-F-2026-00296","fecha_expedicion":"2026-07-15","fecha_vencimiento":"2026-07-15","nif_proveedor":"B10000002","razon_social_proveedor":"Moda Levante S.A.","direccion_proveedor":"Calle Colón 78, 46004 Valencia, España","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"-627.07","cuota_iva_original":"-131.68","total_factura_original":"-758.75","forma_pago":"transferencia 30 dias","iban_proveedor":"ES1000010001010002","pedido_id_ref":"PED-00321","albaran_ids_ref":"ALB-00326","tipo_iva":"21.00","es_nota_credito":true,"factura_original_id_num":"F-2026-00296","factura_original_id_fecha":"2026-07-10",
+"lineas":[
+{"sku":null,"descripcion":"Ajuste factura F-2026-00296 — anulación parcial","cantidad":null,"precio_unitario_original":"-627.07","descuento_pct":"0.00","total_linea_original":"-627.07"}
+]}
+]

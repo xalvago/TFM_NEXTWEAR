@@ -1,0 +1,90 @@
+[
+{"factura_id":"FAC-00004","numero_factura":"F-2024-00005","fecha_expedicion":"2024-05-06","fecha_vencimiento":"2024-06-05","nif_proveedor":"PT8000005","razon_social_proveedor":"Confeccoes Porto Lda","direccion_proveedor":"Rua de Santa Catarina 156, 4000-443 Porto, Portugal","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1654.28","cuota_iva_original":"347.40","total_factura_original":"2001.68","forma_pago":"transferencia 30 dias","iban_proveedor":"PT10001000100010005","pedido_id_ref":"PED-00004","albaran_ids_ref":"ALB-00004","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"SUD-NG-L","descripcion":"Sudadera capucha negra","cantidad":25,"precio_unitario_original":"17.84","descuento_pct":"0.00","total_linea_original":"446.00"},
+{"sku":"PAN-AZ-S","descripcion":"Vaquero slim azul","cantidad":9,"precio_unitario_original":"28.61","descuento_pct":"0.00","total_linea_original":"257.49"},
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":41,"precio_unitario_original":"23.19","descuento_pct":"0.00","total_linea_original":"950.79"}
+]},
+{"factura_id":"FAC-00011","numero_factura":"F-2024-00012","fecha_expedicion":"2024-04-25","fecha_vencimiento":"2024-05-25","nif_proveedor":"IT9000004","razon_social_proveedor":"Filati Milano S.r.l.","direccion_proveedor":"Via Solferino 23, 20121 Milano, Italia","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"3760.75","cuota_iva_original":"789.76","total_factura_original":"4550.51","forma_pago":"transferencia 30 dias","iban_proveedor":"IT10001000100010004","pedido_id_ref":"PED-00012","albaran_ids_ref":"ALB-00011","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAM-GR-L","descripcion":"Camiseta estampada gris","cantidad":34,"precio_unitario_original":"8.16","descuento_pct":"0.00","total_linea_original":"277.44"},
+{"sku":"ACC-CIN-NG","descripcion":"Cinturón piel negro","cantidad":9,"precio_unitario_original":"10.53","descuento_pct":"0.00","total_linea_original":"94.77"},
+{"sku":"PAN-NG-L","descripcion":"Pantalón cargo negro","cantidad":40,"precio_unitario_original":"25.73","descuento_pct":"0.00","total_linea_original":"1029.20"},
+{"sku":"CHA-NG-M","descripcion":"Chaqueta bomber negra","cantidad":46,"precio_unitario_original":"51.29","descuento_pct":"0.00","total_linea_original":"2359.34"}
+]},
+{"factura_id":"FAC-00026","numero_factura":"F-2024-00027","fecha_expedicion":"2024-05-01","fecha_vencimiento":"2024-05-31","nif_proveedor":"PT8000005","razon_social_proveedor":"Confeccoes Porto Lda","direccion_proveedor":"Rua de Santa Catarina 156, 4000-443 Porto, Portugal","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"545.44","cuota_iva_original":"114.54","total_factura_original":"659.98","forma_pago":"transferencia 30 dias","iban_proveedor":"PT10001000100010005","pedido_id_ref":"PED-00031","albaran_ids_ref":"ALB-00027","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAM-RO-M","descripcion":"Camiseta rayas roja","cantidad":14,"precio_unitario_original":"7.30","descuento_pct":"0.00","total_linea_original":"102.20"},
+{"sku":"CAM-BL-S","descripcion":"Camiseta básica blanca","cantidad":49,"precio_unitario_original":"6.14","descuento_pct":"0.00","total_linea_original":"300.86"},
+{"sku":"CAM-GR-L","descripcion":"Camiseta estampada gris","cantidad":18,"precio_unitario_original":"7.91","descuento_pct":"0.00","total_linea_original":"142.38"}
+]},
+{"factura_id":"FAC-00042","numero_factura":"F-2024-00043","fecha_expedicion":"2024-05-28","fecha_vencimiento":"2024-06-27","nif_proveedor":"PT8000005","razon_social_proveedor":"Confeccoes Porto Lda","direccion_proveedor":"Rua de Santa Catarina 156, 4000-443 Porto, Portugal","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1324.00","cuota_iva_original":"278.04","total_factura_original":"1602.04","forma_pago":"transferencia 30 dias","iban_proveedor":"PT10001000100010005","pedido_id_ref":"PED-00050","albaran_ids_ref":"ALB-00045","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"ACC-MOC-BE","descripcion":"Mochila urbana beige","cantidad":46,"precio_unitario_original":"19.82","descuento_pct":"0.00","total_linea_original":"911.72"},
+{"sku":"SUD-GR-S","descripcion":"Sudadera oversize gris","cantidad":22,"precio_unitario_original":"18.74","descuento_pct":"0.00","total_linea_original":"412.28"}
+]},
+{"factura_id":"FAC-00061","numero_factura":"F-2024-00062","fecha_expedicion":"2024-05-30","fecha_vencimiento":"2024-06-29","nif_proveedor":"IT9000004","razon_social_proveedor":"Filati Milano S.r.l.","direccion_proveedor":"Via Solferino 23, 20121 Milano, Italia","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1167.12","cuota_iva_original":"245.10","total_factura_original":"1412.22","forma_pago":"transferencia 30 dias","iban_proveedor":"IT10001000100010004","pedido_id_ref":"PED-00070","albaran_ids_ref":"ALB-00067","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":43,"precio_unitario_original":"24.16","descuento_pct":"0.00","total_linea_original":"1038.88"},
+{"sku":"CAM-GR-L","descripcion":"Camiseta estampada gris","cantidad":14,"precio_unitario_original":"9.16","descuento_pct":"0.00","total_linea_original":"128.24"}
+]},
+{"factura_id":"FAC-00101","numero_factura":"F-2024-00102","fecha_expedicion":"2024-07-08","fecha_vencimiento":"2024-08-07","nif_proveedor":"PT8000005","razon_social_proveedor":"Confeccoes Porto Lda","direccion_proveedor":"Rua de Santa Catarina 156, 4000-443 Porto, Portugal","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"2421.08","cuota_iva_original":"508.43","total_factura_original":"2929.51","forma_pago":"transferencia 30 dias","iban_proveedor":"PT10001000100010005","pedido_id_ref":"PED-00115","albaran_ids_ref":"ALB-00113;ALB-00114","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":41,"precio_unitario_original":"19.88","descuento_pct":"0.00","total_linea_original":"815.08"},
+{"sku":"SUD-NG-L","descripcion":"Sudadera capucha negra","cantidad":28,"precio_unitario_original":"18.28","descuento_pct":"0.00","total_linea_original":"511.84"},
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":9,"precio_unitario_original":"35.59","descuento_pct":"0.00","total_linea_original":"320.31"},
+{"sku":"PAN-NG-XL","descripcion":"Jogger negro","cantidad":33,"precio_unitario_original":"23.45","descuento_pct":"0.00","total_linea_original":"773.85"}
+]},
+{"factura_id":"FAC-00117","numero_factura":"F-2024-00118","fecha_expedicion":"2024-07-06","fecha_vencimiento":"2024-08-05","nif_proveedor":"IT9000004","razon_social_proveedor":"Filati Milano S.r.l.","direccion_proveedor":"Via Solferino 23, 20121 Milano, Italia","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1181.04","cuota_iva_original":"248.02","total_factura_original":"1429.06","forma_pago":"transferencia 30 dias","iban_proveedor":"IT10001000100010004","pedido_id_ref":null,"albaran_ids_ref":null,"tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":33,"precio_unitario_original":"24.64","descuento_pct":"0.00","total_linea_original":"813.12"},
+{"sku":"SUD-GR-S","descripcion":"Sudadera oversize gris","cantidad":18,"precio_unitario_original":"20.44","descuento_pct":"0.00","total_linea_original":"367.92"}
+]},
+{"factura_id":"FAC-00172","numero_factura":"F-2025-00173","fecha_expedicion":"2025-06-02","fecha_vencimiento":"2025-07-02","nif_proveedor":"IT9000004","razon_social_proveedor":"Filati Milano S.r.l.","direccion_proveedor":"Via Solferino 23, 20121 Milano, Italia","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"908.46","cuota_iva_original":"190.78","total_factura_original":"1099.24","forma_pago":"transferencia 30 dias","iban_proveedor":"IT10001000100010004","pedido_id_ref":"PED-00195","albaran_ids_ref":"ALB-00191","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"PAN-NG-XL","descripcion":"Jogger negro","cantidad":42,"precio_unitario_original":"21.63","descuento_pct":"0.00","total_linea_original":"908.46"}
+]},
+{"factura_id":"FAC-00205","numero_factura":"F-2025-00206","fecha_expedicion":"2025-06-24","fecha_vencimiento":"2025-07-24","nif_proveedor":"PT8000005","razon_social_proveedor":"Confeccoes Porto Lda","direccion_proveedor":"Rua de Santa Catarina 156, 4000-443 Porto, Portugal","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1280.19","cuota_iva_original":"268.84","total_factura_original":"1549.03","forma_pago":"transferencia 30 dias","iban_proveedor":"PT10001000100010005","pedido_id_ref":"PED-00227","albaran_ids_ref":"ALB-00229","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAM-GR-L","descripcion":"Camiseta estampada gris","cantidad":26,"precio_unitario_original":"8.38","descuento_pct":"0.00","total_linea_original":"217.88"},
+{"sku":"PAN-BE-M","descripcion":"Pantalón chino beige","cantidad":41,"precio_unitario_original":"25.91","descuento_pct":"0.00","total_linea_original":"1062.31"}
+]},
+{"factura_id":"FAC-00231","numero_factura":"F-2025-00232","fecha_expedicion":"2025-07-08","fecha_vencimiento":"2025-08-07","nif_proveedor":"PT8000005","razon_social_proveedor":"Confeccoes Porto Lda","direccion_proveedor":"Rua de Santa Catarina 156, 4000-443 Porto, Portugal","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1752.13","cuota_iva_original":"367.95","total_factura_original":"2120.08","forma_pago":"transferencia 30 dias","iban_proveedor":"PT10001000100010005","pedido_id_ref":"PED-00253","albaran_ids_ref":"ALB-00259","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAM-BL-S","descripcion":"Camiseta básica blanca","cantidad":19,"precio_unitario_original":"6.98","descuento_pct":"0.00","total_linea_original":"132.62"},
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":38,"precio_unitario_original":"24.44","descuento_pct":"0.00","total_linea_original":"928.72"},
+{"sku":"SUD-GR-S","descripcion":"Sudadera oversize gris","cantidad":37,"precio_unitario_original":"18.67","descuento_pct":"0.00","total_linea_original":"690.79"}
+]},
+{"factura_id":"FAC-00235","numero_factura":"F-2026-00236","fecha_expedicion":"2026-05-06","fecha_vencimiento":"2026-06-05","nif_proveedor":"IT9000004","razon_social_proveedor":"Filati Milano S.r.l.","direccion_proveedor":"Via Solferino 23, 20121 Milano, Italia","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"50.64","cuota_iva_original":"10.63","total_factura_original":"61.27","forma_pago":"transferencia 30 dias","iban_proveedor":"IT10001000100010004","pedido_id_ref":"PED-00257","albaran_ids_ref":"ALB-00263","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAM-GR-L","descripcion":"Camiseta estampada gris","cantidad":6,"precio_unitario_original":"8.44","descuento_pct":"0.00","total_linea_original":"50.64"}
+]},
+{"factura_id":"FAC-00260","numero_factura":"F-2026-00261","fecha_expedicion":"2026-05-24","fecha_vencimiento":"2026-06-23","nif_proveedor":"IT9000004","razon_social_proveedor":"Filati Milano S.r.l.","direccion_proveedor":"Via Solferino 23, 20121 Milano, Italia","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"251.20","cuota_iva_original":"52.75","total_factura_original":"303.95","forma_pago":"transferencia 30 dias","iban_proveedor":"IT10001000100010004","pedido_id_ref":"PED-00283","albaran_ids_ref":"ALB-00291","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAM-BL-S","descripcion":"Camiseta básica blanca","cantidad":40,"precio_unitario_original":"6.28","descuento_pct":"0.00","total_linea_original":"251.20"}
+]},
+{"factura_id":"FAC-00266","numero_factura":"F-2026-00267","fecha_expedicion":"2026-05-26","fecha_vencimiento":"2026-06-25","nif_proveedor":"PT8000005","razon_social_proveedor":"Confeccoes Porto Lda","direccion_proveedor":"Rua de Santa Catarina 156, 4000-443 Porto, Portugal","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1554.54","cuota_iva_original":"326.45","total_factura_original":"1880.99","forma_pago":"transferencia 30 dias","iban_proveedor":"PT10001000100010005","pedido_id_ref":null,"albaran_ids_ref":null,"tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":8,"precio_unitario_original":"36.40","descuento_pct":"0.00","total_linea_original":"291.20"},
+{"sku":"PAN-AZ-S","descripcion":"Vaquero slim azul","cantidad":32,"precio_unitario_original":"29.90","descuento_pct":"0.00","total_linea_original":"956.80"},
+{"sku":"CAM-GR-L","descripcion":"Camiseta estampada gris","cantidad":39,"precio_unitario_original":"7.86","descuento_pct":"0.00","total_linea_original":"306.54"}
+]},
+{"factura_id":"FAC-00286","numero_factura":"F-2026-00287","fecha_expedicion":"2026-05-24","fecha_vencimiento":"2026-06-23","nif_proveedor":"IT9000004","razon_social_proveedor":"Filati Milano S.r.l.","direccion_proveedor":"Via Solferino 23, 20121 Milano, Italia","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"3107.41","cuota_iva_original":"652.56","total_factura_original":"3759.97","forma_pago":"transferencia 30 dias","iban_proveedor":"IT10001000100010004","pedido_id_ref":"PED-00310","albaran_ids_ref":"ALB-00316;ALB-00317","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":null,"descripcion":"Zapatilla urbana blanca","cantidad":43,"precio_unitario_original":"27.99","descuento_pct":"0.00","total_linea_original":"1203.57"},
+{"sku":"ACC-GOR-AZ","descripcion":"Gorra bordada azul","cantidad":40,"precio_unitario_original":"4.96","descuento_pct":"0.00","total_linea_original":"198.40"},
+{"sku":"CHA-NG-M","descripcion":"Chaqueta bomber negra","cantidad":38,"precio_unitario_original":"44.88","descuento_pct":"0.00","total_linea_original":"1705.44"}
+]},
+{"factura_id":"FAC-00309","numero_factura":"F-2026-00310","fecha_expedicion":"2026-07-03","fecha_vencimiento":"2026-08-02","nif_proveedor":"PT8000005","razon_social_proveedor":"Confeccoes Porto Lda","direccion_proveedor":"Rua de Santa Catarina 156, 4000-443 Porto, Portugal","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"643.68","cuota_iva_original":"135.17","total_factura_original":"778.85","forma_pago":"transferencia 30 dias","iban_proveedor":"PT10001000100010005","pedido_id_ref":"PED-00336","albaran_ids_ref":"ALB-00341","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"PAN-BE-M","descripcion":"Pantalón chino beige","cantidad":16,"precio_unitario_original":"26.04","descuento_pct":"0.00","total_linea_original":"416.64"},
+{"sku":"CAM-BL-S","descripcion":"Camiseta básica blanca","cantidad":33,"precio_unitario_original":"6.88","descuento_pct":"0.00","total_linea_original":"227.04"}
+]},
+{"factura_id":"FAC-00314","numero_factura":"F-2026-00315","fecha_expedicion":"2026-07-09","fecha_vencimiento":"2026-08-08","nif_proveedor":"IT9000004","razon_social_proveedor":"Filati Milano S.r.l.","direccion_proveedor":"Via Solferino 23, 20121 Milano, Italia","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"EUR","base_imponible_original":"1218.17","cuota_iva_original":"255.82","total_factura_original":"1473.99","forma_pago":"transferencia 30 dias","iban_proveedor":"IT10001000100010004","pedido_id_ref":"PED-00342","albaran_ids_ref":"ALB-00347;ALB-00348","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"ACC-GOR-AZ","descripcion":"Gorra bordada azul","cantidad":43,"precio_unitario_original":"5.33","descuento_pct":"0.00","total_linea_original":"229.19"},
+{"sku":"ACC-CIN-NG","descripcion":"Cinturón piel negro","cantidad":20,"precio_unitario_original":"11.27","descuento_pct":"0.00","total_linea_original":"225.40"},
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":22,"precio_unitario_original":"22.29","descuento_pct":"0.00","total_linea_original":"490.38"},
+{"sku":"CAM-BL-S","descripcion":"Camiseta básica blanca","cantidad":40,"precio_unitario_original":"6.83","descuento_pct":"0.00","total_linea_original":"273.20"}
+]}
+]

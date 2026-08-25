@@ -1,0 +1,82 @@
+[
+{"factura_id":"FAC-00007","numero_factura":"F-2024-00008","fecha_expedicion":"2024-05-11","fecha_vencimiento":"2024-06-10","nif_proveedor":"CN6000009","razon_social_proveedor":"Shenzhen Textile Export Ltd","direccion_proveedor":"Huaqiang North Road 245, Futian District, Shenzhen 518031, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"1287.93","cuota_iva_original":"270.47","total_factura_original":"1558.40","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00008","albaran_ids_ref":"ALB-00007","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"SUD-AZ-M","descripcion":"Sudadera capucha azul","cantidad":20,"precio_unitario_original":"16.84","descuento_pct":"0.00","total_linea_original":"336.80"},
+{"sku":"CAM-NG-M","descripcion":"Camiseta básica negra","cantidad":41,"precio_unitario_original":"6.96","descuento_pct":"0.00","total_linea_original":"285.36"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":10,"precio_unitario_original":"27.22","descuento_pct":"0.00","total_linea_original":"272.20"},
+{"sku":"CHA-VD-L","descripcion":"Chaqueta cortavientos verde","cantidad":9,"precio_unitario_original":"43.73","descuento_pct":"0.00","total_linea_original":"393.57"}
+]},
+{"factura_id":"FAC-00038","numero_factura":"F-2024-00039","fecha_expedicion":"2024-05-16","fecha_vencimiento":"2024-06-15","nif_proveedor":"CN6000008","razon_social_proveedor":"Guangzhou Fashion Co. Ltd","direccion_proveedor":"Zhongshan Avenue 88, Tianhe District, Guangzhou 510630, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"385.84","cuota_iva_original":"81.03","total_factura_original":"466.87","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00045","albaran_ids_ref":"ALB-00040","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":14,"precio_unitario_original":"27.56","descuento_pct":"0.00","total_linea_original":"385.84"}
+]},
+{"factura_id":"FAC-00052","numero_factura":"F-2024-00053","fecha_expedicion":"2024-06-10","fecha_vencimiento":"2024-07-10","nif_proveedor":"CN6000009","razon_social_proveedor":"Shenzhen Textile Export Ltd","direccion_proveedor":"Huaqiang North Road 245, Futian District, Shenzhen 518031, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"926.21","cuota_iva_original":"194.50","total_factura_original":"1120.71","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00061","albaran_ids_ref":"ALB-00056;ALB-00057","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"PAN-NG-L","descripcion":"Pantalón cargo negro","cantidad":10,"precio_unitario_original":"27.98","descuento_pct":"0.00","total_linea_original":"279.80"},
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":29,"precio_unitario_original":"22.29","descuento_pct":"0.00","total_linea_original":"646.41"}
+]},
+{"factura_id":"FAC-00068","numero_factura":"F-2024-00069","fecha_expedicion":"2024-06-10","fecha_vencimiento":"2024-07-10","nif_proveedor":"CN6000009","razon_social_proveedor":"Shenzhen Textile Export Ltd","direccion_proveedor":"Huaqiang North Road 245, Futian District, Shenzhen 518031, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"1082.41","cuota_iva_original":"227.31","total_factura_original":"1309.72","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00077","albaran_ids_ref":"ALB-00075","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":47,"precio_unitario_original":"23.03","descuento_pct":"0.00","total_linea_original":"1082.41"}
+]},
+{"factura_id":"FAC-00087","numero_factura":"F-2024-00088","fecha_expedicion":"2024-07-04","fecha_vencimiento":"2024-08-03","nif_proveedor":"CN6000008","razon_social_proveedor":"Guangzhou Fashion Co. Ltd","direccion_proveedor":"Zhongshan Avenue 88, Tianhe District, Guangzhou 510630, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"1102.11","cuota_iva_original":"231.44","total_factura_original":"1333.55","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00099","albaran_ids_ref":"ALB-00097;ALB-00098","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":34,"precio_unitario_original":"20.25","descuento_pct":"0.00","total_linea_original":"688.50"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":17,"precio_unitario_original":"24.33","descuento_pct":"0.00","total_linea_original":"413.61"}
+]},
+{"factura_id":"FAC-00110","numero_factura":"F-2024-00111","fecha_expedicion":"2024-07-01","fecha_vencimiento":"2024-07-31","nif_proveedor":"CN6000008","razon_social_proveedor":"Guangzhou Fashion Co. Ltd","direccion_proveedor":"Zhongshan Avenue 88, Tianhe District, Guangzhou 510630, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"933.74","cuota_iva_original":"196.09","total_factura_original":"1129.83","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00125","albaran_ids_ref":"ALB-00125;ALB-00126","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":10,"precio_unitario_original":"26.89","descuento_pct":"0.00","total_linea_original":"268.90"},
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":19,"precio_unitario_original":"26.40","descuento_pct":"0.00","total_linea_original":"501.60"},
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":7,"precio_unitario_original":"23.32","descuento_pct":"0.00","total_linea_original":"163.24"}
+]},
+{"factura_id":"FAC-00141","numero_factura":"F-2025-00142","fecha_expedicion":"2025-04-18","fecha_vencimiento":"2025-05-18","nif_proveedor":"CN6000009","razon_social_proveedor":"Shenzhen Textile Export Ltd","direccion_proveedor":"Huaqiang North Road 245, Futian District, Shenzhen 518031, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"2443.95","cuota_iva_original":"513.23","total_factura_original":"2957.18","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00160","albaran_ids_ref":"ALB-00157","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":46,"precio_unitario_original":"26.72","descuento_pct":"0.00","total_linea_original":"1229.12"},
+{"sku":"PAN-NG-L","descripcion":"Pantalón cargo negro","cantidad":41,"precio_unitario_original":"29.63","descuento_pct":"0.00","total_linea_original":"1214.83"}
+]},
+{"factura_id":"FAC-00157","numero_factura":"F-2025-00158","fecha_expedicion":"2025-05-20","fecha_vencimiento":"2025-06-19","nif_proveedor":"CN6000009","razon_social_proveedor":"Shenzhen Textile Export Ltd","direccion_proveedor":"Huaqiang North Road 245, Futian District, Shenzhen 518031, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"512.74","cuota_iva_original":"107.68","total_factura_original":"620.42","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00179","albaran_ids_ref":"ALB-00175","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"ACC-GOR-AZ","descripcion":"Gorra bordada azul","cantidad":18,"precio_unitario_original":"6.70","descuento_pct":"0.00","total_linea_original":"120.60"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":14,"precio_unitario_original":"28.01","descuento_pct":"0.00","total_linea_original":"392.14"}
+]},
+{"factura_id":"FAC-00183","numero_factura":"F-2025-00184","fecha_expedicion":"2025-05-27","fecha_vencimiento":"2025-06-26","nif_proveedor":"CN6000008","razon_social_proveedor":"Guangzhou Fashion Co. Ltd","direccion_proveedor":"Zhongshan Avenue 88, Tianhe District, Guangzhou 510630, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"602.23","cuota_iva_original":"126.47","total_factura_original":"728.70","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00206","albaran_ids_ref":"ALB-00204","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":21,"precio_unitario_original":"22.88","descuento_pct":"0.00","total_linea_original":"480.48"},
+{"sku":"CAL-BL-40","descripcion":"Zapatilla urbana blanca","cantidad":5,"precio_unitario_original":"24.35","descuento_pct":"0.00","total_linea_original":"121.75"}
+]},
+{"factura_id":"FAC-00206","numero_factura":"F-2025-00207","fecha_expedicion":"2025-06-20","fecha_vencimiento":"2025-07-20","nif_proveedor":"CN6000008","razon_social_proveedor":"Guangzhou Fashion Co. Ltd","direccion_proveedor":"Zhongshan Avenue 88, Tianhe District, Guangzhou 510630, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"695.64","cuota_iva_original":"146.08","total_factura_original":"841.72","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00228","albaran_ids_ref":"ALB-00230","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":33,"precio_unitario_original":"21.08","descuento_pct":"0.00","total_linea_original":"695.64"}
+]},
+{"factura_id":"FAC-00236","numero_factura":"F-2026-00237","fecha_expedicion":"2026-05-02","fecha_vencimiento":"2026-06-01","nif_proveedor":"CN6000009","razon_social_proveedor":"Shenzhen Textile Export Ltd","direccion_proveedor":"Huaqiang North Road 245, Futian District, Shenzhen 518031, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"1603.25","cuota_iva_original":"336.68","total_factura_original":"1939.93","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00260","albaran_ids_ref":"ALB-00264;ALB-00265","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":33,"precio_unitario_original":"21.46","descuento_pct":"0.00","total_linea_original":"708.18"},
+{"sku":"CAM-BL-S","descripcion":"Camiseta básica blanca","cantidad":47,"precio_unitario_original":"6.01","descuento_pct":"0.00","total_linea_original":"282.47"},
+{"sku":"CHA-VD-L","descripcion":"Chaqueta cortavientos verde","cantidad":15,"precio_unitario_original":"40.84","descuento_pct":"0.00","total_linea_original":"612.60"}
+]},
+{"factura_id":"FAC-00242","numero_factura":"F-2026-00243","fecha_expedicion":"2026-05-06","fecha_vencimiento":"2026-06-05","nif_proveedor":"CN6000008","razon_social_proveedor":"Guangzhou Fashion Co. Ltd","direccion_proveedor":"Zhongshan Avenue 88, Tianhe District, Guangzhou 510630, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"1172.46","cuota_iva_original":"246.22","total_factura_original":"1418.68","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00265","albaran_ids_ref":"ALB-00270;ALB-00271","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CAL-GR-41","descripcion":"Bota casual gris","cantidad":16,"precio_unitario_original":"37.09","descuento_pct":"0.00","total_linea_original":"593.44"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":10,"precio_unitario_original":"27.69","descuento_pct":"0.00","total_linea_original":"276.90"},
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":13,"precio_unitario_original":"23.24","descuento_pct":"0.00","total_linea_original":"302.12"}
+]},
+{"factura_id":"FAC-00248","numero_factura":"F-2026-00249","fecha_expedicion":"2026-05-04","fecha_vencimiento":"2026-06-03","nif_proveedor":"CN6000009","razon_social_proveedor":"Shenzhen Textile Export Ltd","direccion_proveedor":"Huaqiang North Road 245, Futian District, Shenzhen 518031, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"1631.77","cuota_iva_original":"342.67","total_factura_original":"1974.44","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00270","albaran_ids_ref":"ALB-00276;ALB-00277","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"ACC-MOC-BE","descripcion":"Mochila urbana beige","cantidad":37,"precio_unitario_original":"21.22","descuento_pct":"0.00","total_linea_original":"785.14"},
+{"sku":"CAL-BE-39","descripcion":"Sandalia urbana beige","cantidad":33,"precio_unitario_original":"20.70","descuento_pct":"0.00","total_linea_original":"683.10"},
+{"sku":"SUD-AZ-M","descripcion":"Sudadera capucha azul","cantidad":9,"precio_unitario_original":"18.17","descuento_pct":"0.00","total_linea_original":"163.53"}
+]},
+{"factura_id":"FAC-00282","numero_factura":"F-2026-00283","fecha_expedicion":"2026-05-25","fecha_vencimiento":"2026-06-24","nif_proveedor":"CN6000009","razon_social_proveedor":"Shenzhen Textile Export Ltd","direccion_proveedor":"Huaqiang North Road 245, Futian District, Shenzhen 518031, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"3204.35","cuota_iva_original":"672.91","total_factura_original":"3877.26","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":"PED-00307","albaran_ids_ref":"ALB-00313","tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"CHA-VD-L","descripcion":"Chaqueta cortavientos verde","cantidad":47,"precio_unitario_original":"38.79","descuento_pct":"0.00","total_linea_original":"1823.13"},
+{"sku":"PAN-BE-M","descripcion":"Pantalón chino beige","cantidad":12,"precio_unitario_original":"23.35","descuento_pct":"0.00","total_linea_original":"280.20"},
+{"sku":"CAL-NG-42","descripcion":"Zapatilla urbana negra","cantidad":32,"precio_unitario_original":"25.51","descuento_pct":"0.00","total_linea_original":"816.32"},
+{"sku":"SUD-NG-L","descripcion":"Sudadera capucha negra","cantidad":15,"precio_unitario_original":"18.98","descuento_pct":"0.00","total_linea_original":"284.70"}
+]},
+{"factura_id":"FAC-00298","numero_factura":"F-2026-00299","fecha_expedicion":"2026-07-04","fecha_vencimiento":"2026-08-03","nif_proveedor":"CN6000009","razon_social_proveedor":"Shenzhen Textile Export Ltd","direccion_proveedor":"Huaqiang North Road 245, Futian District, Shenzhen 518031, China","nif_cliente":"B99999999","razon_social_cliente":"Nextwear S.L.","moneda_original":"CNY","base_imponible_original":"693.98","cuota_iva_original":"145.74","total_factura_original":"839.72","forma_pago":null,"iban_proveedor":null,"pedido_id_ref":null,"albaran_ids_ref":null,"tipo_iva":"21.00","es_nota_credito":false,
+"lineas":[
+{"sku":"ACC-MOC-BE","descripcion":"Mochila urbana beige","cantidad":17,"precio_unitario_original":"19.96","descuento_pct":"0.00","total_linea_original":"339.32"},
+{"sku":"CAM-RO-M","descripcion":"Camiseta rayas roja","cantidad":46,"precio_unitario_original":"7.71","descuento_pct":"0.00","total_linea_original":"354.66"}
+]}
+]
