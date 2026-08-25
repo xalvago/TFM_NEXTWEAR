@@ -310,7 +310,7 @@ export async function getFacturaDetalle(
     supabase
       .from("casos_excepcion")
       .select(
-        "caso_id, tipo_excepcion, descripcion, factura_id, albaran_id, pedido_id, estado_resolucion, requiere_intervencion_humana"
+        "caso_id, tipo_excepcion, descripcion, factura_id, albaran_id, pedido_id, estado_resolucion, requiere_intervencion_humana, factura_relacionada_id"
       )
       .eq("factura_id", facturaId),
     supabase
@@ -371,6 +371,8 @@ export async function getFacturaDetalle(
     numero_factura: factura.numero_factura,
     estado_factura: factura.estado,
     target: "factura",
+    factura_id_vinculada: c.factura_relacionada_id,
+    numero_factura_vinculada: null,
   }));
 
   return {
