@@ -114,7 +114,7 @@ Estética moderna, editorial y limpia. Paleta cálida (crema/hueso de fondo, no 
 1. Sumas de dinero siempre en EUR (`_eur`), nunca sumar monedas `_original` distintas.
 2. Notas de crédito restan (importes negativos): gasto neto = suma directa de `total_factura_eur` (las NC ya vienen negativas).
 3. `stock_actual` es una vista de solo lectura: no escribir en ella, el stock se deriva de `stock_movimientos`.
-4. Dashboard de solo lectura: sin operaciones de escritura sobre la base.
+4. Dashboard de solo lectura: sin operaciones de escritura sobre la base. **Única excepción documentada:** botón "Borrar facturas nuevas" en la pestaña Facturas (`src/components/facturas/borrar-nuevas-dialog.tsx` + `src/app/api/facturas/nuevas/route.ts`), pensado para deshacer cargas de prueba del robot UiPath. Requiere introducir un `numero_factura` de referencia, muestra en un diálogo de confirmación las facturas concretas que se van a borrar (con su total EUR y proveedor) y solo tras confirmar explícitamente borra en cascada `facturas_lineas` → `facturas_albaranes` → `casos_excepcion` → `facturas`. Ninguna otra ruta debe realizar INSERT/UPDATE/DELETE.
 5. Excepciones = prioridad: facturas `en_excepcion` y filas de `casos_excepcion` visibles y filtrables de un vistazo.
 
 ## Contexto académico
