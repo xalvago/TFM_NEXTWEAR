@@ -109,6 +109,9 @@ PK compuesta: (`factura_id`, `linea_id`).
 
 Polimórfica — constraint real `chk_una_referencia` obliga rellenar **exactamente una** de `factura_id`/`albaran_id`/`pedido_id` (+ opcional `linea_id`, no cuenta pa' la regla). `tipo_excepcion` (enum real, CHECK en BD — usar solo estos valores, cualquier otro falla el insert):
 `duplicado`, `importe_distinto`, `sin_pedido`, `nota_credito`, `entrega_parcial`, `salto_divisa`, `entrega_incompleta`, `iban_no_coincide`.
+
+**`entrega_parcial` es valor muerto** — el CHECK lo admite pero 0 filas del dataset real lo usan. Pa' albarán con cantidad entregada menor a la pedida, usar **siempre `entrega_incompleta`** (25 filas reales, siempre con `albaran_id` relleno, nunca `factura_id`/`pedido_id`). No usar `entrega_parcial` en el robot aunque técnicamente pase el CHECK.
+
 Constraint `uq_caso_factura_tipo` — no puede haber dos casos con mismo (`factura_id`, `tipo_excepcion`), insert duplicado falla.
 
 ## 7. Checklist rápido pre-vuelo

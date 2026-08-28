@@ -152,6 +152,10 @@ CREATE TABLE casos_excepcion (
   linea_id                       text,
   albaran_id                     text REFERENCES albaranes(albaran_id),
   pedido_id                      text REFERENCES pedidos(pedido_id),
+  -- El CHECK de BD admite 'entrega_parcial', pero es valor muerto: 0 filas lo
+  -- usan en el dataset real. El tipo real de negocio pa' albarán incompleto
+  -- es 'entrega_incompleta' (25 filas, siempre con albaran_id). UiPath debe
+  -- usar SIEMPRE 'entrega_incompleta', nunca 'entrega_parcial'.
   tipo_excepcion                 text
     CHECK (tipo_excepcion IS NULL OR tipo_excepcion = ANY (ARRAY[
       'duplicado','importe_distinto','sin_pedido','nota_credito',
