@@ -1,7 +1,8 @@
 import { getProveedores } from "@/lib/queries/proveedores";
 import { formatInt, formatEUR } from "@/lib/finance";
 import { ProveedoresTable } from "@/components/proveedores/proveedores-table";
-import { Landmark } from "lucide-react";
+import { MapaProveedores } from "@/components/proveedores/mapa-proveedores";
+import { Landmark, MapPin } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -84,6 +85,21 @@ export default async function ProveedoresPage() {
           </div>
         </div>
       </section>
+
+      <div className="card-wash tint-sky relative overflow-hidden rounded-2xl shadow-card">
+        <div className="flex items-center gap-2 border-b border-border/60 px-5 py-4">
+          <span className="gradient-brand-soft grid size-8 place-items-center rounded-lg text-primary">
+            <MapPin aria-hidden size={15} strokeWidth={1.75} />
+          </span>
+          <div className="flex flex-col">
+            <span className="eyebrow">Mapa de proveedores</span>
+            <span className="text-xs text-muted-foreground">
+              Sede de cada proveedor · color por moneda de facturación
+            </span>
+          </div>
+        </div>
+        <MapaProveedores proveedores={proveedores} />
+      </div>
 
       <div className="card-wash relative overflow-hidden rounded-2xl shadow-card">
         <ProveedoresTable rows={proveedores} />
