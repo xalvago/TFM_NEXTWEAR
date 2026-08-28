@@ -102,12 +102,14 @@ PK compuesta: (`factura_id`, `linea_id`).
 2. **Notas de crédito → importes negativos.** Si `es_nota_credito = true`, todos importes (`base_imponible_eur`, `total_factura_eur`, etc) van con signo negativo.
 3. **No tocar `stock_actual`** — es vista, solo lectura, no forma parte flujo factura.
 4. **Nunca UPDATE/DELETE fuera flujo definido** — dashboard consumidor es solo lectura; robot solo hace INSERT (y transición controlada de `estado` en su propio flujo AP, no libre).
-5. `sku` en `facturas_lineas` DEBE existir ya en `productos` — si robot detecta SKU no reconocido, no inventar fila: crear caso en `casos_excepcion` con `tipo_excepcion = 'producto_no_reconocido'`.
-6. Si detecta duplicado (mismo `hash_documento` o mismo nº factura + proveedor), no insertar dos veces — crear caso `tipo_excepcion = 'duplicado'` en `casos_excepcion` en vez.
+5. `sku` en `facturas_lineas` DEBE existir ya en `productos` (constraint FK real, insert falla si no) — si robot detecta SKU no reconocido, no inventar fila: no hay tipo_excepcion dedicado para esto en el enum real (ver §6), usar `motivo_flag`/`flag_revision=true` en la línea y dejar el caso para revisión humana manual.
+6. Si detecta duplicado (mismo `hash_documento`, que tiene constraint UNIQUE real, o mismo nº factura + proveedor), no insertar dos veces — crear caso `tipo_excepcion = 'duplicado'` en `casos_excepcion` en vez.
 
 ## 6. Tabla `casos_excepcion` (si robot detecta problema al captar)
 
-Polimórfica — rellenar **exactamente una** de `factura_id`/`albaran_id`/`pedido_id` (+ opcional `linea_id`), más `tipo_excepcion` (duplicado, importe_distinto, sin_pedido, nota_credito, entrega_parcial, salto_divisa, producto_no_reconocido, entrega_incompleta, mercancia_danada).
+Polimórfica — constraint real `chk_una_referencia` obliga rellenar **exactamente una** de `factura_id`/`albaran_id`/`pedido_id` (+ opcional `linea_id`, no cuenta pa' la regla). `tipo_excepcion` (enum real, CHECK en BD — usar solo estos valores, cualquier otro falla el insert):
+`duplicado`, `importe_distinto`, `sin_pedido`, `nota_credito`, `entrega_parcial`, `salto_divisa`, `entrega_incompleta`, `iban_no_coincide`.
+Constraint `uq_caso_factura_tipo` — no puede haber dos casos con mismo (`factura_id`, `tipo_excepcion`), insert duplicado falla.
 
 ## 7. Checklist rápido pre-vuelo
 
