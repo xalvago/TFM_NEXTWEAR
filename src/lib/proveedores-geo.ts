@@ -10,6 +10,14 @@ export interface ProveedorGeo {
   ciudad: string;
 }
 
+// Almacén central Nextwear (destino de la ruta animada al hacer hover en un
+// pin). Coordenada de referencia en Madrid; no viene de ninguna tabla real.
+export const ALMACEN_CENTRAL_NEXTWEAR: ProveedorGeo = {
+  lat: 40.4168,
+  lng: -3.7038,
+  ciudad: "Madrid",
+};
+
 export const PROVEEDORES_GEO: Record<string, ProveedorGeo> = {
   "PROV-001": { lat: 43.263, lng: -2.935, ciudad: "Bilbao" },
   "PROV-002": { lat: 39.4699, lng: -0.3763, ciudad: "Valencia" },
