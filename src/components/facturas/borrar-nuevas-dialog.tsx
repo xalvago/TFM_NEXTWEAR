@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2Icon, Loader2Icon, AlertTriangleIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -25,52 +23,43 @@ interface FacturaNueva {
   estado: string | null;
 }
 
-type Paso = "referencia" | "confirmar" | "borrando" | "hecho";
+type Paso = "buscando" | "confirmar" | "borrando" | "hecho" | "vacio";
 
 export function BorrarNuevasDialog() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [paso, setPaso] = useState<Paso>("referencia");
-  const [referencia, setReferencia] = useState("");
+  const [paso, setPaso] = useState<Paso>("buscando");
   const [facturas, setFacturas] = useState<FacturaNueva[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [cargando, setCargando] = useState(false);
   const [borradas, setBorradas] = useState(0);
 
-  function resetYCerrar(nextOpen: boolean) {
-    setOpen(nextOpen);
-    if (!nextOpen) {
-      setPaso("referencia");
-      setReferencia("");
-      setFacturas([]);
-      setError(null);
-      setBorradas(0);
-    }
-  }
-
-  async function buscar() {
-    if (!referencia.trim()) return;
-    setCargando(true);
+  async function abrirYBuscar() {
+    setOpen(true);
+    setPaso("buscando");
     setError(null);
     try {
-      const res = await fetch(
-        `/api/facturas/nuevas?referencia=${encodeURIComponent(referencia.trim())}`
-      );
+      const res = await fetch("/api/facturas/nuevas");
       const json = await res.json();
       if (!json.ok) throw new Error(json.error);
       if (json.facturas.length === 0) {
-        setError(
-          `No hay facturas con número posterior a "${referencia.trim()}".`
-        );
         setFacturas([]);
+        setPaso("vacio");
         return;
       }
       setFacturas(json.facturas);
       setPaso("confirmar");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setCargando(false);
+      setPaso("vacio");
+    }
+  }
+
+  function cerrar(nextOpen: boolean) {
+    setOpen(nextOpen);
+    if (!nextOpen) {
+      setFacturas([]);
+      setError(null);
+      setBorradas(0);
     }
   }
 
@@ -81,10 +70,7 @@ export function BorrarNuevasDialog() {
       const res = await fetch("/api/facturas/nuevas", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          referencia: referencia.trim(),
-          factura_ids: facturas.map((f) => f.factura_id),
-        }),
+        body: JSON.stringify({ factura_ids: facturas.map((f) => f.factura_id) }),
       });
       const json = await res.json();
       if (!json.ok) throw new Error(json.error);
@@ -98,51 +84,44 @@ export function BorrarNuevasDialog() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={resetYCerrar}>
+    <Dialog open={open} onOpenChange={cerrar}>
       <Button
         variant="outline"
         size="sm"
         className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-        onClick={() => setOpen(true)}
+        onClick={abrirYBuscar}
       >
         <Trash2Icon data-icon="inline-start" />
         Borrar facturas nuevas
       </Button>
 
       <DialogContent className="sm:max-w-lg">
-        {paso === "referencia" && (
+        {paso === "buscando" && (
           <>
             <DialogHeader>
-              <DialogTitle>Borrar facturas nuevas</DialogTitle>
+              <DialogTitle>Buscando facturas nuevas…</DialogTitle>
               <DialogDescription>
-                Introduce el número de la última factura que quieres
-                conservar. Se buscarán todas las facturas con número
-                posterior (p. ej. las últimas 7-8 subidas por el robot
-                UiPath) para poder revisarlas antes de borrar nada.
+                Comprobando qué facturas hay por encima de las 340 del
+                dataset base.
               </DialogDescription>
             </DialogHeader>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="referencia">Número de factura de referencia</Label>
-              <Input
-                id="referencia"
-                placeholder="F-2026-00342"
-                value={referencia}
-                onChange={(e) => setReferencia(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && buscar()}
-                autoFocus
-              />
-              {error && (
-                <p className="text-sm text-destructive">{error}</p>
-              )}
+            <div className="flex justify-center py-6">
+              <Loader2Icon className="size-6 animate-spin text-muted-foreground" />
             </div>
+          </>
+        )}
+
+        {paso === "vacio" && (
+          <>
+            <DialogHeader>
+              <DialogTitle>Sin facturas nuevas</DialogTitle>
+              <DialogDescription>
+                {error ??
+                  "No hay ninguna factura por encima de las 340 del dataset base. Nada que borrar."}
+              </DialogDescription>
+            </DialogHeader>
             <DialogFooter>
-              <Button variant="outline" onClick={() => resetYCerrar(false)}>
-                Cancelar
-              </Button>
-              <Button onClick={buscar} disabled={cargando || !referencia.trim()}>
-                {cargando && <Loader2Icon className="animate-spin" />}
-                Buscar facturas nuevas
-              </Button>
+              <Button onClick={() => cerrar(false)}>Cerrar</Button>
             </DialogFooter>
           </>
         )}
@@ -158,7 +137,8 @@ export function BorrarNuevasDialog() {
               <DialogDescription>
                 Esta acción es irreversible: se borrarán estas facturas y sus
                 líneas, vínculos con albaranes y casos de excepción
-                asociados. Revisa las referencias antes de confirmar.
+                asociados, dejando el dataset base de 340 facturas intacto.
+                Revisa las referencias antes de confirmar.
               </DialogDescription>
             </DialogHeader>
             <div className="max-h-64 overflow-y-auto rounded-lg border">
@@ -195,10 +175,10 @@ export function BorrarNuevasDialog() {
             <DialogFooter>
               <Button
                 variant="outline"
-                onClick={() => setPaso("referencia")}
+                onClick={() => cerrar(false)}
                 disabled={paso === "borrando"}
               >
-                Atrás
+                Cancelar
               </Button>
               <Button
                 variant="destructive"
@@ -221,11 +201,11 @@ export function BorrarNuevasDialog() {
               <DialogTitle>Facturas borradas</DialogTitle>
               <DialogDescription>
                 Se han borrado {borradas} factura{borradas === 1 ? "" : "s"} y
-                sus datos relacionados.
+                sus datos relacionados. El dataset base de 340 queda intacto.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button onClick={() => resetYCerrar(false)}>Cerrar</Button>
+              <Button onClick={() => cerrar(false)}>Cerrar</Button>
             </DialogFooter>
           </>
         )}

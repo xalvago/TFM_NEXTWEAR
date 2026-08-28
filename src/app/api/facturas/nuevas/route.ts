@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { BASELINE_FACTURA_SEQ } from "@/lib/constants";
 
 // Datos en vivo: nunca prerenderizar/cachear esta ruta.
 export const dynamic = "force-dynamic";
@@ -7,9 +8,9 @@ export const dynamic = "force-dynamic";
 /**
  * Excepción documentada a la regla "dashboard de solo lectura" (ver CLAUDE.md):
  * permite localizar y borrar, con confirmación explícita, facturas nuevas
- * insertadas por el robot UiPath por encima de una referencia (numero_factura)
- * dada. Solo esta ruta puede escribir en la base; el resto del dashboard sigue
- * siendo de solo lectura.
+ * insertadas por el robot UiPath por encima del dataset base (340 facturas,
+ * factura_id FAC-00001..FAC-00340, sin huecos). Solo esta ruta puede escribir
+ * en la base; el resto del dashboard sigue siendo de solo lectura.
  */
 
 interface FacturaNueva {
@@ -21,29 +22,18 @@ interface FacturaNueva {
   estado: string | null;
 }
 
-// numero_factura tiene forma "F-2026-00342" o, para notas de crédito,
-// "NC-F-2026-00346". Comparar como texto ("NC-..." > "F-...") daría falsos
-// positivos: toda nota de crédito "ganaría" a cualquier factura normal por
-// empezar por N. Se parsea año+secuencia y solo se compara dentro del mismo
-// año y mismo tipo (factura normal vs. nota de crédito) que la referencia.
-const NUMERO_FACTURA_RE = /^(NC-)?F-(\d{4})-(\d+)$/;
+// factura_id tiene forma "FAC-00340": secuencial, sin huecos, en orden de
+// inserción. Es más fiable que numero_factura (que tiene años distintos,
+// notas de crédito "NC-F-..." y huecos) para saber qué es "nuevo": cualquier
+// factura_id con secuencia por encima del dataset base.
+const FACTURA_ID_RE = /^FAC-(\d+)$/;
 
-function parseNumeroFactura(numero: string) {
-  const m = numero.match(NUMERO_FACTURA_RE);
-  if (!m) return null;
-  return { esNotaCredito: Boolean(m[1]), anio: Number(m[2]), seq: Number(m[3]) };
+function parseFacturaSeq(facturaId: string): number | null {
+  const m = facturaId.match(FACTURA_ID_RE);
+  return m ? Number(m[1]) : null;
 }
 
-async function buscarFacturasNuevas(
-  referencia: string
-): Promise<FacturaNueva[]> {
-  const ref = parseNumeroFactura(referencia);
-  if (!ref) {
-    throw new Error(
-      `Formato de número de factura no reconocido: "${referencia}". Se espera algo como "F-2026-00342".`
-    );
-  }
-
+async function buscarFacturasNuevas(): Promise<FacturaNueva[]> {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("facturas")
@@ -54,34 +44,21 @@ async function buscarFacturasNuevas(
 
   return (data ?? [])
     .filter((f) => {
-      if (!f.numero_factura) return false;
-      const candidato = parseNumeroFactura(f.numero_factura);
-      if (!candidato) return false;
-      return (
-        candidato.esNotaCredito === ref.esNotaCredito &&
-        candidato.anio === ref.anio &&
-        candidato.seq > ref.seq
-      );
+      const seq = parseFacturaSeq(f.factura_id);
+      // factura_id que no encaje en el patrón FAC-##### (ej. generado con otro
+      // esquema) se trata como "nuevo" directamente: no puede ser del dataset
+      // base, que se sabe que sigue ese patrón al completo.
+      return seq === null || seq > BASELINE_FACTURA_SEQ;
     })
-    .sort((a, b) => (a.numero_factura ?? "").localeCompare(b.numero_factura ?? ""));
+    .sort((a, b) => a.factura_id.localeCompare(b.factura_id));
 }
 
-// GET /api/facturas/nuevas?referencia=F-2026-00342
-// Devuelve la lista de facturas con numero_factura > referencia, para que el
-// diálogo de confirmación muestre exactamente qué se va a borrar.
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const referencia = searchParams.get("referencia")?.trim();
-
-  if (!referencia) {
-    return NextResponse.json(
-      { ok: false, error: "Falta el parámetro 'referencia'." },
-      { status: 400 }
-    );
-  }
-
+// GET /api/facturas/nuevas
+// Devuelve las facturas insertadas por encima del dataset base de 340, para
+// que el diálogo de confirmación muestre exactamente qué se va a borrar.
+export async function GET() {
   try {
-    const facturas = await buscarFacturasNuevas(referencia);
+    const facturas = await buscarFacturasNuevas();
     return NextResponse.json({ ok: true, facturas });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
@@ -90,12 +67,12 @@ export async function GET(request: Request) {
 }
 
 // DELETE /api/facturas/nuevas
-// Body: { referencia: string, factura_ids: string[] }
-// Vuelve a resolver "referencia" en servidor y solo borra la intersección con
-// factura_ids recibido: así el cliente no puede colar IDs fuera del conjunto
-// que el usuario vio y confirmó en el diálogo.
+// Body: { factura_ids: string[] }
+// Vuelve a resolver "qué es nuevo" en servidor y solo borra la intersección
+// con factura_ids recibido: así el cliente no puede colar IDs fuera del
+// conjunto que el usuario vio y confirmó en el diálogo.
 export async function DELETE(request: Request) {
-  let body: { referencia?: string; factura_ids?: string[] };
+  let body: { factura_ids?: string[] };
   try {
     body = await request.json();
   } catch {
@@ -105,12 +82,10 @@ export async function DELETE(request: Request) {
     );
   }
 
-  const referencia = body.referencia?.trim();
   const idsConfirmados = body.factura_ids;
-
-  if (!referencia || !Array.isArray(idsConfirmados) || idsConfirmados.length === 0) {
+  if (!Array.isArray(idsConfirmados) || idsConfirmados.length === 0) {
     return NextResponse.json(
-      { ok: false, error: "Faltan 'referencia' o 'factura_ids'." },
+      { ok: false, error: "Falta 'factura_ids'." },
       { status: 400 }
     );
   }
@@ -119,8 +94,8 @@ export async function DELETE(request: Request) {
     const supabase = getSupabaseAdmin();
 
     // Re-verificar contra el servidor: solo se borra lo que sigue existiendo
-    // y sigue siendo "nuevo" respecto a la referencia dada.
-    const vigentes = await buscarFacturasNuevas(referencia);
+    // y sigue siendo "nuevo" (por encima del dataset base de 340).
+    const vigentes = await buscarFacturasNuevas();
     const idsVigentes = new Set(vigentes.map((f) => f.factura_id));
     const idsABorrar = idsConfirmados.filter((id) => idsVigentes.has(id));
 
@@ -129,7 +104,7 @@ export async function DELETE(request: Request) {
         {
           ok: false,
           error:
-            "Ninguna de las facturas confirmadas sigue siendo válida (puede que ya se hayan borrado o hayan dejado de cumplir la referencia). Vuelve a cargar la lista.",
+            "Ninguna de las facturas confirmadas sigue siendo válida (puede que ya se hayan borrado). Vuelve a cargar la lista.",
         },
         { status: 409 }
       );
