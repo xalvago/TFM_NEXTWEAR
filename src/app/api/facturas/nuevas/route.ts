@@ -20,6 +20,7 @@ interface FacturaNueva {
   fecha_expedicion: string | null;
   total_factura_eur: number | null;
   estado: string | null;
+  albaranes_vinculados: number;
 }
 
 // factura_id tiene forma "FAC-00340": secuencial, sin huecos, en orden de
@@ -42,7 +43,7 @@ async function buscarFacturasNuevas(): Promise<FacturaNueva[]> {
     );
   if (error) throw error;
 
-  return (data ?? [])
+  const nuevas = (data ?? [])
     .filter((f) => {
       const seq = parseFacturaSeq(f.factura_id);
       // factura_id que no encaje en el patrón FAC-##### (ej. generado con otro
@@ -51,6 +52,30 @@ async function buscarFacturasNuevas(): Promise<FacturaNueva[]> {
       return seq === null || seq > BASELINE_FACTURA_SEQ;
     })
     .sort((a, b) => a.factura_id.localeCompare(b.factura_id));
+
+  if (nuevas.length === 0) return [];
+
+  // Vínculos en facturas_albaranes de esas facturas nuevas: se muestran en el
+  // diálogo de confirmación para que quede claro qué más se va a borrar en
+  // cascada, no solo la cabecera y las líneas.
+  const { data: vinculos, error: errVinculos } = await supabase
+    .from("facturas_albaranes")
+    .select("factura_id")
+    .in(
+      "factura_id",
+      nuevas.map((f) => f.factura_id)
+    );
+  if (errVinculos) throw errVinculos;
+
+  const conteoVinculos = new Map<string, number>();
+  for (const v of vinculos ?? []) {
+    conteoVinculos.set(v.factura_id, (conteoVinculos.get(v.factura_id) ?? 0) + 1);
+  }
+
+  return nuevas.map((f) => ({
+    ...f,
+    albaranes_vinculados: conteoVinculos.get(f.factura_id) ?? 0,
+  }));
 }
 
 // GET /api/facturas/nuevas
@@ -118,9 +143,9 @@ export async function DELETE(request: Request) {
       .in("factura_id", idsABorrar);
     if (errLineas) throw errLineas;
 
-    const { error: errAlbaranes } = await supabase
+    const { error: errAlbaranes, count: albaranesBorrados } = await supabase
       .from("facturas_albaranes")
-      .delete()
+      .delete({ count: "exact" })
       .in("factura_id", idsABorrar);
     if (errAlbaranes) throw errAlbaranes;
 
@@ -142,7 +167,11 @@ export async function DELETE(request: Request) {
       .in("factura_id", idsABorrar);
     if (errFacturas) throw errFacturas;
 
-    return NextResponse.json({ ok: true, borradas: count ?? idsABorrar.length });
+    return NextResponse.json({
+      ok: true,
+      borradas: count ?? idsABorrar.length,
+      albaranesVinculosBorrados: albaranesBorrados ?? 0,
+    });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     return NextResponse.json({ ok: false, error: message }, { status: 500 });

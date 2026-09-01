@@ -21,6 +21,7 @@ interface FacturaNueva {
   fecha_expedicion: string | null;
   total_factura_eur: number | null;
   estado: string | null;
+  albaranes_vinculados: number;
 }
 
 type Paso = "buscando" | "confirmar" | "borrando" | "hecho" | "vacio";
@@ -32,6 +33,7 @@ export function BorrarNuevasDialog() {
   const [facturas, setFacturas] = useState<FacturaNueva[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [borradas, setBorradas] = useState(0);
+  const [albaranesVinculosBorrados, setAlbaranesVinculosBorrados] = useState(0);
 
   async function abrirYBuscar() {
     setOpen(true);
@@ -60,6 +62,7 @@ export function BorrarNuevasDialog() {
       setFacturas([]);
       setError(null);
       setBorradas(0);
+      setAlbaranesVinculosBorrados(0);
     }
   }
 
@@ -75,6 +78,7 @@ export function BorrarNuevasDialog() {
       const json = await res.json();
       if (!json.ok) throw new Error(json.error);
       setBorradas(json.borradas);
+      setAlbaranesVinculosBorrados(json.albaranesVinculosBorrados ?? 0);
       setPaso("hecho");
       router.refresh();
     } catch (err) {
@@ -149,6 +153,7 @@ export function BorrarNuevasDialog() {
                     <th className="px-3 py-2 text-left">Proveedor</th>
                     <th className="px-3 py-2 text-left">Fecha</th>
                     <th className="px-3 py-2 text-right">Total EUR</th>
+                    <th className="px-3 py-2 text-right">Albaranes</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -165,6 +170,9 @@ export function BorrarNuevasDialog() {
                       </td>
                       <td className="px-3 py-2 text-right font-mono">
                         {formatEUR(f.total_factura_eur)}
+                      </td>
+                      <td className="px-3 py-2 text-right font-mono">
+                        {f.albaranes_vinculados}
                       </td>
                     </tr>
                   ))}
@@ -200,8 +208,11 @@ export function BorrarNuevasDialog() {
             <DialogHeader>
               <DialogTitle>Facturas borradas</DialogTitle>
               <DialogDescription>
-                Se han borrado {borradas} factura{borradas === 1 ? "" : "s"} y
-                sus datos relacionados. El dataset base de 340 queda intacto.
+                Se han borrado {borradas} factura{borradas === 1 ? "" : "s"},{" "}
+                {albaranesVinculosBorrados} vínculo
+                {albaranesVinculosBorrados === 1 ? "" : "s"} en
+                facturas_albaranes y sus demás datos relacionados. El dataset
+                base de 340 queda intacto.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
