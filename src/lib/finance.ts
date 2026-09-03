@@ -144,28 +144,26 @@ export function estadoTone(estado: string | null | undefined): StateTone {
 
 // --- Tipos de excepción -------------------------------------------------------
 
+// 7 valores válidos (casos_excepcion_tipo_excepcion_check): entrega_parcial
+// se eliminó por redundante con entrega_incompleta.
 export const TIPO_EXCEPCION_LABEL: Record<string, string> = {
   duplicado: "Duplicado",
   importe_distinto: "Importe distinto",
   sin_pedido: "Sin pedido",
   nota_credito: "Nota de crédito",
-  entrega_parcial: "Entrega parcial",
   salto_divisa: "Salto de divisa",
-  producto_no_reconocido: "Producto no reconocido",
   entrega_incompleta: "Entrega incompleta",
-  mercancia_danada: "Mercancía dañada",
   iban_no_coincide: "IBAN no coincide",
 };
 
 /**
  * Tipos que el sistema ya sabe tratar sin intervención (nota de crédito cruzada
- * automáticamente, entrega parcial/incompleta gestionada por reposición). El
+ * automáticamente, entrega incompleta gestionada por reposición). El
  * resto (duplicado, importe_distinto, sin_pedido, salto_divisa, iban_no_coincide)
  * requiere revisión humana. Reflejado en BD por `casos_excepcion.requiere_intervencion_humana`.
  */
 export const TIPOS_EXCEPCION_AUTOMATICOS = new Set([
   "nota_credito",
-  "entrega_parcial",
   "entrega_incompleta",
 ]);
 

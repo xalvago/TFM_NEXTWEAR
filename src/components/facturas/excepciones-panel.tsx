@@ -51,8 +51,6 @@ export function ExcepcionesPanel({
         c.factura_id,
         c.albaran_id,
         c.pedido_id,
-        c.numero_factura_vinculada,
-        c.factura_id_vinculada,
         c.descripcion,
         TIPO_EXCEPCION_LABEL[c.tipo_excepcion ?? ""],
         ESTADO_RESOLUCION_LABEL[c.estado_resolucion ?? ""],
@@ -191,39 +189,29 @@ export function ExcepcionesPanel({
 }
 
 function TargetLink({ caso }: { caso: CasoExcepcionItem }) {
-  if (caso.target === "factura" && caso.factura_id) {
-    return (
-      <Link
-        href={`/facturas/${caso.factura_id}`}
-        className="font-numeric text-xs text-primary hover:underline underline-offset-2 whitespace-nowrap"
-      >
-        {caso.numero_factura ?? caso.factura_id} →
-      </Link>
-    );
-  }
-  const id =
-    caso.albaran_id ?? caso.pedido_id ?? caso.factura_id ?? "—";
-  const label =
-    caso.target === "albaran"
-      ? "Albarán"
-      : caso.target === "pedido"
-        ? "Pedido"
-        : "Doc.";
-  if (caso.target === "albaran" && caso.factura_id_vinculada) {
+  // chk_al_menos_una_referencia solo exige >=1: un caso puede tener
+  // factura_id Y albaran_id a la vez (p. ej. entrega_incompleta). Se
+  // prioriza el enlace a factura y se muestra el albarán al lado si
+  // también está presente.
+  if (caso.factura_id) {
     return (
       <span className="flex items-center gap-1.5 whitespace-nowrap">
-        <span className="font-numeric text-xs text-muted-foreground">
-          {label} {id}
-        </span>
+        {caso.albaran_id && (
+          <span className="font-numeric text-xs text-muted-foreground">
+            Albarán {caso.albaran_id}
+          </span>
+        )}
         <Link
-          href={`/facturas/${caso.factura_id_vinculada}`}
+          href={`/facturas/${caso.factura_id}`}
           className="font-numeric text-xs text-primary hover:underline underline-offset-2"
         >
-          {caso.numero_factura_vinculada ?? caso.factura_id_vinculada} →
+          {caso.numero_factura ?? caso.factura_id} →
         </Link>
       </span>
     );
   }
+  const id = caso.albaran_id ?? caso.pedido_id ?? "—";
+  const label = caso.albaran_id ? "Albarán" : caso.pedido_id ? "Pedido" : "Doc.";
   return (
     <span className="font-numeric text-xs text-muted-foreground whitespace-nowrap">
       {label} {id}

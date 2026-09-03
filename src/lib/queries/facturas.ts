@@ -100,17 +100,15 @@ export interface CasoExcepcionItem {
   pedido_id: string | null;
   estado_resolucion: string | null;
   requiere_intervencion_humana: boolean;
+  origen_deteccion: string | null;
   // Contexto del documento afectado (para el enlace/etiqueta):
   numero_factura: string | null;
   estado_factura: string | null;
+  // chk_al_menos_una_referencia solo exige >=1 de factura_id/albaran_id/
+  // pedido_id rellena: un caso puede referenciar factura Y albarán a la vez
+  // (p. ej. entrega_incompleta). target prioriza factura para el enlace
+  // principal; albaran_id/pedido_id se muestran igualmente si están presentes.
   target: "factura" | "albaran" | "pedido" | "desconocido";
-  // Factura que quedó afectada por el albarán del caso (columna
-  // casos_excepcion.factura_relacionada_id, backfill vía migración 20).
-  // Aparte de factura_id/albaran_id/pedido_id porque esa terna es
-  // polimórfica y solo admite una referencia rellena por fila
-  // (constraint chk_una_referencia).
-  factura_id_vinculada: string | null;
-  numero_factura_vinculada: string | null;
 }
 
 export async function getCasosExcepcion(
@@ -120,7 +118,7 @@ export async function getCasosExcepcion(
   let query = supabase
     .from("casos_excepcion")
     .select(
-      "caso_id, tipo_excepcion, descripcion, factura_id, albaran_id, pedido_id, estado_resolucion, requiere_intervencion_humana, factura_relacionada_id, facturas!casos_excepcion_factura_id_fkey(numero_factura, estado), facturas_relacionadas:facturas!casos_excepcion_factura_relacionada_id_fkey(numero_factura)"
+      "caso_id, tipo_excepcion, descripcion, factura_id, albaran_id, pedido_id, estado_resolucion, requiere_intervencion_humana, origen_deteccion, facturas!casos_excepcion_factura_id_fkey(numero_factura, estado)"
     )
     .order("caso_id");
   if (tipo) query = query.eq("tipo_excepcion", tipo);
@@ -132,9 +130,6 @@ export async function getCasosExcepcion(
     const fac = c.facturas as unknown as {
       numero_factura: string | null;
       estado: string | null;
-    } | null;
-    const facVinculada = c.facturas_relacionadas as unknown as {
-      numero_factura: string | null;
     } | null;
     const target: CasoExcepcionItem["target"] = c.factura_id
       ? "factura"
@@ -152,11 +147,10 @@ export async function getCasosExcepcion(
       pedido_id: c.pedido_id,
       estado_resolucion: c.estado_resolucion,
       requiere_intervencion_humana: c.requiere_intervencion_humana,
+      origen_deteccion: c.origen_deteccion,
       numero_factura: fac?.numero_factura ?? null,
       estado_factura: fac?.estado ?? null,
       target,
-      factura_id_vinculada: c.factura_relacionada_id,
-      numero_factura_vinculada: facVinculada?.numero_factura ?? null,
     };
   });
 }
@@ -310,7 +304,7 @@ export async function getFacturaDetalle(
     supabase
       .from("casos_excepcion")
       .select(
-        "caso_id, tipo_excepcion, descripcion, factura_id, albaran_id, pedido_id, estado_resolucion, requiere_intervencion_humana, factura_relacionada_id"
+        "caso_id, tipo_excepcion, descripcion, factura_id, albaran_id, pedido_id, estado_resolucion, requiere_intervencion_humana, origen_deteccion"
       )
       .eq("factura_id", facturaId),
     supabase
@@ -368,11 +362,10 @@ export async function getFacturaDetalle(
     pedido_id: c.pedido_id,
     estado_resolucion: c.estado_resolucion,
     requiere_intervencion_humana: c.requiere_intervencion_humana,
+    origen_deteccion: c.origen_deteccion,
     numero_factura: factura.numero_factura,
     estado_factura: factura.estado,
     target: "factura",
-    factura_id_vinculada: c.factura_relacionada_id,
-    numero_factura_vinculada: null,
   }));
 
   return {

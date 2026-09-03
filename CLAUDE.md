@@ -67,7 +67,7 @@ Cadena del proceso: **Proveedor → Pedido → Albarán → Factura**, con `tipo
 | `facturas` | 334 | `factura_id` | Tabla central. Doble moneda `_original`/`_eur`. Estado del ciclo. `motivo_excepcion`. |
 | `facturas_lineas` | 804 | (`factura_id`,`linea_id`) | Detalle. `flag_revision`/`motivo_flag`, `centro_coste_id` por línea. |
 | `stock_movimientos` | 797 | `movimiento_id` | `tipo_movimiento` ∈ {entrada,salida}. `valor_unitario_eur`, `stock_resultante`. |
-| `casos_excepcion` | 84 | `caso_id` | Polimórfica (una de `factura_id`/`albaran_id`/`pedido_id`). También `linea_id`. |
+| `casos_excepcion` | 84 | `caso_id` | Polimórfica (≥1 de `factura_id`/`albaran_id`/`pedido_id`, pueden coexistir). También `linea_id`, `origen_deteccion`. |
 | `stock_actual` (VISTA) | — | — | Columnas: `sku`, `centro_coste_id`, `cantidad_disponible`, `fecha_ultima_actualizacion`. **No trae valor**: para valorar, cruzar con `productos.coste_unitario` o el `valor_unitario_eur` de `stock_movimientos`. Solo lectura. |
 
 ### Campos clave
@@ -76,7 +76,7 @@ Cadena del proceso: **Proveedor → Pedido → Albarán → Factura**, con `tipo
 - **`facturas.estado`** (flujo): `pendiente_captura → pendiente_conciliacion → conciliada_ok / en_excepcion → pendiente_aprobacion → aprobada / rechazada → contabilizada → pagada` (+ `anulada`). `en_excepcion` y `pendiente_aprobacion` requieren atención humana y deben ser visibles/filtrables de un vistazo.
 - **`facturas.saldo_pendiente_eur`:** saldo neto tras notas de crédito y pagos — usar este campo para "deuda pendiente", no `total_factura_eur`.
 - **Notas de crédito:** filas de `facturas` con `es_nota_credito = true` y `factura_original_id` apuntando a la factura rectificada. Importes **negativos** (ej. `total_factura_eur = -758.75`): reducen el gasto total neto. Sumar directamente ya resta.
-- **`casos_excepcion` es polimórfica:** exactamente una de `factura_id`/`albaran_id`/`pedido_id` está rellena por fila (opcionalmente `linea_id`). `tipo_excepcion` ∈ {duplicado, importe_distinto, sin_pedido, nota_credito, entrega_parcial, salto_divisa, producto_no_reconocido, entrega_incompleta, mercancia_danada}.
+- **`casos_excepcion` es polimórfica:** al menos una de `factura_id`/`albaran_id`/`pedido_id` está rellena por fila (`chk_al_menos_una_referencia`, ≥1 — pueden coexistir, p. ej. `entrega_incompleta` rellena `factura_id` y `albaran_id` a la vez); opcionalmente `linea_id`. `tipo_excepcion` ∈ {duplicado, importe_distinto, sin_pedido, nota_credito, salto_divisa, entrega_incompleta, iban_no_coincide} (7 valores; `entrega_parcial` se eliminó por redundante). `origen_deteccion` es texto libre a rellenar por el Conciliador (sin valores fijos todavía).
 - **`facturas.albaran_ids_ref`** es texto (puede referenciar varios albaranes); `pedido_id_ref` referencia el pedido.
 
 ## Estructura del dashboard (3 pestañas)

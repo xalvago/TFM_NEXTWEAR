@@ -155,12 +155,6 @@ export async function DELETE(request: Request) {
       .in("factura_id", idsABorrar);
     if (errCasos) throw errCasos;
 
-    const { error: errCasosRel } = await supabase
-      .from("casos_excepcion")
-      .delete()
-      .in("factura_relacionada_id", idsABorrar);
-    if (errCasosRel) throw errCasosRel;
-
     const { error: errFacturas, count } = await supabase
       .from("facturas")
       .delete({ count: "exact" })
