@@ -21,6 +21,7 @@ interface FacturaNueva {
   total_factura_eur: number | null;
   estado: string | null;
   albaranes_vinculados: number;
+  logs_vinculados: number;
 }
 
 // factura_id tiene forma "FAC-00340": secuencial, sin huecos, en orden de
@@ -72,9 +73,28 @@ async function buscarFacturasNuevas(): Promise<FacturaNueva[]> {
     conteoVinculos.set(v.factura_id, (conteoVinculos.get(v.factura_id) ?? 0) + 1);
   }
 
+  // log_agentes: logs del robot (agente = "captura") asociados a esas
+  // facturas. Tienen FK a facturas, así que también hay que contarlos (y
+  // borrarlos) antes de poder borrar la cabecera.
+  const { data: logs, error: errLogs } = await supabase
+    .from("log_agentes")
+    .select("factura_id")
+    .in(
+      "factura_id",
+      nuevas.map((f) => f.factura_id)
+    );
+  if (errLogs) throw errLogs;
+
+  const conteoLogs = new Map<string, number>();
+  for (const l of logs ?? []) {
+    if (!l.factura_id) continue;
+    conteoLogs.set(l.factura_id, (conteoLogs.get(l.factura_id) ?? 0) + 1);
+  }
+
   return nuevas.map((f) => ({
     ...f,
     albaranes_vinculados: conteoVinculos.get(f.factura_id) ?? 0,
+    logs_vinculados: conteoLogs.get(f.factura_id) ?? 0,
   }));
 }
 
@@ -136,6 +156,8 @@ export async function DELETE(request: Request) {
     }
 
     // Cascada manual (mismo orden que las FK): líneas y vínculos primero,
+    // luego log_agentes (tiene FK a facturas Y a casos_excepcion, así que
+    // debe borrarse ANTES que ambas o las dos siguientes fallan por FK),
     // casos de excepción vinculados, y la cabecera al final.
     const { error: errLineas } = await supabase
       .from("facturas_lineas")
@@ -148,6 +170,29 @@ export async function DELETE(request: Request) {
       .delete({ count: "exact" })
       .in("factura_id", idsABorrar);
     if (errAlbaranes) throw errAlbaranes;
+
+    // Casos de excepción de estas facturas: hacen falta sus caso_id para
+    // poder borrar también los log_agentes que solo referencian caso_id
+    // (sin factura_id propio, p.ej. logs del Conciliador sobre el caso).
+    const { data: casosVinculados, error: errCasosSelect } = await supabase
+      .from("casos_excepcion")
+      .select("caso_id")
+      .in("factura_id", idsABorrar);
+    if (errCasosSelect) throw errCasosSelect;
+    const casoIds = (casosVinculados ?? []).map((c) => c.caso_id);
+
+    const { error: errLogs, count: logsBorrados } = await supabase
+      .from("log_agentes")
+      .delete({ count: "exact" })
+      .or(
+        [
+          `factura_id.in.(${idsABorrar.join(",")})`,
+          casoIds.length > 0 ? `caso_id.in.(${casoIds.join(",")})` : null,
+        ]
+          .filter(Boolean)
+          .join(",")
+      );
+    if (errLogs) throw errLogs;
 
     const { error: errCasos } = await supabase
       .from("casos_excepcion")
@@ -165,6 +210,7 @@ export async function DELETE(request: Request) {
       ok: true,
       borradas: count ?? idsABorrar.length,
       albaranesVinculosBorrados: albaranesBorrados ?? 0,
+      logsAgentesBorrados: logsBorrados ?? 0,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

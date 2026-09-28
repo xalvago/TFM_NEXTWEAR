@@ -22,6 +22,7 @@ interface FacturaNueva {
   total_factura_eur: number | null;
   estado: string | null;
   albaranes_vinculados: number;
+  logs_vinculados: number;
 }
 
 type Paso = "buscando" | "confirmar" | "borrando" | "hecho" | "vacio";
@@ -34,6 +35,7 @@ export function BorrarNuevasDialog() {
   const [error, setError] = useState<string | null>(null);
   const [borradas, setBorradas] = useState(0);
   const [albaranesVinculosBorrados, setAlbaranesVinculosBorrados] = useState(0);
+  const [logsAgentesBorrados, setLogsAgentesBorrados] = useState(0);
 
   async function abrirYBuscar() {
     setOpen(true);
@@ -63,6 +65,7 @@ export function BorrarNuevasDialog() {
       setError(null);
       setBorradas(0);
       setAlbaranesVinculosBorrados(0);
+      setLogsAgentesBorrados(0);
     }
   }
 
@@ -79,6 +82,7 @@ export function BorrarNuevasDialog() {
       if (!json.ok) throw new Error(json.error);
       setBorradas(json.borradas);
       setAlbaranesVinculosBorrados(json.albaranesVinculosBorrados ?? 0);
+      setLogsAgentesBorrados(json.logsAgentesBorrados ?? 0);
       setPaso("hecho");
       router.refresh();
     } catch (err) {
@@ -140,9 +144,9 @@ export function BorrarNuevasDialog() {
               </DialogTitle>
               <DialogDescription>
                 Esta acción es irreversible: se borrarán estas facturas y sus
-                líneas, vínculos con albaranes y casos de excepción
-                asociados, dejando el dataset base de 340 facturas intacto.
-                Revisa las referencias antes de confirmar.
+                líneas, vínculos con albaranes, logs de agente (log_agentes) y
+                casos de excepción asociados, dejando el dataset base de 340
+                facturas intacto. Revisa las referencias antes de confirmar.
               </DialogDescription>
             </DialogHeader>
             <div className="max-h-64 overflow-y-auto rounded-lg border">
@@ -154,6 +158,7 @@ export function BorrarNuevasDialog() {
                     <th className="px-3 py-2 text-left">Fecha</th>
                     <th className="px-3 py-2 text-right">Total EUR</th>
                     <th className="px-3 py-2 text-right">Albaranes</th>
+                    <th className="px-3 py-2 text-right">Logs agente</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -173,6 +178,9 @@ export function BorrarNuevasDialog() {
                       </td>
                       <td className="px-3 py-2 text-right font-mono">
                         {f.albaranes_vinculados}
+                      </td>
+                      <td className="px-3 py-2 text-right font-mono">
+                        {f.logs_vinculados}
                       </td>
                     </tr>
                   ))}
@@ -211,8 +219,10 @@ export function BorrarNuevasDialog() {
                 Se han borrado {borradas} factura{borradas === 1 ? "" : "s"},{" "}
                 {albaranesVinculosBorrados} vínculo
                 {albaranesVinculosBorrados === 1 ? "" : "s"} en
-                facturas_albaranes y sus demás datos relacionados. El dataset
-                base de 340 queda intacto.
+                facturas_albaranes, {logsAgentesBorrados} log
+                {logsAgentesBorrados === 1 ? "" : "s"} en log_agentes y sus
+                demás datos relacionados. El dataset base de 340 queda
+                intacto.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
