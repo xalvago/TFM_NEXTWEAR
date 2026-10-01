@@ -193,6 +193,49 @@ export function estadoResolucionTone(
   }
 }
 
+// --- Estados de pedido y albarán -----------------------------------------------
+
+export const ESTADO_PEDIDO_LABEL: Record<string, string> = {
+  abierto: "Abierto",
+  parcialmente_recibido: "Parcialmente recibido",
+  recibido_completo: "Recibido completo",
+  cerrado: "Cerrado",
+  cancelado: "Cancelado",
+};
+
+export function estadoPedidoTone(estado: string | null | undefined): StateTone {
+  switch (estado) {
+    case "recibido_completo":
+    case "cerrado":
+      return "ok";
+    case "abierto":
+      return "pending";
+    case "parcialmente_recibido":
+      return "credit";
+    default:
+      return "neutral";
+  }
+}
+
+export const ESTADO_ALBARAN_LABEL: Record<string, string> = {
+  registrado: "Registrado",
+  conciliado: "Conciliado",
+  discrepancia: "Discrepancia",
+};
+
+export function estadoAlbaranTone(estado: string | null | undefined): StateTone {
+  switch (estado) {
+    case "conciliado":
+      return "ok";
+    case "discrepancia":
+      return "exception";
+    case "registrado":
+      return "pending";
+    default:
+      return "neutral";
+  }
+}
+
 // --- Estados de pago -----------------------------------------------------------
 
 export const PAGO_ESTADO_LABEL: Record<string, string> = {

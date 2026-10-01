@@ -1,5 +1,6 @@
 import "server-only";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { getTasasVivas } from "@/lib/fx-live";
 import { ANIOS_DATASET, MESES_CORTO, anioDe, mesDe } from "@/lib/finance";
 
 /**
@@ -51,8 +52,12 @@ export interface GastoPorMoneda {
 
 export interface TipoCambioActual {
   moneda: string; // USD | CNY
-  tasa: number; // unidades de EUR que valen 1 unidad de `moneda` (convención del dataset: original * tasa = EUR)
+  tasa: number; // unidades de `moneda` por 1 EUR (p. ej. ~7.7 CNY/EUR): eur = original / tasa
   fecha: string;
+  fuente: "bce_en_vivo" | "dataset";
+  // Última tasa registrada en `tipos_cambio` (la de valoración de facturas).
+  tasaDataset: number;
+  fechaDataset: string;
 }
 
 export interface ExecutiveData {
@@ -275,9 +280,27 @@ export async function getExecutiveData(
   for (const t of tiposCambioRows) {
     if (tiposCambioVistos.has(t.moneda_origen)) continue;
     tiposCambioVistos.add(t.moneda_origen);
-    tiposCambio.push({ moneda: t.moneda_origen, tasa: t.tasa_cambio, fecha: t.fecha });
+    tiposCambio.push({
+      moneda: t.moneda_origen,
+      tasa: t.tasa_cambio,
+      fecha: t.fecha,
+      fuente: "dataset",
+      tasaDataset: t.tasa_cambio,
+      fechaDataset: t.fecha,
+    });
   }
   tiposCambio.sort((a, b) => a.moneda.localeCompare(b.moneda));
+
+  // Tasa en vivo (BCE). Si la API no responde, se mantiene la del dataset.
+  const vivas = await getTasasVivas(tiposCambio.map((t) => t.moneda));
+  for (const t of tiposCambio) {
+    const v = vivas[t.moneda];
+    if (v) {
+      t.tasa = v.tasa;
+      t.fecha = v.fecha;
+      t.fuente = "bce_en_vivo";
+    }
+  }
 
   return { anio, kpis, interanual, porCentro, porProveedor, porMoneda, tiposCambio };
 }

@@ -8,8 +8,9 @@ import type { TipoCambioActual } from "@/lib/queries/executive";
 
 /**
  * Conversor de divisas del dataset (USD/CNY → EUR y viceversa) usando la
- * última tasa disponible en `tipos_cambio`. Convención del dataset (verificada
- * contra facturas.total_factura_eur): eur = importe_original * tasa_cambio.
+ * tasa BCE en vivo (con la última de `tipos_cambio` como respaldo).
+ * `tasa` son unidades de moneda por 1 EUR (p. ej. ~7.7 CNY/EUR):
+ * eur = importe_original / tasa.
  */
 export function ConversorDivisas({ tasas }: { tasas: TipoCambioActual[] }) {
   const [monedaId, setMonedaId] = useState(tasas[0]?.moneda ?? "USD");
@@ -19,8 +20,8 @@ export function ConversorDivisas({ tasas }: { tasas: TipoCambioActual[] }) {
   const activa = tasas.find((t) => t.moneda === monedaId) ?? tasas[0];
   const resultado = activa
     ? direccion === "aEur"
-      ? amount * activa.tasa
-      : amount / activa.tasa
+      ? amount / activa.tasa
+      : amount * activa.tasa
     : 0;
 
   if (!activa) return null;
@@ -83,10 +84,24 @@ export function ConversorDivisas({ tasas }: { tasas: TipoCambioActual[] }) {
         </div>
       </div>
 
-      <p className="text-xs text-muted-foreground">
-        1 {monedaId} = {activa.tasa.toFixed(4)} EUR · tasa BCE del{" "}
-        {formatDate(activa.fecha)}
-      </p>
+      <div className="flex flex-col gap-1 text-xs text-muted-foreground">
+        <p className="flex items-center gap-1.5">
+          {activa.fuente === "bce_en_vivo" && (
+            <span
+              aria-hidden
+              className="size-1.5 rounded-full bg-[color:var(--ok)]"
+            />
+          )}
+          1 EUR = {activa.tasa.toFixed(4)} {monedaId} ·{" "}
+          {activa.fuente === "bce_en_vivo"
+            ? `BCE en vivo, ${formatDate(activa.fecha)}`
+            : `tasa del dataset, ${formatDate(activa.fecha)} (sin conexión al BCE)`}
+        </p>
+        <p>
+          Las facturas se valoran a su tasa de fecha (última registrada:{" "}
+          {activa.tasaDataset.toFixed(4)}, {formatDate(activa.fechaDataset)}).
+        </p>
+      </div>
     </div>
   );
 }

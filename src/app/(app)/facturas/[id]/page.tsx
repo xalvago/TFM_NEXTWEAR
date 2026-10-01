@@ -14,6 +14,8 @@ import {
   TIPO_ASIENTO_LABEL,
   ESTADO_REGISTRO_LABEL,
   estadoRegistroTone,
+  ESTADO_PEDIDO_LABEL,
+  ESTADO_ALBARAN_LABEL,
 } from "@/lib/finance";
 import { StateBadge } from "@/components/state-badge";
 import { Panel } from "@/components/panel";
@@ -161,7 +163,8 @@ export default async function FacturaDetallePage({
             <MatchCard
               label="Pedido"
               id={pedido.pedido_id}
-              estado={pedido.estado ?? "—"}
+              href={`/pedidos/${pedido.pedido_id}`}
+              estado={ESTADO_PEDIDO_LABEL[pedido.estado ?? ""] ?? pedido.estado ?? "—"}
               tone="neutral"
               extra={`Pedido ${formatDate(pedido.fecha_pedido)}`}
             />
@@ -177,7 +180,8 @@ export default async function FacturaDetallePage({
                   key={a.albaran_id}
                   label="Albarán"
                   id={a.albaran_id}
-                  estado={a.estado ?? "—"}
+                  href={`/albaranes/${a.albaran_id}`}
+                  estado={ESTADO_ALBARAN_LABEL[a.estado ?? ""] ?? a.estado ?? "—"}
                   tone={a.estado === "discrepancia" ? "exception" : "neutral"}
                   extra={`Entrega ${formatDate(a.fecha_entrega)}`}
                 />
@@ -431,6 +435,7 @@ export default async function FacturaDetallePage({
 function MatchCard({
   label,
   id,
+  href,
   estado,
   tone = "neutral",
   extra,
@@ -439,25 +444,29 @@ function MatchCard({
 }: {
   label: string;
   id: string;
+  href?: string;
   estado?: string | null;
   tone?: "ok" | "exception" | "pending" | "credit" | "neutral";
   extra?: string;
   emphasis?: boolean;
   missing?: boolean;
 }) {
-  return (
-    <div
-      className={cn(
-        "flex flex-col gap-2 rounded-2xl p-4",
-        emphasis
-          ? "bg-primary/8"
-          : missing
-            ? "bg-[color:var(--exception)]/8"
-            : "bg-secondary/60"
-      )}
-    >
+  const className = cn(
+    "flex flex-col gap-2 rounded-2xl p-4",
+    emphasis
+      ? "bg-primary/8"
+      : missing
+        ? "bg-[color:var(--exception)]/8"
+        : "bg-secondary/60",
+    href && "transition-colors hover:bg-accent/60"
+  );
+  const body = (
+    <>
       <span className="eyebrow">{label}</span>
-      <span className="font-numeric text-base">{id}</span>
+      <span className="font-numeric text-base">
+        {id}
+        {href ? " →" : ""}
+      </span>
       {estado && !missing && (
         <StateBadge tone={tone} dot={false}>
           {estado}
@@ -469,7 +478,14 @@ function MatchCard({
         </span>
       )}
       {extra && <span className="text-xs text-muted-foreground">{extra}</span>}
-    </div>
+    </>
+  );
+  return href ? (
+    <Link href={href} className={className}>
+      {body}
+    </Link>
+  ) : (
+    <div className={className}>{body}</div>
   );
 }
 

@@ -189,32 +189,27 @@ export function ExcepcionesPanel({
 }
 
 function TargetLink({ caso }: { caso: CasoExcepcionItem }) {
-  // chk_al_menos_una_referencia solo exige >=1: un caso puede tener
-  // factura_id Y albaran_id a la vez (p. ej. entrega_incompleta). Se
-  // prioriza el enlace a factura y se muestra el albarán al lado si
-  // también está presente.
-  if (caso.factura_id) {
-    return (
-      <span className="flex items-center gap-1.5 whitespace-nowrap">
-        {caso.albaran_id && (
-          <span className="font-numeric text-xs text-muted-foreground">
-            Albarán {caso.albaran_id}
-          </span>
-        )}
-        <Link
-          href={`/facturas/${caso.factura_id}`}
-          className="font-numeric text-xs text-primary hover:underline underline-offset-2"
-        >
+  // chk_al_menos_una_referencia solo exige >=1: un caso puede referenciar a la
+  // vez factura, albarán y pedido. Se enlazan todos los presentes.
+  const cls =
+    "font-numeric text-xs text-primary hover:underline underline-offset-2";
+  return (
+    <span className="flex flex-wrap items-center justify-end gap-x-2 gap-y-0.5">
+      {caso.pedido_id && (
+        <Link href={`/pedidos/${caso.pedido_id}`} className={cls}>
+          Pedido {caso.pedido_id}
+        </Link>
+      )}
+      {caso.albaran_id && (
+        <Link href={`/albaranes/${caso.albaran_id}`} className={cls}>
+          Albarán {caso.albaran_id}
+        </Link>
+      )}
+      {caso.factura_id && (
+        <Link href={`/facturas/${caso.factura_id}`} className={cls}>
           {caso.numero_factura ?? caso.factura_id} →
         </Link>
-      </span>
-    );
-  }
-  const id = caso.albaran_id ?? caso.pedido_id ?? "—";
-  const label = caso.albaran_id ? "Albarán" : caso.pedido_id ? "Pedido" : "Doc.";
-  return (
-    <span className="font-numeric text-xs text-muted-foreground whitespace-nowrap">
-      {label} {id}
+      )}
     </span>
   );
 }

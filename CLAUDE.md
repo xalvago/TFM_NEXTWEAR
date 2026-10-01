@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Tailwind CSS v4** (config vía `@import "tailwindcss"` + `@theme inline` en `src/app/globals.css`; sin `tailwind.config.js` clásico).
 - shadcn/ui (compatible Tailwind v4) + Recharts.
 - Supabase (`@supabase/supabase-js`) — acceso solo desde route handlers del backend.
-- Copiloto: capa agnóstica de proveedor, en modo mock (sin LLM conectado todavía).
+- Copiloto: bot externo ("FinFlow Bot", app propia en Vercel) embebido por iframe desde el botón flotante.
 
 ## Control de versiones — regla obligatoria
 
@@ -31,7 +31,7 @@ Tipos de Supabase: regenerar tras cambios de esquema y guardar en `src/lib/datab
 
 ## Qué se construye
 
-Dashboard web de control financiero y de inventario para Nextwear S.L. (retail ficticio), conectado en vivo a Supabase (Postgres). Incluye un copiloto conversacional (chat LLM) cuya interfaz y arquitectura se dejan preparadas en esta fase, pero **sin conectar a ningún LLM todavía** (proveedor por decidir).
+Dashboard web de control financiero y de inventario para Nextwear S.L. (retail ficticio), conectado en vivo a Supabase (Postgres). Incluye un copiloto conversacional (chat LLM) que es una app externa embebida por iframe (ver sección "Copiloto conversacional").
 
 Es la capa de consulta y control humano (pull) de un sistema multiagente de Cuentas por Pagar con conciliación a tres bandas (factura vs. pedido vs. albarán) — TFM del Máster en Agentes de IA e Hiperautomatización de Procesos (EBIS).
 
@@ -41,12 +41,12 @@ Es la capa de consulta y control humano (pull) de un sistema multiagente de Cuen
 - Tailwind CSS + shadcn/ui + Recharts
 - Route Handlers de Next.js (`app/api/...`) como único backend — nunca consultar Supabase desde el cliente con la service key
 - Supabase (Postgres) vía `@supabase/supabase-js`
-- Copiloto: agnóstico del proveedor mediante capa de abstracción (ver sección "Copiloto conversacional"). En esta fase **sin conectar**, con un `MockLLMProvider`; el proveedor real (Claude/OpenAI/Gemini/otro) se enchufa después. Llamado **siempre** desde route handlers, nunca desde el cliente.
+- Copiloto: app externa en Vercel embebida por iframe (`src/components/copilot/copilot-launcher.tsx`); no usa backend del repo.
 
 ## Conexión a Supabase — crítico
 
 - Proyecto `EBIS_TFM_RETAIL_NEXTWEAR`, ref `rnmidwhumdrpxulfsbjo`, región `eu-west-3`.
-- Credenciales solo en `.env.local` (documentar en `.env.example`): `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`. Bloque LLM comentado y opcional (`LLM_PROVIDER`, `LLM_API_KEY`, `LLM_MODEL`) para rellenar cuando se decida el proveedor — sin ellos el copiloto corre en modo mock.
+- Credenciales solo en `.env.local` (documentar en `.env.example`): `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`.
 - RLS activado en todas las tablas. Este dashboard es de solo lectura interno: acceder con service role **solo desde route handlers del servidor**, nunca exponerla al cliente (como mucho, anon key en cliente).
 - Dashboard de solo lectura: no exponer operaciones de escritura sobre la base.
 
@@ -87,23 +87,9 @@ Cadena del proceso: **Proveedor → Pedido → Albarán → Factura**, con `tipo
 
 **3. Stock e inventario** — tabla de `stock_actual` por SKU y centro (filtro por categoría y centro); alertas de stock bajo (umbral configurable); valoración de inventario en EUR (cantidad × coste unitario EUR); cruce con pedidos abiertos/parciales para previsión de reposición.
 
-## Copiloto conversacional — interfaz preparada, sin conectar
+## Copiloto conversacional
 
-En esta fase se construye **solo la interfaz del chat y su arquitectura de backend, sin conectar a ningún LLM todavía**. El proveedor (Claude/OpenAI/Gemini/otro) se decide después, así que el diseño debe ser **agnóstico del proveedor**.
-
-- Panel de chat lateral o modal, disponible en todas las pestañas, totalmente maquetado y funcional en UI (input, historial de mensajes, estados de carga).
-- **Capa de abstracción:** interfaz única `LLMProvider` con método `ask(question, schemaContext) -> sqlOrAnswer`, implementada por `MockLLMProvider` (respuestas simuladas/fijas) para probar la UI sin proveedor real. El proveedor real se añade después como otra clase que cumpla la misma interfaz.
-- Si no hay proveedor configurado, el chat corre en modo mock y lo indica en la UI ("Copiloto en modo demo — LLM no conectado").
-- **Arquitectura backend ya lista (text-to-SQL controlado)** para cuando se conecte:
-  1. Route handler recibe la pregunta en lenguaje natural.
-  2. Se envía al `LLMProvider` junto con el esquema de tablas (nombres, columnas, tipos, relaciones) como contexto.
-  3. El proveedor devuelve SQL de **solo lectura** (SELECT). El backend valida que empiece por `select`, rechaza `insert/update/delete/drop/alter`, añade `LIMIT` y timeout.
-  4. Se ejecuta contra Supabase y el resultado se devuelve al proveedor para redactar respuesta en lenguaje natural, o se pinta directo en tabla/gráfico.
-- Marcar el punto de conexión en el código con `// TODO: conectar proveedor LLM real aquí`.
-- Alternativa si text-to-SQL libre resulta demasiado arriesgado: exponer un set de herramientas/consultas predefinidas parametrizadas y que el LLM elija cuál llamar (function calling), evitando SQL libre.
-- Seguridad (aplica cuando se conecte): allow-list de solo SELECT, `LIMIT` de filas, timeout. Nunca ejecutar SQL generado sin validar. Nunca exponer claves al cliente.
-
-Preguntas de ejemplo que deberá resolver una vez conectado: "¿cuánto hemos gastado en proveedores chinos este trimestre?", "¿qué facturas están en excepción por duplicado?", "¿qué stock de sudaderas queda en la tienda de Madrid?", "¿cuál es el saldo pendiente con Textil Norte?".
+Botón flotante (`copilot-launcher.tsx`, montado en `(app)/layout.tsx`, visible en todas las pestañas) que abre un panel con un **iframe** a `https://finflow-bot-vercel.vercel.app/` ("FinFlow Bot", app propia desplegada aparte). Toda la lógica LLM vive en esa app; este repo no tiene route handler ni proveedor LLM propio (se eliminaron el panel mock, `/api/copiloto` y `src/lib/llm/`, el 2026-10-01). Si cambia la URL del bot, editar `FINFLOW_BOT_URL`. Preguntas de ejemplo: "¿cuánto hemos gastado en proveedores chinos este trimestre?", "¿qué facturas están en excepción por duplicado?", "¿cuál es el saldo pendiente con Textil Norte?".
 
 ## Diseño visual
 

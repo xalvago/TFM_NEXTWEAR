@@ -93,7 +93,7 @@ export default async function VistaEjecutivaPage({
               <Panel
                 eyebrow="Tipo de cambio"
                 title="Conversor de divisas"
-                description="Última tasa BCE registrada en el sistema."
+                description="Referencia BCE en vivo; respaldo: última tasa del sistema."
                 tint="rose"
               >
                 <ConversorDivisas tasas={data.tiposCambio} />
