@@ -22,6 +22,7 @@ interface FacturaNueva {
   estado: string | null;
   albaranes_vinculados: number;
   logs_vinculados: number;
+  historial_vinculado: number;
 }
 
 // factura_id tiene forma "FAC-00340": secuencial, sin huecos, en orden de
@@ -91,11 +92,44 @@ async function buscarFacturasNuevas(): Promise<FacturaNueva[]> {
     conteoLogs.set(l.factura_id, (conteoLogs.get(l.factura_id) ?? 0) + 1);
   }
 
+  // historial_estado_factura: cambios de estado de la factura. Tiene FK a
+  // facturas, así que hay que contarlo (y borrarlo) antes de la cabecera.
+  const { data: historial, error: errHistorial } = await supabase
+    .from("historial_estado_factura")
+    .select("factura_id")
+    .in(
+      "factura_id",
+      nuevas.map((f) => f.factura_id)
+    );
+  if (errHistorial) throw errHistorial;
+
+  const conteoHistorial = new Map<string, number>();
+  for (const h of historial ?? []) {
+    conteoHistorial.set(h.factura_id, (conteoHistorial.get(h.factura_id) ?? 0) + 1);
+  }
+
   return nuevas.map((f) => ({
     ...f,
     albaranes_vinculados: conteoVinculos.get(f.factura_id) ?? 0,
     logs_vinculados: conteoLogs.get(f.factura_id) ?? 0,
+    historial_vinculado: conteoHistorial.get(f.factura_id) ?? 0,
   }));
+}
+
+// Logs de captura del robot que no cuelgan de ninguna factura ni caso (p.ej.
+// capturas fallidas antes de crear la factura). No los cubre el borrado por
+// factura_id/caso_id, así que se tratan aparte: agente = 'captura' y sin
+// referencias.
+async function buscarLogsCapturaHuerfanos(): Promise<string[]> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("log_agentes")
+    .select("log_id")
+    .eq("agente", "captura")
+    .is("factura_id", null)
+    .is("caso_id", null);
+  if (error) throw error;
+  return (data ?? []).map((l) => l.log_id);
 }
 
 // GET /api/facturas/nuevas
@@ -104,7 +138,8 @@ async function buscarFacturasNuevas(): Promise<FacturaNueva[]> {
 export async function GET() {
   try {
     const facturas = await buscarFacturasNuevas();
-    return NextResponse.json({ ok: true, facturas });
+    const logsCapturaHuerfanos = (await buscarLogsCapturaHuerfanos()).length;
+    return NextResponse.json({ ok: true, facturas, logsCapturaHuerfanos });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     return NextResponse.json({ ok: false, error: message }, { status: 500 });
@@ -127,10 +162,10 @@ export async function DELETE(request: Request) {
     );
   }
 
-  const idsConfirmados = body.factura_ids;
-  if (!Array.isArray(idsConfirmados) || idsConfirmados.length === 0) {
+  const idsConfirmados = body.factura_ids ?? [];
+  if (!Array.isArray(idsConfirmados)) {
     return NextResponse.json(
-      { ok: false, error: "Falta 'factura_ids'." },
+      { ok: false, error: "'factura_ids' inválido." },
       { status: 400 }
     );
   }
@@ -144,7 +179,29 @@ export async function DELETE(request: Request) {
     const idsVigentes = new Set(vigentes.map((f) => f.factura_id));
     const idsABorrar = idsConfirmados.filter((id) => idsVigentes.has(id));
 
+    // Logs de captura huérfanos (sin factura ni caso): se borran siempre que
+    // existan, con o sin facturas nuevas.
+    const logIdsHuerfanos = await buscarLogsCapturaHuerfanos();
+    let logsHuerfanosBorrados = 0;
+    if (logIdsHuerfanos.length > 0) {
+      const { error: errHuerfanos, count } = await supabase
+        .from("log_agentes")
+        .delete({ count: "exact" })
+        .in("log_id", logIdsHuerfanos);
+      if (errHuerfanos) throw errHuerfanos;
+      logsHuerfanosBorrados = count ?? logIdsHuerfanos.length;
+    }
+
     if (idsABorrar.length === 0) {
+      if (logsHuerfanosBorrados > 0) {
+        return NextResponse.json({
+          ok: true,
+          borradas: 0,
+          albaranesVinculosBorrados: 0,
+          logsAgentesBorrados: logsHuerfanosBorrados,
+          historialBorrado: 0,
+        });
+      }
       return NextResponse.json(
         {
           ok: false,
@@ -200,6 +257,12 @@ export async function DELETE(request: Request) {
       .in("factura_id", idsABorrar);
     if (errCasos) throw errCasos;
 
+    const { error: errHistorial, count: historialBorrado } = await supabase
+      .from("historial_estado_factura")
+      .delete({ count: "exact" })
+      .in("factura_id", idsABorrar);
+    if (errHistorial) throw errHistorial;
+
     const { error: errFacturas, count } = await supabase
       .from("facturas")
       .delete({ count: "exact" })
@@ -210,7 +273,8 @@ export async function DELETE(request: Request) {
       ok: true,
       borradas: count ?? idsABorrar.length,
       albaranesVinculosBorrados: albaranesBorrados ?? 0,
-      logsAgentesBorrados: logsBorrados ?? 0,
+      logsAgentesBorrados: (logsBorrados ?? 0) + logsHuerfanosBorrados,
+      historialBorrado: historialBorrado ?? 0,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

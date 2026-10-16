@@ -23,6 +23,7 @@ interface FacturaNueva {
   estado: string | null;
   albaranes_vinculados: number;
   logs_vinculados: number;
+  historial_vinculado: number;
 }
 
 type Paso = "buscando" | "confirmar" | "borrando" | "hecho" | "vacio";
@@ -36,6 +37,8 @@ export function BorrarNuevasDialog() {
   const [borradas, setBorradas] = useState(0);
   const [albaranesVinculosBorrados, setAlbaranesVinculosBorrados] = useState(0);
   const [logsAgentesBorrados, setLogsAgentesBorrados] = useState(0);
+  const [historialBorrado, setHistorialBorrado] = useState(0);
+  const [logsHuerfanos, setLogsHuerfanos] = useState(0);
 
   async function abrirYBuscar() {
     setOpen(true);
@@ -45,7 +48,8 @@ export function BorrarNuevasDialog() {
       const res = await fetch("/api/facturas/nuevas");
       const json = await res.json();
       if (!json.ok) throw new Error(json.error);
-      if (json.facturas.length === 0) {
+      setLogsHuerfanos(json.logsCapturaHuerfanos ?? 0);
+      if (json.facturas.length === 0 && !json.logsCapturaHuerfanos) {
         setFacturas([]);
         setPaso("vacio");
         return;
@@ -62,10 +66,12 @@ export function BorrarNuevasDialog() {
     setOpen(nextOpen);
     if (!nextOpen) {
       setFacturas([]);
+      setLogsHuerfanos(0);
       setError(null);
       setBorradas(0);
       setAlbaranesVinculosBorrados(0);
       setLogsAgentesBorrados(0);
+      setHistorialBorrado(0);
     }
   }
 
@@ -83,6 +89,7 @@ export function BorrarNuevasDialog() {
       setBorradas(json.borradas);
       setAlbaranesVinculosBorrados(json.albaranesVinculosBorrados ?? 0);
       setLogsAgentesBorrados(json.logsAgentesBorrados ?? 0);
+      setHistorialBorrado(json.historialBorrado ?? 0);
       setPaso("hecho");
       router.refresh();
     } catch (err) {
@@ -139,16 +146,25 @@ export function BorrarNuevasDialog() {
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-destructive">
                 <AlertTriangleIcon className="size-4" />
-                Confirmar borrado de {facturas.length} factura
-                {facturas.length === 1 ? "" : "s"}
+                {facturas.length > 0
+                  ? `Confirmar borrado de ${facturas.length} factura${facturas.length === 1 ? "" : "s"}`
+                  : "Confirmar borrado de logs de captura"}
               </DialogTitle>
               <DialogDescription>
                 Esta acción es irreversible: se borrarán estas facturas y sus
-                líneas, vínculos con albaranes, logs de agente (log_agentes) y
-                casos de excepción asociados, dejando el dataset base de 340
+                líneas, vínculos con albaranes, logs de agente (log_agentes),
+                historial de estados (historial_estado_factura) y casos de
+                excepción asociados, dejando el dataset base de 340
                 facturas intacto. Revisa las referencias antes de confirmar.
               </DialogDescription>
             </DialogHeader>
+            {logsHuerfanos > 0 && (
+              <p className="rounded-lg border bg-muted/50 px-3 py-2 text-sm">
+                Además se borrarán <strong>{logsHuerfanos}</strong> log
+                {logsHuerfanos === 1 ? "" : "s"} de captura en log_agentes
+                (agente = «captura») sin factura ni caso asociado.
+              </p>
+            )}
             <div className="max-h-64 overflow-y-auto rounded-lg border">
               <table className="w-full text-sm">
                 <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">
@@ -159,6 +175,7 @@ export function BorrarNuevasDialog() {
                     <th className="px-3 py-2 text-right">Total EUR</th>
                     <th className="px-3 py-2 text-right">Albaranes</th>
                     <th className="px-3 py-2 text-right">Logs agente</th>
+                    <th className="px-3 py-2 text-right">Historial</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -182,6 +199,9 @@ export function BorrarNuevasDialog() {
                       <td className="px-3 py-2 text-right font-mono">
                         {f.logs_vinculados}
                       </td>
+                      <td className="px-3 py-2 text-right font-mono">
+                        {f.historial_vinculado}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -204,8 +224,9 @@ export function BorrarNuevasDialog() {
                 {paso === "borrando" && (
                   <Loader2Icon className="animate-spin" />
                 )}
-                Sí, borrar {facturas.length} factura
-                {facturas.length === 1 ? "" : "s"} definitivamente
+                {facturas.length > 0
+                  ? `Sí, borrar ${facturas.length} factura${facturas.length === 1 ? "" : "s"} definitivamente`
+                  : "Sí, borrar logs definitivamente"}
               </Button>
             </DialogFooter>
           </>
@@ -220,8 +241,9 @@ export function BorrarNuevasDialog() {
                 {albaranesVinculosBorrados} vínculo
                 {albaranesVinculosBorrados === 1 ? "" : "s"} en
                 facturas_albaranes, {logsAgentesBorrados} log
-                {logsAgentesBorrados === 1 ? "" : "s"} en log_agentes y sus
-                demás datos relacionados. El dataset base de 340 queda
+                {logsAgentesBorrados === 1 ? "" : "s"} en log_agentes,{" "}
+                {historialBorrado} registro{historialBorrado === 1 ? "" : "s"} en
+                historial_estado_factura y sus demás datos relacionados. El dataset base de 340 queda
                 intacto.
               </DialogDescription>
             </DialogHeader>
