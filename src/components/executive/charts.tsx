@@ -2,7 +2,8 @@
 
 import {
   ResponsiveContainer,
-  LineChart,
+  ComposedChart,
+  Area,
   Line,
   BarChart,
   Bar,
@@ -17,6 +18,8 @@ import {
 import {
   formatEUR,
   formatEURCompact,
+  formatPct,
+  CANAL_LABEL,
   MONEDA_LABEL,
   ANIOS_DATASET,
 } from "@/lib/finance";
@@ -25,7 +28,9 @@ import type {
   GastoPorCentro,
   GastoPorProveedor,
   GastoPorMoneda,
+  GastoPorPais,
 } from "@/lib/queries/executive";
+import type { CadenaProveedor, CompraCategoria } from "@/lib/queries/compras";
 
 // Animación de construcción: los gráficos crecen fluidamente hasta su valor.
 const ANIM = {
@@ -93,14 +98,36 @@ function TooltipBox({
 
 // --- Gasto mensual interanual -------------------------------------------------
 export function InteranualChart({ data }: { data: PuntoInteranual[] }) {
+  // Mes de la fecha de corte sin cerrar: se marca con asterisco en el eje.
+  const parcial = data.find((d) => d.parcial);
+  const chartData = data.map((d) => ({
+    ...d,
+    mesEje: d.parcial ? `${d.mes}*` : d.mes,
+  }));
   return (
     <div className="w-full animate-in fade-in-0 duration-700">
       <div className="h-[210px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 8 }}>
+        <ComposedChart data={chartData} margin={{ top: 8, right: 12, bottom: 0, left: 8 }}>
+          <defs>
+            <linearGradient id="grad-area-2026" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={ANIO_COLOR["2026"]} stopOpacity={0.28} />
+              <stop offset="100%" stopColor={ANIO_COLOR["2026"]} stopOpacity={0} />
+            </linearGradient>
+          </defs>
           <CartesianGrid stroke={GRID} strokeDasharray="2 4" vertical={false} />
+          <Area
+            type="monotone"
+            dataKey="2026"
+            stroke="none"
+            fill="url(#grad-area-2026)"
+            connectNulls={false}
+            tooltipType="none"
+            legendType="none"
+            {...ANIM}
+          />
           <XAxis
-            dataKey="mes"
+            dataKey="mesEje"
             tick={AXIS_TICK}
             tickLine={false}
             axisLine={{ stroke: GRID }}
@@ -121,7 +148,7 @@ export function InteranualChart({ data }: { data: PuntoInteranual[] }) {
                   title={String(label)}
                   rows={payload.map((p: any) => ({
                     label: String(p.dataKey),
-                    value: formatEUR(Number(p.value)),
+                    value: p.value == null ? "sin datos" : formatEUR(Number(p.value)),
                     color: p.color,
                   }))}
                 />
@@ -137,10 +164,11 @@ export function InteranualChart({ data }: { data: PuntoInteranual[] }) {
               strokeWidth={String(y) === "2026" ? 2.5 : 1.75}
               dot={{ r: 3, strokeWidth: 0, fill: ANIO_COLOR[String(y)] }}
               activeDot={{ r: 5 }}
+              connectNulls={false}
               {...ANIM}
             />
           ))}
-        </LineChart>
+        </ComposedChart>
       </ResponsiveContainer>
       </div>
       <ChartLegend
@@ -149,6 +177,12 @@ export function InteranualChart({ data }: { data: PuntoInteranual[] }) {
           color: ANIO_COLOR[String(y)],
         }))}
       />
+      {parcial && (
+        <p className="mt-2 text-xs text-muted-foreground">
+          * {parcial.mes}: mes sin cerrar (la carga llega solo hasta la fecha de
+          corte); no comparar con meses completos.
+        </p>
+      )}
     </div>
   );
 }
@@ -219,68 +253,136 @@ export function CentroChart({ data }: { data: GastoPorCentro[] }) {
   );
 }
 
-// --- Gasto por proveedor (top 10) ---------------------------------------------
+// --- Gasto por proveedor (ranking completo, color por moneda de facturación) ---
 export function ProveedorChart({ data }: { data: GastoPorProveedor[] }) {
+  const height = Math.max(220, data.length * 36 + 24);
+  const monedas = [...new Set(data.map((d) => d.monedaFacturacion))];
   return (
-    <div className="w-full animate-in fade-in-0 duration-700" style={{ height: 320 }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          data={data}
-          margin={{ top: 4, right: 8, bottom: 48, left: 8 }}
-          barCategoryGap={12}
-        >
-          <defs>
-            <linearGradient id="grad-proveedor" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--chart-2)" stopOpacity={1} />
-              <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0.7} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid stroke={GRID} strokeDasharray="2 4" vertical={false} />
-          <XAxis
-            type="category"
-            dataKey="razonSocial"
-            tick={AXIS_TICK_CAT}
-            tickLine={false}
-            axisLine={{ stroke: GRID }}
-            interval={0}
-            angle={-35}
-            textAnchor="end"
-            height={60}
-          />
-          <YAxis
-            type="number"
-            tick={AXIS_TICK}
-            tickLine={false}
-            axisLine={false}
-            width={56}
-            tickFormatter={(v) => formatEURCompact(Number(v))}
-          />
-          <Tooltip
-            cursor={{ fill: "var(--accent)", opacity: 0.4 }}
-            content={({ active, payload }: any) => {
-              if (!active || !payload?.length) return null;
-              const d = payload[0].payload as GastoPorProveedor;
-              return (
-                <TooltipBox
-                  title={d.razonSocial}
-                  rows={[
-                    {
-                      label: `Facturación en ${d.monedaFacturacion}`,
-                      value: formatEUR(d.gastoEur),
-                    },
-                  ]}
+    <div className="w-full animate-in fade-in-0 duration-700">
+      <div className="w-full" style={{ height }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            layout="vertical"
+            data={data}
+            margin={{ top: 4, right: 16, bottom: 4, left: 8 }}
+            barCategoryGap={8}
+          >
+            <CartesianGrid stroke={GRID} strokeDasharray="2 4" horizontal={false} />
+            <XAxis
+              type="number"
+              tick={AXIS_TICK}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(v) => formatEURCompact(Number(v))}
+            />
+            <YAxis
+              type="category"
+              dataKey="razonSocial"
+              tick={AXIS_TICK_CAT}
+              tickLine={false}
+              axisLine={{ stroke: GRID }}
+              width={170}
+            />
+            <Tooltip
+              cursor={{ fill: "var(--accent)", opacity: 0.4 }}
+              content={({ active, payload }: any) => {
+                if (!active || !payload?.length) return null;
+                const d = payload[0].payload as GastoPorProveedor;
+                return (
+                  <TooltipBox
+                    title={d.razonSocial}
+                    rows={[
+                      { label: "Gasto", value: formatEUR(d.gastoEur) },
+                      { label: "% del gasto", value: formatPct(d.pctSobreTotal) },
+                      { label: "Facturas", value: String(d.numFacturas) },
+                      { label: "País", value: d.pais },
+                      { label: "Factura en", value: d.monedaFacturacion },
+                      { label: "Canal", value: CANAL_LABEL[d.canal] ?? d.canal },
+                    ]}
+                  />
+                );
+              }}
+            />
+            <Bar dataKey="gastoEur" radius={[0, 4, 4, 0]} {...ANIM}>
+              {data.map((d) => (
+                <Cell
+                  key={d.proveedorId}
+                  fill={MONEDA_COLOR[d.monedaFacturacion] ?? "var(--chart-5)"}
                 />
-              );
-            }}
-          />
-          <Bar
-            dataKey="gastoEur"
-            radius={[4, 4, 0, 0]}
-            fill="url(#grad-proveedor)"
-            {...ANIM}
-          />
-        </BarChart>
-      </ResponsiveContainer>
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <ChartLegend
+        items={monedas.map((m) => ({
+          label: `Factura en ${m}`,
+          color: MONEDA_COLOR[m] ?? "var(--chart-5)",
+        }))}
+      />
+    </div>
+  );
+}
+
+// --- Gasto por país del proveedor ---------------------------------------------
+export function PaisChart({ data }: { data: GastoPorPais[] }) {
+  const total = data.reduce((a, d) => a + d.gastoEur, 0);
+  const height = Math.max(150, data.length * 40 + 24);
+  return (
+    <div className="w-full animate-in fade-in-0 duration-700">
+      <div className="w-full" style={{ height }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            layout="vertical"
+            data={data}
+            margin={{ top: 4, right: 16, bottom: 4, left: 8 }}
+            barCategoryGap={10}
+          >
+            <CartesianGrid stroke={GRID} strokeDasharray="2 4" horizontal={false} />
+            <XAxis
+              type="number"
+              tick={AXIS_TICK}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(v) => formatEURCompact(Number(v))}
+            />
+            <YAxis
+              type="category"
+              dataKey="pais"
+              tick={AXIS_TICK_CAT}
+              tickLine={false}
+              axisLine={{ stroke: GRID }}
+              width={110}
+            />
+            <Tooltip
+              cursor={{ fill: "var(--accent)", opacity: 0.4 }}
+              content={({ active, payload }: any) => {
+                if (!active || !payload?.length) return null;
+                const d = payload[0].payload as GastoPorPais;
+                return (
+                  <TooltipBox
+                    title={d.pais}
+                    rows={[
+                      { label: "Gasto", value: formatEUR(d.gastoEur) },
+                      {
+                        label: "% del gasto",
+                        value: formatPct(total ? d.gastoEur / total : 0),
+                      },
+                      { label: "Proveedores", value: String(d.numProveedores) },
+                    ]}
+                  />
+                );
+              }}
+            />
+            <Bar
+              dataKey="gastoEur"
+              radius={[0, 4, 4, 0]}
+              fill="var(--chart-1)"
+              {...ANIM}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }
@@ -380,5 +482,132 @@ function tipoLabel(tipo: string): string {
       ecommerce: "Ecommerce",
       almacen_central: "Almacén central",
     }[tipo] ?? tipo
+  );
+}
+
+// --- Pedido → recibido → facturado por proveedor (unidades) -------------------
+const CADENA_COLOR = {
+  pedidas: "var(--chart-5)",
+  recibidas: "var(--chart-4)",
+  facturadas: "var(--chart-1)",
+} as const;
+
+export function CadenaChart({ data }: { data: CadenaProveedor[] }) {
+  const height = Math.max(240, data.length * 56 + 24);
+  const intFmt = (v: number) => new Intl.NumberFormat("es-ES").format(v);
+  return (
+    <div className="w-full animate-in fade-in-0 duration-700">
+      <div className="w-full" style={{ height }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            layout="vertical"
+            data={data}
+            margin={{ top: 4, right: 16, bottom: 4, left: 8 }}
+            barCategoryGap={10}
+            barGap={2}
+          >
+            <CartesianGrid stroke={GRID} strokeDasharray="2 4" horizontal={false} />
+            <XAxis
+              type="number"
+              tick={AXIS_TICK}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(v) => intFmt(Number(v))}
+            />
+            <YAxis
+              type="category"
+              dataKey="razonSocial"
+              tick={AXIS_TICK_CAT}
+              tickLine={false}
+              axisLine={{ stroke: GRID }}
+              width={170}
+            />
+            <Tooltip
+              cursor={{ fill: "var(--accent)", opacity: 0.4 }}
+              content={({ active, payload }: any) => {
+                if (!active || !payload?.length) return null;
+                const d = payload[0].payload as CadenaProveedor;
+                return (
+                  <TooltipBox
+                    title={d.razonSocial}
+                    rows={[
+                      { label: "Pedidas", value: `${intFmt(d.pedidas)} uds`, color: CADENA_COLOR.pedidas },
+                      { label: "Recibidas", value: `${intFmt(d.recibidas)} uds`, color: CADENA_COLOR.recibidas },
+                      { label: "Facturadas", value: `${intFmt(d.facturadas)} uds`, color: CADENA_COLOR.facturadas },
+                      { label: "Tasa de recepción", value: formatPct(d.tasaRecepcion) },
+                      { label: "Pedidos sin cerrar", value: String(d.pedidosVivos) },
+                    ]}
+                  />
+                );
+              }}
+            />
+            <Bar dataKey="pedidas" fill={CADENA_COLOR.pedidas} radius={[0, 3, 3, 0]} {...ANIM} />
+            <Bar dataKey="recibidas" fill={CADENA_COLOR.recibidas} radius={[0, 3, 3, 0]} {...ANIM} />
+            <Bar dataKey="facturadas" fill={CADENA_COLOR.facturadas} radius={[0, 3, 3, 0]} {...ANIM} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <ChartLegend
+        items={[
+          { label: "Pedidas", color: CADENA_COLOR.pedidas },
+          { label: "Recibidas (albarán)", color: CADENA_COLOR.recibidas },
+          { label: "Facturadas", color: CADENA_COLOR.facturadas },
+        ]}
+      />
+    </div>
+  );
+}
+
+// --- Gasto facturado por categoría de producto --------------------------------
+export function CategoriaChart({ data }: { data: CompraCategoria[] }) {
+  const height = Math.max(150, data.length * 40 + 24);
+  return (
+    <div className="w-full animate-in fade-in-0 duration-700" style={{ height }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          layout="vertical"
+          data={data}
+          margin={{ top: 4, right: 16, bottom: 4, left: 8 }}
+          barCategoryGap={10}
+        >
+          <CartesianGrid stroke={GRID} strokeDasharray="2 4" horizontal={false} />
+          <XAxis
+            type="number"
+            tick={AXIS_TICK}
+            tickLine={false}
+            axisLine={false}
+            tickFormatter={(v) => formatEURCompact(Number(v))}
+          />
+          <YAxis
+            type="category"
+            dataKey="categoria"
+            tick={AXIS_TICK_CAT}
+            tickLine={false}
+            axisLine={{ stroke: GRID }}
+            width={120}
+          />
+          <Tooltip
+            cursor={{ fill: "var(--accent)", opacity: 0.4 }}
+            content={({ active, payload }: any) => {
+              if (!active || !payload?.length) return null;
+              const d = payload[0].payload as CompraCategoria;
+              return (
+                <TooltipBox
+                  title={d.categoria}
+                  rows={[
+                    { label: "Gasto facturado (sin IVA)", value: formatEUR(d.gastoFacturadoEur) },
+                    {
+                      label: "Unidades pedidas",
+                      value: new Intl.NumberFormat("es-ES").format(d.unidadesPedidas),
+                    },
+                  ]}
+                />
+              );
+            }}
+          />
+          <Bar dataKey="gastoFacturadoEur" radius={[0, 4, 4, 0]} fill="var(--chart-2)" {...ANIM} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

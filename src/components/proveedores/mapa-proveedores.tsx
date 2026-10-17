@@ -18,7 +18,7 @@ const MapaProveedoresLeaflet = dynamic(
 
 export function MapaProveedores({ proveedores }: { proveedores: ProveedorRow[] }) {
   return (
-    <div className="h-[420px] w-full overflow-hidden rounded-b-2xl">
+    <div className="h-[260px] w-full overflow-hidden xl:h-[340px]">
       <MapaProveedoresLeaflet proveedores={proveedores} />
     </div>
   );

@@ -718,6 +718,53 @@ export type Database = {
           },
         ]
       }
+      historial_estado_factura: {
+        Row: {
+          actor: string | null
+          aplicacion: string | null
+          estado_destino: string
+          estado_origen: string
+          factura_id: string
+          historial_id: number
+          modo: string
+          ocurrido_en: string
+          permitida: boolean
+          transicion_id: string | null
+        }
+        Insert: {
+          actor?: string | null
+          aplicacion?: string | null
+          estado_destino: string
+          estado_origen: string
+          factura_id: string
+          historial_id?: never
+          modo: string
+          ocurrido_en?: string
+          permitida: boolean
+          transicion_id?: string | null
+        }
+        Update: {
+          actor?: string | null
+          aplicacion?: string | null
+          estado_destino?: string
+          estado_origen?: string
+          factura_id?: string
+          historial_id?: never
+          modo?: string
+          ocurrido_en?: string
+          permitida?: boolean
+          transicion_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historial_estado_factura_factura_id_fkey"
+            columns: ["factura_id"]
+            isOneToOne: false
+            referencedRelation: "facturas"
+            referencedColumns: ["factura_id"]
+          },
+        ]
+      }
       log_agentes: {
         Row: {
           accion: string | null

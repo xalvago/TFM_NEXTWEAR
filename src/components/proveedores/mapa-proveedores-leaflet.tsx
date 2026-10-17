@@ -12,9 +12,9 @@ import { RutaEtiquetaViajera } from "./ruta-etiqueta-viajera";
 // Misma paleta por moneda que el gráfico de la vista ejecutiva
 // (src/components/executive/charts.tsx#MONEDA_COLOR).
 const MONEDA_COLOR: Record<string, string> = {
-  EUR: "#7c3aed",
-  USD: "#d97706",
-  CNY: "#2563eb",
+  EUR: "#0a8fab",
+  USD: "#f5a03a",
+  CNY: "#ff6a3d",
 };
 
 function pinIcon(color: string) {
@@ -59,10 +59,17 @@ export function MapaProveedoresLeaflet({
     })
     .filter((x): x is { proveedor: ProveedorRow; geo: (typeof PROVEEDORES_GEO)[string] } => x !== null);
 
+  // Encuadre automático: todos los proveedores y el almacén visibles a la vez.
+  const bounds = L.latLngBounds([
+    [ALMACEN_CENTRAL_NEXTWEAR.lat, ALMACEN_CENTRAL_NEXTWEAR.lng],
+    ...puntos.map(({ geo }) => [geo.lat, geo.lng] as [number, number]),
+  ]);
+
   return (
     <MapContainer
-      center={[30, 20]}
-      zoom={2}
+      bounds={bounds}
+      boundsOptions={{ padding: [24, 24] }}
+      minZoom={1}
       scrollWheelZoom={false}
       className="h-full w-full"
       style={{ background: "var(--muted)" }}

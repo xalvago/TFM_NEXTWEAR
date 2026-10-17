@@ -61,7 +61,7 @@ export function PaginationBar({
                 className={cn(
                   "size-8 rounded-lg font-numeric text-xs font-medium transition-colors [transition-timing-function:var(--ease-out)]",
                   p === page
-                    ? "gradient-brand text-white shadow-[0_3px_10px_-3px_rgba(124,58,237,0.6)]"
+                    ? "gradient-brand text-white shadow-[0_3px_10px_-3px_rgba(10,125,150,0.6)]"
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                 )}
               >

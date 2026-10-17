@@ -16,6 +16,12 @@ export interface FacturasFiltros {
   desde?: string; // ISO date
   hasta?: string; // ISO date
   q?: string; // búsqueda por nº factura
+  pais?: string; // país de la sede del proveedor
+  canal?: string; // canal de recepción del proveedor
+  minEur?: number; // total_factura_eur >=
+  maxEur?: number; // total_factura_eur <=
+  soloHumano?: boolean; // con algún caso que requiere intervención humana
+  conSaldo?: boolean; // saldo_pendiente_eur > 0
 }
 
 export interface FacturaListItem {
@@ -38,6 +44,27 @@ export async function getFacturas(
 ): Promise<FacturaListItem[]> {
   const supabase = getSupabaseAdmin();
 
+  // Filtros que dependen de otras tablas se resuelven antes, a ids.
+  let proveedorIds: string[] | null = null;
+  if (filtros.pais || filtros.canal) {
+    let pq = supabase.from("maestro_proveedores").select("proveedor_id");
+    if (filtros.pais) pq = pq.eq("pais", filtros.pais);
+    if (filtros.canal) pq = pq.eq("canal_recepcion", filtros.canal);
+    const { data, error } = await pq;
+    if (error) throw error;
+    proveedorIds = (data ?? []).map((p) => p.proveedor_id);
+  }
+  let facturaIdsHumano: string[] | null = null;
+  if (filtros.soloHumano) {
+    const { data, error } = await supabase
+      .from("casos_excepcion")
+      .select("factura_id")
+      .eq("requiere_intervencion_humana", true)
+      .not("factura_id", "is", null);
+    if (error) throw error;
+    facturaIdsHumano = [...new Set((data ?? []).map((c) => c.factura_id as string))];
+  }
+
   let query = supabase
     .from("facturas")
     .select(
@@ -51,6 +78,11 @@ export async function getFacturas(
   if (filtros.desde) query = query.gte("fecha_expedicion", filtros.desde);
   if (filtros.hasta) query = query.lte("fecha_expedicion", filtros.hasta);
   if (filtros.q) query = query.ilike("numero_factura", `%${filtros.q}%`);
+  if (proveedorIds) query = query.in("proveedor_id", proveedorIds);
+  if (facturaIdsHumano) query = query.in("factura_id", facturaIdsHumano);
+  if (filtros.minEur !== undefined) query = query.gte("total_factura_eur", filtros.minEur);
+  if (filtros.maxEur !== undefined) query = query.lte("total_factura_eur", filtros.maxEur);
+  if (filtros.conSaldo) query = query.gt("saldo_pendiente_eur", 0);
 
   const { data, error } = await query;
   if (error) throw error;
@@ -77,13 +109,15 @@ export async function getFacturas(
 export interface ProveedorOption {
   proveedor_id: string;
   razon_social: string;
+  pais: string | null;
+  canal_recepcion: string | null;
 }
 
 export async function getProveedoresOptions(): Promise<ProveedorOption[]> {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("maestro_proveedores")
-    .select("proveedor_id, razon_social")
+    .select("proveedor_id, razon_social, pais, canal_recepcion")
     .order("razon_social");
   if (error) throw error;
   return (data ?? []) as ProveedorOption[];

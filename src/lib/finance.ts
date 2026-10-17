@@ -322,11 +322,29 @@ export const REGIMEN_IVA_LABEL: Record<string, string> = {
 
 // --- Periodo / años -----------------------------------------------------------
 
-/** Años presentes en el dataset (abr–jun de cada uno). */
+/** Años presentes en el dataset (abr–jul de cada uno). */
 export const ANIOS_DATASET = [2024, 2025, 2026] as const;
 export type AnioDataset = (typeof ANIOS_DATASET)[number];
 
-export const MESES_CORTO = ["Abr", "May", "Jun"] as const;
+/** Meses presentes en el dataset (abril a julio) y su etiqueta. */
+export const MESES_DATASET = [4, 5, 6, 7] as const;
+export const MESES_CORTO = ["Abr", "May", "Jun", "Jul"] as const;
+
+/**
+ * Estados que NO cuentan en importes: anuladas y cargas en curso del robot
+ * (`nueva_entrada`, `pendiente_captura`: pueden no tener total, líneas ni proveedor).
+ */
+export const ESTADOS_EXCLUIDOS_GASTO: readonly string[] = [
+  "anulada",
+  "nueva_entrada",
+  "pendiente_captura",
+];
+
+export const CANAL_LABEL: Record<string, string> = {
+  email: "Email",
+  portal_web: "Portal web",
+  api: "API",
+};
 
 /** Devuelve el año (número) de una fecha ISO, o null. */
 export function anioDe(iso: string | null | undefined): number | null {

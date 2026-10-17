@@ -13,6 +13,8 @@ import { getSupabaseAdmin } from "@/lib/supabase/server";
 export interface StockFiltros {
   categoria?: string;
   centroId?: string;
+  tipoCentro?: string; // tienda_fisica | ecommerce | almacen_central
+  q?: string; // SKU o descripción
 }
 
 export interface StockRow {
@@ -109,6 +111,17 @@ export async function getStockRows(
   }
   if (filtros.centroId) {
     rows = rows.filter((r) => r.centroId === filtros.centroId);
+  }
+  if (filtros.tipoCentro) {
+    rows = rows.filter((r) => r.centroTipo === filtros.tipoCentro);
+  }
+  if (filtros.q) {
+    const needle = filtros.q.trim().toLowerCase();
+    rows = rows.filter(
+      (r) =>
+        r.sku.toLowerCase().includes(needle) ||
+        r.descripcion.toLowerCase().includes(needle)
+    );
   }
 
   rows.sort((a, b) => a.descripcion.localeCompare(b.descripcion) || a.centroNombre.localeCompare(b.centroNombre));

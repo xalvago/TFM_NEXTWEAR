@@ -356,12 +356,12 @@ export default async function FacturaDetallePage({
           <Panel eyebrow="Importes" title="Doble moneda">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-muted-foreground">
-                  <th className="pb-2 text-left font-medium">Concepto</th>
-                  <th className="pb-2 text-right font-medium">
+                <tr className="thead-brand">
+                  <th className="text-left px-3 py-2.5">Concepto</th>
+                  <th className="text-right px-3 py-2.5">
                     {f.moneda_original ?? "—"}
                   </th>
-                  <th className="pb-2 text-right font-medium">EUR</th>
+                  <th className="text-right px-3 py-2.5">EUR</th>
                 </tr>
               </thead>
               <tbody className="font-numeric">

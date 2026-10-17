@@ -12,16 +12,20 @@ const NAV = [
   { href: "/proveedores", label: "Proveedores", short: "Proveedores", icon: Landmark },
 ] as const;
 
+// Al cambiar de pestaña (o pulsar la activa) se vuelve siempre al inicio de la página.
+const alInicio = () => window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+
 /** Barra de navegación horizontal superior, fija y con efecto glass. */
 export function TopNav() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-card/85 backdrop-blur-xl backdrop-saturate-150 shadow-[0_1px_0_0_rgba(0,0,0,0.02)]">
-      <div className="mx-auto flex h-16 w-full max-w-[1400px] items-center gap-3 px-4 sm:h-20 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-white dark:bg-card shadow-[0_1px_0_0_rgba(0,0,0,0.02)]">
+      <div className="mx-auto flex h-16 w-full max-w-[1760px] items-center gap-3 px-4 sm:h-20 sm:px-6">
         {/* Marca */}
         <Link
           href="/"
+          onClick={alInicio}
           aria-label="NextWear · Cuentas por pagar"
           className="group flex shrink-0 items-center"
         >
@@ -48,6 +52,7 @@ export function TopNav() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={alInicio}
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "group flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2 text-sm font-medium transition-all duration-200 [transition-timing-function:var(--ease-out)]",

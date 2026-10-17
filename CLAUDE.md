@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Tailwind CSS v4** (config vía `@import "tailwindcss"` + `@theme inline` en `src/app/globals.css`; sin `tailwind.config.js` clásico).
 - shadcn/ui (compatible Tailwind v4) + Recharts.
 - Supabase (`@supabase/supabase-js`) — acceso solo desde route handlers del backend.
-- Copiloto: bot externo ("FinFlow Bot", app propia en Vercel) embebido por iframe desde el botón flotante.
+- Copiloto: chat nativo cuyo backend es el bot externo ("FinFlow Bot", app propia en Vercel), reenviado por rewrite.
 
 ## Control de versiones — regla obligatoria
 
@@ -31,7 +31,7 @@ Tipos de Supabase: regenerar tras cambios de esquema y guardar en `src/lib/datab
 
 ## Qué se construye
 
-Dashboard web de control financiero y de inventario para Nextwear S.L. (retail ficticio), conectado en vivo a Supabase (Postgres). Incluye un copiloto conversacional (chat LLM) que es una app externa embebida por iframe (ver sección "Copiloto conversacional").
+Dashboard web de control financiero y de inventario para Nextwear S.L. (retail ficticio), conectado en vivo a Supabase (Postgres). Incluye un copiloto conversacional (chat LLM) cuyo backend es una app externa (FinFlow Bot) (ver sección "Copiloto conversacional").
 
 Es la capa de consulta y control humano (pull) de un sistema multiagente de Cuentas por Pagar con conciliación a tres bandas (factura vs. pedido vs. albarán) — TFM del Máster en Agentes de IA e Hiperautomatización de Procesos (EBIS).
 
@@ -41,7 +41,7 @@ Es la capa de consulta y control humano (pull) de un sistema multiagente de Cuen
 - Tailwind CSS + shadcn/ui + Recharts
 - Route Handlers de Next.js (`app/api/...`) como único backend — nunca consultar Supabase desde el cliente con la service key
 - Supabase (Postgres) vía `@supabase/supabase-js`
-- Copiloto: app externa en Vercel embebida por iframe (`src/components/copilot/copilot-launcher.tsx`); no usa backend del repo.
+- Copiloto: chat nativo (`src/components/copilot/`) con backend en la app externa FinFlow Bot, reenviado por rewrite en `next.config.ts`; sin proveedor LLM propio.
 
 ## Conexión a Supabase — crítico
 
@@ -89,7 +89,7 @@ Cadena del proceso: **Proveedor → Pedido → Albarán → Factura**, con `tipo
 
 ## Copiloto conversacional
 
-Botón flotante (`copilot-launcher.tsx`, montado en `(app)/layout.tsx`, visible en todas las pestañas) que abre un panel con un **iframe** a `https://finflow-bot-vercel.vercel.app/` ("FinFlow Bot", app propia desplegada aparte). Toda la lógica LLM vive en esa app; este repo no tiene route handler ni proveedor LLM propio (se eliminaron el panel mock, `/api/copiloto` y `src/lib/llm/`, el 2026-10-01). Si cambia la URL del bot, editar `FINFLOW_BOT_URL`. Preguntas de ejemplo: "¿cuánto hemos gastado en proveedores chinos este trimestre?", "¿qué facturas están en excepción por duplicado?", "¿cuál es el saldo pendiente con Textil Norte?".
+Botón flotante (`copilot-launcher.tsx`, montado en `(app)/layout.tsx`, visible en todas las pestañas) que abre un panel con un **chat nativo** (`copilot-chat.tsx`). Toda la lógica LLM sigue en "FinFlow Bot" (app propia en Vercel, Gemini + Supabase): este repo solo la reenvía con un **rewrite** de `next.config.ts` (`/copilot-proxy/chat` → `https://finflow-bot-vercel.vercel.app/api/chat`); no hay route handler ni proveedor LLM propio. Antes era un iframe; se sustituyó para tener una vista inicial limpia (solo el campo de escritura), con preguntas de ejemplo (💡) e información (ⓘ) tras botones de la barra superior, modo ampliado y adjuntos (imagen/PDF, máx. 3 MB). Si cambia la URL del bot, editar `FINFLOW_BOT_ORIGIN` en `next.config.ts`. Contrato de la API: `POST {message, history, attachment?}` → `{reply, trace, history}` o `{error}`. Preguntas de ejemplo: "¿cuánto hemos gastado en proveedores chinos este trimestre?", "¿qué facturas están en excepción por duplicado?", "¿cuál es el saldo pendiente con Textil Norte?".
 
 ## Diseño visual
 
@@ -100,7 +100,7 @@ Estética moderna, editorial y limpia. Paleta cálida (crema/hueso de fondo, no 
 1. Sumas de dinero siempre en EUR (`_eur`), nunca sumar monedas `_original` distintas.
 2. Notas de crédito restan (importes negativos): gasto neto = suma directa de `total_factura_eur` (las NC ya vienen negativas).
 3. `stock_actual` es una vista de solo lectura: no escribir en ella, el stock se deriva de `stock_movimientos`.
-4. Dashboard de solo lectura: sin operaciones de escritura sobre la base. **Única excepción documentada:** botón "Borrar facturas nuevas" en la pestaña Facturas (`src/components/facturas/borrar-nuevas-dialog.tsx` + `src/app/api/facturas/nuevas/route.ts`), pensado para deshacer cargas de prueba del robot UiPath. Sin input manual: detecta automáticamente qué `factura_id` quedan por encima del dataset base (`BASELINE_FACTURA_SEQ = 340` en `src/lib/constants.ts`, correspondiente a FAC-00001..FAC-00340 sin huecos), muestra en un diálogo de confirmación las facturas concretas que se van a borrar (con su total EUR, proveedor, nº de vínculos en `facturas_albaranes` columna "Albaranes" y nº de logs en `log_agentes` columna "Logs agente") y solo tras confirmar explícitamente borra en cascada `facturas_lineas` → `facturas_albaranes` → `log_agentes` → `casos_excepcion` → `facturas`. `log_agentes` va **antes** de `casos_excepcion` y `facturas` porque tiene FK a ambas (`log_agentes_factura_id_fkey`, `log_agentes_caso_id_fkey`; filas con `agente = 'captura'` son los logs de la captura del robot para esa factura) — si se borrase después, esas dos fallarían por restricción de FK. El GET cuenta los vínculos `facturas_albaranes` y `log_agentes` por factura para mostrarlos antes de borrar; el DELETE devuelve cuántos se borraron realmente (`albaranesVinculosBorrados`, `logsAgentesBorrados`) y el diálogo lo refleja en el mensaje final ("Se han borrado N facturas, M vínculos en facturas_albaranes, L logs en log_agentes..."). Ninguna otra ruta debe realizar INSERT/UPDATE/DELETE.
+4. Dashboard de solo lectura: sin operaciones de escritura sobre la base. **Única excepción documentada:** botón "Borrar facturas nuevas" en la pestaña Facturas (`src/components/facturas/borrar-nuevas-dialog.tsx` + `src/app/api/facturas/nuevas/route.ts`), pensado para deshacer cargas de prueba del robot UiPath. Sin input manual: detecta automáticamente qué `factura_id` quedan por encima del dataset base (`BASELINE_FACTURA_SEQ = 340` en `src/lib/constants.ts`, correspondiente a FAC-00001..FAC-00340 sin huecos), muestra en un diálogo de confirmación las facturas concretas que se van a borrar (con su total EUR, proveedor, nº de vínculos en `facturas_albaranes` columna "Albaranes" y nº de logs en `log_agentes` columna "Logs agente") y solo tras confirmar explícitamente borra en cascada `facturas_lineas` → `facturas_albaranes` → `log_agentes` → `casos_excepcion` → `historial_estado_factura` → `facturas`. `historial_estado_factura` tiene FK a `facturas` (se cuenta en el diálogo, columna "Historial"). `aprobaciones`, `comunicaciones`, `asientos_contables` y `pagos` también tienen FK a `facturas` pero **no** se borran de momento (decisión pendiente): si una factura nueva tuviera filas ahí, el borrado final fallaría por FK. `log_agentes` va **antes** de `casos_excepcion` y `facturas` porque tiene FK a ambas (`log_agentes_factura_id_fkey`, `log_agentes_caso_id_fkey`; filas con `agente = 'captura'` son los logs de la captura del robot para esa factura) — si se borrase después, esas dos fallarían por restricción de FK. El GET cuenta los vínculos `facturas_albaranes` y `log_agentes` por factura para mostrarlos antes de borrar; el DELETE devuelve cuántos se borraron realmente (`albaranesVinculosBorrados`, `logsAgentesBorrados`) y el diálogo lo refleja en el mensaje final ("Se han borrado N facturas, M vínculos en facturas_albaranes, L logs en log_agentes..."). Ninguna otra ruta debe realizar INSERT/UPDATE/DELETE.
 5. Excepciones = prioridad: facturas `en_excepcion` y filas de `casos_excepcion` visibles y filtrables de un vistazo.
 
 ## Contexto académico
@@ -149,3 +149,55 @@ Orden: fila 1 = evolución (hero reducido, `tint violet`) + moneda (`tint sky`);
 - Tablas nuevas: cabeceras/celdas con `pl-4`/`pr-4`; columnas de texto largo `whitespace-normal`; paginar con `PaginationBar` si >~12 filas.
 - Animaciones contenidas: la firma es la aurora; no añadir loops constantes por todas partes (evita apariencia "IA-generada").
 - Verificar siempre: `npm run lint` limpio + `curl` de las 3 rutas (200) en el puerto real del dev server.
+
+## Isométrica (guía de estilo visual vigente)
+
+Criterios aplicados primero a la pestaña Stock e inventario, para extender al resto del dashboard. **Sustituyen** a la paleta morada/índigo descrita más arriba.
+
+### Paleta (extraída del logo NextWear)
+- Primario teal `#0a7d96` (AA con texto blanco); texto navy `#0f2236`; fondo base `#f8ece2`.
+- Series de gráficos `--chart-1..5`: teal `#0a8fab`, coral `#ff6a3d`, ámbar `#f5a03a`, navy `#1b3f73`, gris `#94a3b8`.
+- Estados semánticos (verde/rojo/ámbar/azul) sin cambios. Todo vía variables de `globals.css`; no usar colores sueltos en componentes.
+- Dejan de usarse el morado y el índigo. Excepciones deliberadas: la "Factura tipo" imprimible (colores fijos) y el mapa/banderas de proveedores.
+
+### Fondo
+- `.app-flow`: degradado teal → ámbar → coral (pastel) en movimiento, ciclo 16 s (`--flow-1..3`).
+- `.app-aurora`: blobs coral/ámbar en dos capas que derivan en sentidos opuestos (13 s y 17 s).
+- `retail-backdrop.tsx` (montado en `(app)/layout.tsx`): 8 iconos lucide ampliados (bolsa, etiqueta, camiseta, tienda, carrito, paquete, regalo, ticket) con trazo fino en degradado y deriva de 22-30 s. No inventar formas: solo iconos de librería. En móvil solo 3 visibles. Se ocultan al imprimir y con `prefers-reduced-motion`.
+- Fondo cálido a propósito: las tarjetas son frías/blancas y deben contrastar con él.
+- Barra superior (`top-nav.tsx`): blanca sólida (`bg-white dark:bg-card`) porque el logo tiene fondo blanco.
+
+### Contenedores
+- Base `card-wash` + tinte opcional. Tintes: `tint-violet` = teal, `tint-sky` = azul→aqua, `tint-rose` = coral, `tint-amber`, y `tint-logo` (teal → coral en diagonal, para paneles principales). Los nombres son históricos; los colores ya son los del logo.
+- `Block` (`executive/dense.tsx`) y `Panel` aceptan `tint="logo"`. `Block` admite además `heading` (nodo propio, p. ej. el `h1` de la página) que sustituye a `eyebrow` + `title`.
+
+### Tablas
+- Cabecera `.thead-brand`: fondo teal sólido, texto blanco, mayúsculas, negrita, extremos redondeados. Lleva `!important` en color/fondo/peso porque las utilidades de `TableHead` ganan a la capa `components`. No usar degradado (se ven costuras entre celdas).
+- Ya la heredan todas las tablas basadas en `ui/table.tsx`; en tablas `<table>` sueltas añadir `thead-brand` al `<tr>`/`<thead>`.
+- Excepción: "Factura tipo" imprimible.
+
+### Filtros
+- Patrón de Facturas: barra principal siempre visible (búsqueda con debounce 300 ms, selects en píldora, segmentado, "Limpiar") + botón "Más filtros" plegable con contador de activos para lo secundario.
+- Stock: 4 visibles (búsqueda, categoría, centro, nivel); "Tipo de centro" y "Umbral" dentro de "Más filtros". Mismos parámetros de URL que antes.
+
+### Gráficos 3D isométricos (`src/components/stock/iso-charts.tsx`)
+- SVG puro, sin dependencias. Proyección isométrica real a 30°: x avanza arriba-derecha, y abajo-derecha (hacia el espectador), z sube (`iso([x,y,z]) = [(x+y)·0.866, (y−x)·0.5 − z]`). El eje horizontal es isométrico; los bloques se apoyan en una losa de suelo. Dibujar de atrás hacia delante.
+- Bloque = 3 caras (izquierda oscura, frontal con degradado vertical, superior clara) con `color-mix(base, white/black)` + sombra `feDropShadow`. El color varía por posición entre dos tonos de la paleta (`from`/`to`): coral→ámbar por centros, teal→navy por categorías.
+- Etiquetas en una segunda pasada con halo (`paint-order: stroke`) para que ningún bloque las tape; valores compactos ("100,6 mil €"); tooltip `<title>` con el importe exacto en EUR.
+- Animación `.iso-bar` (crece desde el suelo, escalonado 70 ms) y brillo en hover.
+- Encaje: `viewBox` calculado con la caja real del contenido (esquinas del suelo y cima de la columna más alta, no la última), márgenes laterales asimétricos, sin tope de altura. Un diamante isométrico deja huecos laterales si se estira: compensarlo rellenando el hueco con KPIs.
+- API: `IsoColumns` / `IsoHBars` reciben `items: {key,label,value}[]`, `from`, `to`, `titulo`. Valores siempre en EUR.
+
+### KPIs isométricos (`src/components/stock/iso-kpi.tsx`)
+- `IsoKpi`: tarjeta con textos centrados (etiqueta, cifra, nota), tinte por significado y un cubo isométrico (46 px) del color del estado con el icono lucide tumbado en la cara superior (`rotate(-30deg) skewX(30deg) scaleY(0.866)`). Hover: el cubo se eleva 3 px. Tooltip ⓘ opcional.
+- Pendiente de extender: `StatTile` sigue en Facturas, Proveedores y Vista ejecutiva.
+
+### Composición de la pestaña Stock (referencia)
+- Un único `Block tint="logo"` con el `h1` dentro (`heading`), para que suba hasta la barra superior. Dos mitades: columnas isométricas a la izquierda; barras isométricas arriba a la derecha y cuadrícula 2×2 de `IsoKpi` debajo. Después, filtros + tabla en un solo contenedor y panel de previsión con scroll interno.
+
+### Cómo aplicarlo al resto
+1. Cabecera de cada pestaña dentro de un `Block tint="logo" heading={…}`.
+2. Sustituir `StatTile` por `IsoKpi`.
+3. Gráficos de barras/columnas con `IsoColumns`/`IsoHBars`.
+4. Tablas con `.thead-brand`; filtros con el patrón principal + "Más filtros".
+5. Verificar en el navegador cada cambio visual y tras tocar `globals.css` comprobar que el dev server sirve el CSS nuevo (si no, reiniciarlo).

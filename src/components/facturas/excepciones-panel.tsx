@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Search, X } from "lucide-react";
+import { ChevronUp, Search, X } from "lucide-react";
 import { StateBadge } from "@/components/state-badge";
 import {
   TIPO_EXCEPCION_LABEL,
@@ -25,12 +25,14 @@ export function ExcepcionesPanel({
   activeTipo,
   totalIntervencion,
   totalAutomatico,
+  onClose,
 }: {
   casos: CasoExcepcionItem[];
   counts: Record<string, number>;
   activeTipo?: string;
   totalIntervencion: number;
   totalAutomatico: number;
+  onClose?: () => void;
 }) {
   const total = totalIntervencion + totalAutomatico;
   const tipos = Object.keys(TIPO_EXCEPCION_LABEL)
@@ -63,16 +65,22 @@ export function ExcepcionesPanel({
   }, [casos, q]);
 
   return (
-    <section className="card-wash tint-rose relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl shadow-card">
+    <section
+      className="relative flex min-h-0 flex-col overflow-hidden border-b border-border/60 xl:h-full xl:border-b-0 xl:border-l"
+      style={{
+        background:
+          "linear-gradient(180deg, color-mix(in oklab, var(--exception) 6%, var(--card)) 0%, var(--card) 38%)",
+      }}
+    >
       <span
         aria-hidden
         className="absolute inset-x-0 top-0 h-[3px]"
         style={{
           background:
-            "linear-gradient(90deg, var(--exception), color-mix(in oklab, var(--exception), var(--pending) 55%))",
+            "linear-gradient(90deg, var(--exception), color-mix(in oklab, var(--exception), var(--primary) 45%))",
         }}
       />
-      <header className="border-b border-border/60 px-6 py-5">
+      <header className="px-5 py-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-col gap-1">
             <span className="eyebrow text-[color:var(--exception)]">
@@ -82,13 +90,25 @@ export function ExcepcionesPanel({
               Casos de excepción
             </h2>
           </div>
-          <div className="flex flex-col items-end gap-0.5">
-            <span className="font-numeric text-2xl leading-none text-[color:var(--exception)]">
-              {totalIntervencion}
-            </span>
-            <span className="text-[11px] text-muted-foreground">
-              +{totalAutomatico} gestionados solos
-            </span>
+          <div className="flex items-start gap-3">
+            <div className="flex flex-col items-end gap-0.5">
+              <span className="font-numeric text-2xl leading-none text-[color:var(--exception)]">
+                {totalIntervencion}
+              </span>
+              <span className="text-[11px] text-muted-foreground">
+                +{totalAutomatico} gestionados solos
+              </span>
+            </div>
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Ocultar casos de excepción"
+                className="grid size-8 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-background/70 hover:text-foreground active:scale-[0.95]"
+              >
+                <ChevronUp size={16} strokeWidth={2} />
+              </button>
+            )}
           </div>
         </div>
 
@@ -137,11 +157,11 @@ export function ExcepcionesPanel({
         </div>
       </header>
 
-      <ul className="min-h-0 flex-1 divide-y divide-border/50 overflow-y-auto">
+      <ul className="grid max-h-[320px] min-h-0 overflow-y-auto border-t border-border/50  lg:grid-cols-2 xl:max-h-none xl:flex-1 xl:grid-cols-1 xl:content-start">
         {visibles.map((c) => (
           <li
             key={c.caso_id}
-            className="flex flex-col gap-2 px-6 py-3.5 transition-colors hover:bg-[color:var(--exception)]/[0.04]"
+            className="flex flex-col gap-2 border-b border-border/50 px-5 py-3 transition-colors hover:bg-[color:var(--exception)]/[0.05] lg:odd:border-r xl:odd:border-r-0"
           >
             <div className="flex items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-1.5">
@@ -177,7 +197,7 @@ export function ExcepcionesPanel({
           </li>
         ))}
         {visibles.length === 0 && (
-          <li className="px-6 py-8 text-center text-sm text-muted-foreground">
+          <li className="px-6 py-8 text-center lg:col-span-2 text-sm text-muted-foreground">
             {q
               ? "Ningún caso coincide con la búsqueda."
               : "Sin casos para este tipo."}

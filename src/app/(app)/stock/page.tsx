@@ -11,7 +11,11 @@ import { StockFilters } from "@/components/stock/filters";
 import { StockTable } from "@/components/stock/stock-table";
 import { ReposicionPanel } from "@/components/stock/reposicion-panel";
 import { Panel } from "@/components/panel";
-import { Wallet, TriangleAlert, PackageSearch } from "lucide-react";
+import { Wallet, TriangleAlert, PackageSearch, Timer } from "lucide-react";
+import { IsoKpi } from "@/components/stock/iso-kpi";
+import { Block } from "@/components/executive/dense";
+import { IsoColumns, IsoHBars, type IsoItem } from "@/components/stock/iso-charts";
+import { InfoTip } from "@/components/info-tip";
 
 export const dynamic = "force-dynamic";
 
@@ -22,12 +26,17 @@ export default async function StockPage({
     categoria?: string;
     centro?: string;
     umbral?: string;
+    tipo?: string;
+    nivel?: string;
+    q?: string;
   }>;
 }) {
   const sp = await searchParams;
   const filtros: StockFiltros = {
     categoria: sp.categoria,
     centroId: sp.centro,
+    tipoCentro: sp.tipo,
+    q: sp.q,
   };
   const umbral =
     Number(sp.umbral) > 0 ? Number(sp.umbral) : UMBRAL_STOCK_BAJO_DEFECTO;
@@ -39,108 +48,124 @@ export default async function StockPage({
     getReposicionPrevista(),
   ]);
 
+  // El nivel (bajo / suficiente) filtra solo la tabla: los KPIs siguen viendo todo el conjunto.
+  const filasTabla =
+    sp.nivel === "bajo"
+      ? rows.filter((r) => r.cantidadDisponible <= umbral)
+      : sp.nivel === "ok"
+        ? rows.filter((r) => r.cantidadDisponible > umbral)
+        : rows;
+
   const valorTotalEur = round2(rows.reduce((a, r) => a + r.valorEur, 0));
   const numBajo = rows.filter((r) => r.cantidadDisponible <= umbral).length;
   const unidadesTotal = rows.reduce((a, r) => a + r.cantidadDisponible, 0);
 
-  return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <span className="eyebrow">Stock e inventario</span>
-        <h1 className="font-display text-3xl tracking-tight sm:text-[2.1rem] leading-[1.1] pb-0.5">
-          Stock e <span className="gradient-text">inventario</span>
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          {formatInt(rows.length)} combinaciones SKU × centro · valorado con el
-          coste unitario del catálogo
-        </p>
-      </div>
+  const agrupar = (clave: (r: (typeof rows)[number]) => string): IsoItem[] => {
+    const m = new Map<string, number>();
+    for (const r of rows) m.set(clave(r), (m.get(clave(r)) ?? 0) + r.valorEur);
+    return [...m.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([k, v]) => ({ key: k, label: k, value: v }));
+  };
+  const porCentro = agrupar((r) => r.centroNombre);
+  const porCategoria = agrupar((r) => r.categoria ?? "Sin categoría");
 
-      {/* KPIs */}
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="card-wash hover-lift group relative flex flex-col gap-3 overflow-hidden rounded-2xl p-5 shadow-card">
-          <span
-            aria-hidden
-            className="absolute inset-x-0 top-0 h-[3px]"
-            style={{ background: "var(--gradient-brand)" }}
+  return (
+    <div className="flex flex-col gap-4">
+      <Block
+        tint="logo"
+        heading={
+          <div className="flex flex-col gap-2">
+            <span className="eyebrow">Stock e inventario</span>
+            <h1 className="font-display text-3xl tracking-tight sm:text-[2.1rem] leading-[1.1] pb-0.5">
+              Stock e <span className="gradient-text">inventario</span>
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {formatInt(rows.length)} combinaciones SKU × centro · valorado con el
+              coste unitario del catálogo
+            </p>
+          </div>
+        }
+        info={<InfoTip text="Valor = cantidad disponible × coste unitario de catálogo (EUR), con los filtros de categoría y centro activos." />}
+      >
+        <section
+          aria-label="Indicadores de stock"
+          className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-4"
+        >
+          <IsoKpi
+            compact
+            label="Valoración"
+            value={formatEUR(valorTotalEur)}
+            note={`${formatInt(unidadesTotal)} unidades en stock`}
+            info="Cantidad disponible × productos.coste_unitario (coste de catálogo, EUR). El valor_unitario_eur de los movimientos daría otra cifra."
+            icon={Wallet}
           />
-          <span className="gradient-brand-soft grid size-9 place-items-center rounded-xl text-primary">
-            <Wallet aria-hidden size={17} strokeWidth={1.75} className="icon-anim" />
-          </span>
+          <IsoKpi
+            compact
+            label="Alertas de stock bajo"
+            value={formatInt(numBajo)}
+            note={`umbral ${formatInt(umbral)} unidades`}
+            info="Combinaciones SKU × centro con cantidad disponible igual o menor que el umbral configurable."
+            tone={numBajo > 0 ? "exception" : "ok"}
+            icon={TriangleAlert}
+          />
+          <IsoKpi
+            compact
+            label="Reposición en camino"
+            value={formatInt(reposicion.length)}
+            note="líneas pendientes de pedidos vivos"
+            info="Líneas de pedidos abiertos o parcialmente recibidos con unidades pendientes (pedido menos entregado en albaranes)."
+            tone="credit"
+            icon={PackageSearch}
+          />
+          <IsoKpi
+            compact
+            label="Rotación y cobertura"
+            value="No disponible"
+            note="solo hay movimientos de entrada"
+            info="stock_movimientos solo contiene entradas (797 de 797): sin salidas no se puede calcular rotación ni días de cobertura. Se mostrará cuando se registren salidas."
+            tone="pending"
+            icon={Timer}
+          />
+        </section>
+
+        <div className="grid items-start gap-x-6 gap-y-4 lg:grid-cols-2">
           <div className="flex flex-col gap-1">
-            <span className="eyebrow">Valoración de inventario (EUR)</span>
-            <span className="font-numeric text-2xl leading-none">
-              {formatEUR(valorTotalEur)}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              {formatInt(unidadesTotal)} unidades en stock
-            </span>
+            <span className="eyebrow">Por centro de coste</span>
+            <div className="h-[19rem] [&>svg]:!h-full [&>svg]:!max-h-full">
+              <IsoColumns
+                items={porCentro}
+                from="var(--chart-2)"
+                to="var(--chart-3)"
+                titulo="Valor del inventario por centro de coste"
+                ejeY="Valor del inventario (EUR)"
+                ejeX="Centro de coste"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <span className="eyebrow">Por categoría</span>
+            <div className="h-[19rem] [&>svg]:!h-full [&>svg]:!max-h-full">
+              <IsoHBars
+                items={porCategoria}
+                from="var(--chart-1)"
+                to="var(--chart-4)"
+                titulo="Valor del inventario por categoría"
+                idPrefix="sc"
+                showPct
+              />
+            </div>
           </div>
         </div>
-        <div className="card-wash hover-lift group relative flex flex-col gap-3 overflow-hidden rounded-2xl p-5 shadow-card">
-          <span
-            aria-hidden
-            className="absolute inset-x-0 top-0 h-[3px]"
-            style={{
-              background:
-                numBajo > 0
-                  ? "linear-gradient(90deg, var(--exception), color-mix(in oklab, var(--exception), var(--pending) 55%))"
-                  : "linear-gradient(90deg, var(--ok), color-mix(in oklab, var(--ok), var(--chart-2) 55%))",
-            }}
-          />
-          <span
-            className={
-              "grid size-9 place-items-center rounded-xl " +
-              (numBajo > 0
-                ? "bg-[color:var(--exception)]/10 text-[color:var(--exception)]"
-                : "bg-[color:var(--ok)]/10 text-[color:var(--ok)]")
-            }
-          >
-            <TriangleAlert aria-hidden size={17} strokeWidth={1.75} className="icon-anim" />
-          </span>
-          <div className="flex flex-col gap-1">
-            <span className="eyebrow">Alertas de stock bajo</span>
-            <span
-              className="font-numeric text-2xl leading-none"
-              style={{ color: numBajo > 0 ? "var(--exception)" : undefined }}
-            >
-              {formatInt(numBajo)}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              umbral {formatInt(umbral)} unidades
-            </span>
-          </div>
-        </div>
-        <div className="card-wash hover-lift group relative flex flex-col gap-3 overflow-hidden rounded-2xl p-5 shadow-card">
-          <span
-            aria-hidden
-            className="absolute inset-x-0 top-0 h-[3px]"
-            style={{
-              background:
-                "linear-gradient(90deg, var(--credit), color-mix(in oklab, var(--credit), var(--chart-1) 55%))",
-            }}
-          />
-          <span className="grid size-9 place-items-center rounded-xl bg-[color:var(--credit)]/10 text-[color:var(--credit)]">
-            <PackageSearch aria-hidden size={17} strokeWidth={1.75} className="icon-anim" />
-          </span>
-          <div className="flex flex-col gap-1">
-            <span className="eyebrow">Reposición en camino</span>
-            <span className="font-numeric text-2xl leading-none">
-              {formatInt(reposicion.length)}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              líneas pendientes en pedidos abiertos/parciales
-            </span>
-          </div>
-        </div>
-      </section>
+      </Block>
 
       <div className="grid gap-6 xl:grid-cols-3 xl:items-stretch">
         {/* Filtros integrados como cabecera de la tabla */}
         <div className="xl:col-span-2">
           <div className="card-wash relative overflow-hidden rounded-2xl shadow-card">
             <StockFilters categorias={categorias} centros={centros} embedded />
-            <StockTable rows={rows} umbral={umbral} embedded />
+            <StockTable rows={filasTabla} umbral={umbral} embedded />
           </div>
         </div>
 

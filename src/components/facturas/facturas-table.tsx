@@ -24,6 +24,23 @@ import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 12;
 
+/** Columnas: ancho inicial ajustado al contenido; el usuario puede arrastrarlo. */
+const COLS: {
+  key: string;
+  label: string;
+  width: number;
+  min: number;
+  className?: string;
+}[] = [
+  { key: "numero", label: "Nº factura", width: 205, min: 110, className: "pl-4" },
+  { key: "proveedor", label: "Proveedor", width: 205, min: 120 },
+  { key: "fecha", label: "Fecha", width: 104, min: 90 },
+  { key: "moneda", label: "Moneda", width: 76, min: 64 },
+  { key: "total", label: "Total EUR", width: 112, min: 90, className: "text-right" },
+  { key: "saldo", label: "Saldo EUR", width: 112, min: 90, className: "text-right" },
+  { key: "estado", label: "Estado", width: 176, min: 120 },
+];
+
 export function FacturasTable({
   rows,
   embedded = false,
@@ -33,6 +50,25 @@ export function FacturasTable({
 }) {
   const router = useRouter();
   const [page, setPage] = useState(1);
+  const [widths, setWidths] = useState<number[]>(() => COLS.map((c) => c.width));
+
+  function startResize(i: number, e: React.PointerEvent<HTMLSpanElement>) {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startW = widths[i];
+    const el = e.currentTarget;
+    el.setPointerCapture(e.pointerId);
+    const move = (ev: PointerEvent) => {
+      const w = Math.max(COLS[i].min, startW + ev.clientX - startX);
+      setWidths((prev) => prev.map((v, j) => (j === i ? w : v)));
+    };
+    const up = () => {
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerup", up);
+    };
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerup", up);
+  }
 
   // Al cambiar los filtros (nuevas filas) volver a la primera página, ajustando
   // el estado durante el render (patrón recomendado en vez de un efecto).
@@ -70,15 +106,33 @@ export function FacturasTable({
       )}
     >
       <div className="overflow-x-auto">
-        <Table>
+        <Table
+          className="table-fixed"
+          style={{ width: widths.reduce((a, b) => a + b, 0) }}
+        >
+          <colgroup>
+            {widths.map((w, i) => (
+              <col key={COLS[i].key} style={{ width: w }} />
+            ))}
+          </colgroup>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className="w-[150px] pl-4">Nº factura</TableHead>
-              <TableHead className="min-w-[180px]">Proveedor</TableHead>
-              <TableHead className="w-[120px]">Fecha</TableHead>
-              <TableHead className="w-[80px]">Moneda</TableHead>
-              <TableHead className="w-[140px] text-right">Total EUR</TableHead>
-              <TableHead className="w-[180px] pr-4">Estado</TableHead>
+              {COLS.map((c, i) => (
+                <TableHead
+                  key={c.key}
+                  className={cn("relative select-none", c.className ?? "")}
+                >
+                  {c.label}
+                  <span
+                    role="separator"
+                    aria-orientation="vertical"
+                    aria-label={`Redimensionar columna ${c.label}`}
+                    onPointerDown={(e) => startResize(i, e)}
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute right-0 top-1/2 h-5 w-2 -translate-y-1/2 cursor-col-resize touch-none after:absolute after:inset-y-0 after:right-0 after:w-px after:bg-border/70 hover:after:w-0.5 hover:after:bg-primary/60"
+                  />
+                </TableHead>
+              ))}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -91,7 +145,7 @@ export function FacturasTable({
                   onClick={() => router.push(href)}
                   className="cursor-pointer"
                 >
-                  <TableCell className="pl-4 font-medium">
+                  <TableCell className="truncate pl-4 font-medium">
                     <Link
                       href={href}
                       onClick={(e) => e.stopPropagation()}
@@ -105,7 +159,10 @@ export function FacturasTable({
                       </StateBadge>
                     )}
                   </TableCell>
-                  <TableCell className="whitespace-normal text-muted-foreground">
+                  <TableCell
+                    className="truncate text-muted-foreground"
+                    title={f.razon_social ?? undefined}
+                  >
                     {f.razon_social ?? f.proveedor_id ?? "—"}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
@@ -124,7 +181,10 @@ export function FacturasTable({
                   >
                     {formatEUR(f.total_factura_eur)}
                   </TableCell>
-                  <TableCell className="pr-4">
+                  <TableCell className="text-right font-numeric text-muted-foreground">
+                    {formatEUR(f.saldo_pendiente_eur)}
+                  </TableCell>
+                  <TableCell>
                     <StateBadge tone={estadoTone(f.estado)}>
                       {ESTADO_LABEL[f.estado ?? ""] ?? f.estado ?? "—"}
                     </StateBadge>

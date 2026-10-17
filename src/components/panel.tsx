@@ -4,6 +4,10 @@ const TINT_CLASS = {
   violet: "tint-violet",
   sky: "tint-sky",
   rose: "tint-rose",
+  ok: "tint-ok",
+  exception: "tint-exception",
+  amber: "tint-amber",
+  logo: "tint-logo",
 } as const;
 
 /** Panel con cabecera editorial (eyebrow + título) para secciones y gráficos. */

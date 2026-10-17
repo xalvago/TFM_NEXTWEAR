@@ -167,7 +167,7 @@ export function BorrarNuevasDialog() {
             )}
             <div className="max-h-64 overflow-y-auto rounded-lg border">
               <table className="w-full text-sm">
-                <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">
+                <thead className="thead-brand">
                   <tr>
                     <th className="px-3 py-2 text-left">Nº factura</th>
                     <th className="px-3 py-2 text-left">Proveedor</th>

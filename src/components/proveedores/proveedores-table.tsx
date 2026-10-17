@@ -15,6 +15,7 @@ import { StateBadge } from "@/components/state-badge";
 import { formatEUR, formatDate, formatInt } from "@/lib/finance";
 import type { ProveedorRow } from "@/lib/queries/proveedores";
 import { cn } from "@/lib/utils";
+import { CanalIcon, MonedaIcon, PaisFlag } from "@/components/dim-icon";
 
 const CANAL_LABEL: Record<string, string> = {
   email: "Email",
@@ -138,20 +139,27 @@ export function ProveedoresTable({ rows }: { rows: ProveedorRow[] }) {
                     </div>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {p.pais ?? "—"}
+                    <span className="inline-flex items-center gap-1.5">
+                      {p.pais && <PaisFlag pais={p.pais} size={15} />}
+                      {p.pais ?? "—"}
+                    </span>
                   </TableCell>
                   <TableCell className="whitespace-normal text-xs text-muted-foreground">
                     {p.direccion_sede ?? "—"}
                   </TableCell>
                   <TableCell>
-                    <span className="font-numeric text-xs text-muted-foreground">
+                    <span className="font-numeric inline-flex items-center gap-1 text-xs text-muted-foreground">
+                      <MonedaIcon moneda={p.moneda_facturacion} size={12} />
                       {p.moneda_facturacion}
                     </span>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {p.canal_recepcion
-                      ? (CANAL_LABEL[p.canal_recepcion] ?? p.canal_recepcion)
-                      : "—"}
+                    <span className="inline-flex items-center gap-1.5">
+                      {p.canal_recepcion && <CanalIcon canal={p.canal_recepcion} size={13} />}
+                      {p.canal_recepcion
+                        ? (CANAL_LABEL[p.canal_recepcion] ?? p.canal_recepcion)
+                        : "—"}
+                    </span>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {p.forma_pago ?? "—"}
