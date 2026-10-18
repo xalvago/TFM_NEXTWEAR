@@ -19,6 +19,7 @@ import type { ProveedorRow } from "@/lib/queries/proveedores";
 import { cn } from "@/lib/utils";
 import { CANAL_ICON, MonedaIcon, PaisFlag } from "@/components/dim-icon";
 import { Block } from "@/components/executive/dense";
+import { GloboProveedores } from "./globo-proveedores";
 
 // Misma paleta por moneda que la vista ejecutiva, el mapa y las barras.
 const MONEDA_COLOR: Record<string, string> = {
@@ -43,15 +44,12 @@ export function ProveedoresCards({
   rows,
   titulo,
   kpis,
-  mapa,
 }: {
   rows: ProveedorRow[];
   /** Cabecera de la página (eyebrow, h1, resumen). */
   titulo: React.ReactNode;
   /** Rejilla de KPIs, a la derecha de la cabecera. */
   kpis: React.ReactNode;
-  /** Mapa lateral, fijo mientras se recorren las tarjetas. */
-  mapa: React.ReactNode;
 }) {
   const [q, setQ] = useState("");
   const [moneda, setMoneda] = useState<string>("todas");
@@ -174,7 +172,41 @@ export function ProveedoresCards({
       </Block>
 
       <div className="grid items-start gap-4 xl:grid-cols-[22rem_minmax(0,1fr)]">
-        <Fragment key="mapa">{mapa}</Fragment>
+        {/* Globo: se acerca a las sedes de las tarjetas visibles; fijo mientras se recorren */}
+        <section className="card-wash tint-sky relative overflow-hidden rounded-2xl shadow-card xl:sticky xl:top-24">
+          <header className="flex items-center justify-between gap-2 px-4 py-3">
+            <div className="flex items-center gap-2">
+              <span className="gradient-brand-soft grid size-7 place-items-center rounded-lg text-primary">
+                <MapPin aria-hidden size={14} strokeWidth={1.75} />
+              </span>
+              <div className="flex flex-col leading-tight">
+                <span className="eyebrow">Sedes</span>
+                <span className="text-xs text-muted-foreground">
+                  {visibles.length === rows.length
+                    ? "Todos los proveedores y ruta al almacén"
+                    : `${formatInt(visibles.length)} de ${formatInt(rows.length)} proveedores`}
+                </span>
+              </div>
+            </div>
+            <ul className="flex items-center gap-2.5 text-[0.68rem] text-muted-foreground">
+              {(
+                [
+                  ["EUR", "var(--chart-1)"],
+                  ["USD", "var(--chart-3)"],
+                  ["CNY", "var(--chart-2)"],
+                ] as const
+              ).map(([m, c]) => (
+                <li key={m} className="flex items-center gap-1">
+                  <span aria-hidden className="size-2 rounded-full" style={{ background: c }} />
+                  {m}
+                </li>
+              ))}
+            </ul>
+          </header>
+          <div className="px-3 pb-4">
+            <GloboProveedores proveedores={rows} visibles={visibles} />
+          </div>
+        </section>
 
         <div className="flex min-w-0 flex-col gap-3">
       {visibles.length === 0 ? (

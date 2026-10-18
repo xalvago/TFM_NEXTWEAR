@@ -1,8 +1,7 @@
 import { getProveedores } from "@/lib/queries/proveedores";
 import { formatInt, formatEUR } from "@/lib/finance";
 import { ProveedoresCards } from "@/components/proveedores/proveedores-cards";
-import { MapaProveedores } from "@/components/proveedores/mapa-proveedores";
-import { Landmark, MapPin, Scale, Building2, Wallet } from "lucide-react";
+import { Landmark, Scale, Building2, Wallet } from "lucide-react";
 import { StatGrid, StatTile } from "@/components/stat-tile";
 
 export const dynamic = "force-dynamic";
@@ -65,37 +64,7 @@ export default async function ProveedoresPage() {
             tone="credit"
             icon={Wallet}
           />
-                  </StatGrid>
-      }
-      mapa={
-        <section className="card-wash tint-sky relative overflow-hidden rounded-2xl shadow-card xl:sticky xl:top-24">
-          <header className="flex items-center justify-between gap-2 px-4 py-3">
-            <div className="flex items-center gap-2">
-              <span className="gradient-brand-soft grid size-7 place-items-center rounded-lg text-primary">
-                <MapPin aria-hidden size={14} strokeWidth={1.75} />
-              </span>
-              <div className="flex flex-col leading-tight">
-                <span className="eyebrow">Mapa</span>
-                <span className="text-xs text-muted-foreground">
-                  Sede y ruta al almacén central
-                </span>
-              </div>
-            </div>
-            <ul className="flex items-center gap-2.5 text-[0.68rem] text-muted-foreground">
-              {[
-                ["EUR", "var(--chart-1)"],
-                ["USD", "var(--chart-3)"],
-                ["CNY", "var(--chart-2)"],
-              ].map(([m, c]) => (
-                <li key={m} className="flex items-center gap-1">
-                  <span aria-hidden className="size-2 rounded-full" style={{ background: c }} />
-                  {m}
-                </li>
-              ))}
-            </ul>
-          </header>
-          <MapaProveedores proveedores={proveedores} />
-        </section>
+        </StatGrid>
       }
     />
   );
