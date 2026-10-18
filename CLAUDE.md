@@ -201,3 +201,7 @@ Criterios aplicados primero a la pestaña Stock e inventario, para extender al r
 3. Gráficos de barras/columnas con `IsoColumns`/`IsoHBars`.
 4. Tablas con `.thead-brand`; filtros con el patrón principal + "Más filtros".
 5. Verificar en el navegador cada cambio visual y tras tocar `globals.css` comprobar que el dev server sirve el CSS nuevo (si no, reiniciarlo).
+
+## Portal (`PORTAL/`)
+
+App Next.js independiente (Next 15, `basePath: "/portal"`) con su propio `package.json`. Segundo proyecto de Vercel (`tfm-nextwear-5dol`, Root Directory `PORTAL`, *Ignored Build Step* `git diff HEAD^ HEAD --quiet -- .`: solo se despliega si cambia `PORTAL/`). El dashboard la expone en `/portal` con un rewrite en `next.config.ts` (`PORTAL_ORIGIN` sobrescribe la URL por defecto). `tsconfig.json` y `eslint.config.mjs` del dashboard excluyen `PORTAL`. Rutas escritas a mano (`<video>`, `<img>`, `<a>`) deben pasar por `asset()` (`PORTAL/app/lib/asset.ts`) para llevar el prefijo.
