@@ -948,6 +948,27 @@ export type Database = {
           },
         ]
       }
+      parametros_sistema: {
+        Row: {
+          actualizado_en: string
+          clave: string
+          descripcion: string | null
+          valor: string
+        }
+        Insert: {
+          actualizado_en?: string
+          clave: string
+          descripcion?: string | null
+          valor: string
+        }
+        Update: {
+          actualizado_en?: string
+          clave?: string
+          descripcion?: string | null
+          valor?: string
+        }
+        Relationships: []
+      }
       pedidos: {
         Row: {
           centro_coste_id: string | null
@@ -1134,6 +1155,33 @@ export type Database = {
           moneda_destino?: string
           moneda_origen?: string
           tasa_cambio?: number
+        }
+        Relationships: []
+      }
+      transiciones_estado_factura: {
+        Row: {
+          activa: boolean
+          descripcion: string
+          disparador: string
+          estado_destino: string
+          estado_origen: string
+          transicion_id: string
+        }
+        Insert: {
+          activa?: boolean
+          descripcion: string
+          disparador: string
+          estado_destino: string
+          estado_origen: string
+          transicion_id: string
+        }
+        Update: {
+          activa?: boolean
+          descripcion?: string
+          disparador?: string
+          estado_destino?: string
+          estado_origen?: string
+          transicion_id?: string
         }
         Relationships: []
       }
