@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -18,6 +18,7 @@ import { CANAL_LABEL, MONEDA_LABEL, formatDate, formatEUR, formatInt, formatPct 
 import type { ProveedorRow } from "@/lib/queries/proveedores";
 import { cn } from "@/lib/utils";
 import { CANAL_ICON, MonedaIcon, PaisFlag } from "@/components/dim-icon";
+import { Block } from "@/components/executive/dense";
 
 // Misma paleta por moneda que la vista ejecutiva, el mapa y las barras.
 const MONEDA_COLOR: Record<string, string> = {
@@ -38,7 +39,20 @@ type Orden = "gasto" | "saldo" | "nombre";
  * se le paga) y su actividad (gasto, saldo, pedidos, excepciones) en un mismo
  * bloque. Buscador instantáneo, filtro de moneda y orden; dataset pequeño → cliente.
  */
-export function ProveedoresCards({ rows }: { rows: ProveedorRow[] }) {
+export function ProveedoresCards({
+  rows,
+  titulo,
+  kpis,
+  mapa,
+}: {
+  rows: ProveedorRow[];
+  /** Cabecera de la página (eyebrow, h1, resumen). */
+  titulo: React.ReactNode;
+  /** Rejilla de KPIs, a la derecha de la cabecera. */
+  kpis: React.ReactNode;
+  /** Mapa lateral, fijo mientras se recorren las tarjetas. */
+  mapa: React.ReactNode;
+}) {
   const [q, setQ] = useState("");
   const [moneda, setMoneda] = useState<string>("todas");
   const [orden, setOrden] = useState<Orden>("gasto");
@@ -83,11 +97,10 @@ export function ProveedoresCards({ rows }: { rows: ProveedorRow[] }) {
     );
   }, [rows, q, moneda, orden]);
 
-  return (
-    <div className="flex min-w-0 flex-col gap-3">
-      {/* Controles: una sola franja baja */}
-      <div className="card-wash flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl px-4 py-2.5 shadow-card">
-        <div className="relative">
+  const controles = (
+    <div className="flex w-full min-w-0 flex-col gap-2 lg:max-w-sm lg:flex-1">
+      <div className="flex items-center gap-3">
+        <div className="relative min-w-0 flex-1">
           <Search
             aria-hidden
             size={14}
@@ -99,7 +112,7 @@ export function ProveedoresCards({ rows }: { rows: ProveedorRow[] }) {
             onChange={(e) => setQ(e.target.value)}
             placeholder="Nombre, NIF, país, IBAN…"
             aria-label="Buscar proveedores"
-            className="h-8 w-56 rounded-full border border-input bg-background/70 pl-8 pr-8 text-xs outline-none transition-colors focus-visible:border-ring/50 focus-visible:ring-2 focus-visible:ring-ring/20"
+            className="h-8 w-full rounded-full border border-input bg-background/70 pl-8 pr-8 text-xs outline-none transition-colors focus-visible:border-ring/50 focus-visible:ring-2 focus-visible:ring-ring/20"
           />
           {q && (
             <button
@@ -112,36 +125,58 @@ export function ProveedoresCards({ rows }: { rows: ProveedorRow[] }) {
             </button>
           )}
         </div>
-
-        <Seg label="Moneda">
-          <Chip active={moneda === "todas"} onClick={() => setMoneda("todas")}>
-            Todas
-          </Chip>
-          {monedas.map((m) => (
-            <Chip key={m} active={moneda === m} onClick={() => setMoneda(m)}>
-              <MonedaIcon moneda={m} size={12} />
-              {m}
-            </Chip>
-          ))}
-        </Seg>
-
-        <Seg label="Ordenar">
-          <Chip active={orden === "gasto"} onClick={() => setOrden("gasto")}>
-            Gasto
-          </Chip>
-          <Chip active={orden === "saldo"} onClick={() => setOrden("saldo")}>
-            Saldo
-          </Chip>
-          <Chip active={orden === "nombre"} onClick={() => setOrden("nombre")}>
-            Nombre
-          </Chip>
-        </Seg>
-
-        <span className="ml-auto text-xs text-muted-foreground">
-          {formatInt(visibles.length)} de {formatInt(rows.length)} proveedores
+        <span className="shrink-0 text-xs text-muted-foreground">
+          {formatInt(visibles.length)} de {formatInt(rows.length)}
         </span>
       </div>
 
+      <Seg label="Moneda">
+        <Chip active={moneda === "todas"} onClick={() => setMoneda("todas")}>
+          Todas
+        </Chip>
+        {monedas.map((m) => (
+          <Chip key={m} active={moneda === m} onClick={() => setMoneda(m)}>
+            <MonedaIcon moneda={m} size={12} />
+            {m}
+          </Chip>
+        ))}
+      </Seg>
+
+      <Seg label="Ordenar">
+        <Chip active={orden === "gasto"} onClick={() => setOrden("gasto")}>
+          Gasto
+        </Chip>
+        <Chip active={orden === "saldo"} onClick={() => setOrden("saldo")}>
+          Saldo
+        </Chip>
+        <Chip active={orden === "nombre"} onClick={() => setOrden("nombre")}>
+          Nombre
+        </Chip>
+      </Seg>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Cabecera | buscador y filtros apilados | KPIs 2×2 */}
+      <Block
+        tint="logo"
+        className="gap-0"
+        heading={
+          <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+            <Fragment key="titulo">{titulo}</Fragment>
+            {controles}
+            <Fragment key="kpis">{kpis}</Fragment>
+          </div>
+        }
+      >
+        {null}
+      </Block>
+
+      <div className="grid items-start gap-4 xl:grid-cols-[22rem_minmax(0,1fr)]">
+        <Fragment key="mapa">{mapa}</Fragment>
+
+        <div className="flex min-w-0 flex-col gap-3">
       {visibles.length === 0 ? (
         <div className="card-wash grid place-items-center rounded-2xl py-14 text-sm text-muted-foreground shadow-card">
           {rows.length === 0
@@ -160,6 +195,8 @@ export function ProveedoresCards({ rows }: { rows: ProveedorRow[] }) {
           ))}
         </div>
       )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -355,7 +392,7 @@ function Fila({
 function Seg({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="eyebrow">{label}</span>
+      <span className="eyebrow w-14 shrink-0">{label}</span>
       <div className="flex h-8 items-center gap-0.5 rounded-full border border-input bg-background/60 p-0.5">
         {children}
       </div>
