@@ -138,7 +138,7 @@ export default async function StockPage({
                 from="var(--chart-2)"
                 to="var(--chart-3)"
                 titulo="Valor del inventario por centro de coste"
-                ejeY="Valor del inventario (EUR)"
+                ejeY="Valor (EUR)"
               />
             </div>
           </div>

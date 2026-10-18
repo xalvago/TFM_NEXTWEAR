@@ -151,28 +151,32 @@ export function IsoColumns({
   const n = items.length;
   const w = 30;
   const d = 30;
-  const step = 58;
+  const step = 68;
   const pad = 12;
-  const maxH = 115;
+  const maxH = 140;
   // Fuentes en unidades del viewBox: el gráfico se reduce al encajar, así que se compensa
   // para que se vean al mismo tamaño que las barras horizontales de al lado.
-  const FN = 23.1; // nombres de centro y marcas del eje
-  const FV = 22.3; // valores sobre las columnas
-  const FE = 21; // títulos de eje
+  const FN = 25.7; // nombres de centro y marcas del eje
+  const FV = 24.8; // valores sobre las columnas
+  const FE = 25; // títulos de eje
   const L = (n - 1) * step + w + 2 * pad;
   const D = d + 2 * pad;
   const maxV = Math.max(...items.map((i) => i.value), 1);
+  const minV = Math.min(...items.map((i) => i.value));
+  // Eje truncado: la base se sube cerca del mínimo para que se aprecien las diferencias entre centros.
+  const base = items.length > 1 ? Math.floor((minV * 0.6) / 1e4) * 1e4 : 0;
+  const zOf = (v: number) => Math.max(4, ((v - base) / (maxV - base || 1)) * maxH);
 
   const pasos = [1e3, 2e3, 5e3, 1e4, 2e4, 2.5e4, 5e4, 1e5, 2e5, 5e5, 1e6];
   const paso = pasos.find((p) => maxV / p <= 4) ?? 1e6;
   const marcas: number[] = [];
-  for (let v = paso; v <= maxV * 1.001; v += paso) marcas.push(v);
+  for (let v = Math.ceil((base + 1) / paso) * paso; v <= maxV * 1.001; v += paso) marcas.push(v);
   // Los ejes van retrasados (y negativa) para que no los tapen los valores de las columnas.
   const atras = 30;
-  const zTop = ((marcas[marcas.length - 1] ?? maxV) / maxV) * maxH;
+  const zTop = marcas.length ? zOf(marcas[marcas.length - 1]) : maxH;
   const xs = [iso([0, -atras, 0])[0], iso([L, D, 0])[0]];
   const tops = items.map((it, i) =>
-    iso([pad + i * step + w, pad, Math.max(4, (it.value / maxV) * maxH)])[1]
+    iso([pad + i * step + w, pad, zOf(it.value)])[1]
   );
   const ys = [Math.min(...tops, iso([L, -atras, zTop])[1] - 6), iso([0, D, -5])[1]];
   const mxL = 92; // hueco para las marcas del eje
@@ -208,7 +212,7 @@ export function IsoColumns({
       {/* Ejes sutiles: rejilla en las paredes trasera y lateral con su medida */}
       <g className="stroke-foreground/15" strokeWidth={1} strokeDasharray="3 4" fill="none">
         {marcas.map((v) => {
-          const z = (v / maxV) * maxH;
+          const z = zOf(v);
           return (
             <line
               key={v}
@@ -228,7 +232,7 @@ export function IsoColumns({
         />
       </g>
       {marcas.map((v) => {
-        const [lx, ly] = at(0, -atras, (v / maxV) * maxH);
+        const [lx, ly] = at(0, -atras, zOf(v));
         return (
           <text
             key={`t-${v}`}
@@ -250,6 +254,7 @@ export function IsoColumns({
           style={{ fontSize: FE, fontWeight: 500 }}
         >
           {ejeY}
+          {base > 0 ? ` · eje desde ${compactCorto(base)} €` : ""}
         </text>
       )}
       {ejeX && (
@@ -267,7 +272,7 @@ export function IsoColumns({
       {/* De atrás (x grande) a delante (x pequeño) para que se solapen bien */}
       {[...items.keys()].reverse().map((i) => {
         const it = items[i];
-        const h = Math.max(4, (it.value / maxV) * maxH);
+        const h = zOf(it.value);
         const x0 = pad + i * step;
         const g = caras(x0, x0 + w, pad, pad + d, 0, h, ox, oy);
         return (
@@ -288,10 +293,11 @@ export function IsoColumns({
 
       {/* Etiquetas al final, con halo, para que ningún bloque las tape */}
       {items.map((it, i) => {
-        const h = Math.max(4, (it.value / maxV) * maxH);
+        const h = zOf(it.value);
         const x0 = pad + i * step;
         const [tx, ty] = iso([x0 + w / 2, pad + d / 2, h]);
         const [lx, ly] = iso([x0 + w / 2, D, 0]);
+        const [bx, by] = iso([x0 + w / 2, pad + d, 0]);
         return (
           <g key={`l-${it.key}`} className="pointer-events-none">
             <text
@@ -306,10 +312,19 @@ export function IsoColumns({
             >
               {compactCorto(it.value)}
             </text>
+            {/* Guía desde la base de la columna hasta su nombre (que arranca justo bajo ella) */}
+            <line
+              x1={bx + ox}
+              y1={by + oy}
+              x2={lx + ox}
+              y2={ly + oy + 6}
+              className="stroke-foreground/35"
+              strokeWidth={1.2}
+            />
             <text
-              x={lx + ox}
+              x={lx + ox - 4}
               y={ly + oy + FN + 4}
-              textAnchor="middle"
+              textAnchor="start"
               className="fill-muted-foreground"
               style={{ fontSize: FN }}
             >
