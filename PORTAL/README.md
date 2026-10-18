@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app). 
+# Portal de proveedor — Guangzhou Fashion Co. Ltd
 
-## Getting Started
+Portal web de demostración del proveedor asiático (ficticio) que factura a Nextwear S.L. Es el origen del canal `portal_web` del sistema de Cuentas por Pagar: el robot de UiPath entra en el portal, descarga las facturas pendientes y las captura. Parte del TFM del Máster en Agentes de IA e Hiperautomatización de Procesos (EBIS). Interfaz en inglés.
 
-First, run the development server:
+App Next.js independiente del dashboard (que está en la raíz del repo), con su propio `package.json`.
+
+## Stack
+
+- Next.js 15 (App Router) + React 19 + TypeScript + Tailwind CSS v4. Sin dependencias de gráficos: el gráfico de ventas es SVG propio.
+- Sin backend ni base de datos: datos de ejemplo fijos en los componentes. La "autenticación" es de demo (`sessionStorage`).
+
+## Rutas
+
+| Ruta | Fichero | Contenido |
+|---|---|---|
+| `/` | `app/page.tsx` | Redirige a `/login` |
+| `/login` | `app/login/page.tsx` | Formulario sobre vídeo de fondo a pantalla completa (tarjeta de cristal). Acepta cualquier usuario y contraseña no vacíos y guarda `authed` en `sessionStorage`. |
+| `/dashboard` | `app/dashboard/page.tsx` | Tarjeta de perfil de la empresa, 4 KPI con foto de fondo, gráfico de barras de ventas 2026 vs 2025 y lista de facturas. |
+| `/dashboard/invoices` | `app/dashboard/invoices/page.tsx` | Redirige a `/dashboard#invoices` (la lista de facturas con descarga de PDF está en el dashboard). |
+
+`app/dashboard/layout.tsx` protege las rutas del dashboard (si no hay `authed`, redirige a `/login`) y pone el vídeo de fondo.
+
+## Componentes (`app/components/`)
+
+- `BackgroundVideoCycle` — alterna dos vídeos de fondo con fundido de 2,2 s (se desactiva con `prefers-reduced-motion`). Usado en el login.
+- `Header` — marca, bienvenida y cierre de sesión (variantes `login` y `dashboard`).
+- `SalesChart` — barras agrupadas 2026 vs 2025 por mes, con tooltip y % interanual.
+- `AnimatedNumber` (cifras que cuentan hasta su valor), `SeigaihaPattern` (textura decorativa) y `ExportMotion` (ilustración SVG de prendas colgadas; hoy no se usa en ninguna página).
+- `app/lib/asset.ts` — `asset(path)` antepone el `basePath` a rutas escritas a mano.
+
+## Facturas de ejemplo
+
+`public/invoices/` contiene los PDF servibles; la factura `F-2026-00349` figura como *Pending* (descargable) y el resto como *Completed*. `invoices/` (raíz) guarda los PDF originales de los 7 casos de prueba del TFM (limpia, importe distinto, sin pedido, duplicado, nota de crédito, entrega parcial, salto de divisa).
+
+## Despliegue y `basePath`
+
+- `next.config.ts` define `basePath: "/portal"` y `NEXT_PUBLIC_BASE_PATH`.
+- Proyecto propio en Vercel (`tfm-nextwear-5dol`, Root Directory `PORTAL`, *Ignored Build Step* `git diff HEAD^ HEAD --quiet -- .`: solo se despliega si cambia `PORTAL/`).
+- El dashboard lo expone en `/portal` con un rewrite en su `next.config.ts` (`PORTAL_ORIGIN` sobrescribe la URL).
+- `<video>`, `<img>` y `<a>` escritos a mano deben usar `asset()`; `<Link>` y `next/image` ya llevan el prefijo.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000/portal
+npm run build
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Origen de los vídeos de fondo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Los vídeos de fondo (`public/videos/`, copias de trabajo en `videos/`) **no son grabaciones reales**: proceden de una imagen inicial a la que se asignó un prompt para generar el vídeo con **Google Flow**.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### `Clothing_moving_on_rail_system_202608301221.mp4`
 
-## Learn More
+Generado el 2026-08-30 en Google Flow. Imagen inicial: _pendiente de indicar (fichero de la foto de partida)_.
 
-To learn more about Next.js, take a look at the following resources:
+Prompt:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+Cinematic, ultra-smooth seamless endless loop of a modern Asian fashion logistics center, designed as a clean web background responsive for all screen sizes and devices. Aesthetic overhead and medium tracking shot of stylish, colorful clothing hanging on a slick automated futuristic rail system, moving with very gentle, subtle, and continuous motion. Warm ambient lighting with soft bokeh and subtle, clean neon accents. Perfectly smooth seamless video loop where the beginning seamlessly blends into the end with no noticeable cut, jump, or abrupt change. Premium aesthetic, high resolution, slow motion, professional and elegant.
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Uso: primer vídeo del ciclo de fondo del login (`BackgroundVideoCycle`).
 
-## Deploy on Vercel
+### `1006-142621176.mp4`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Origen y prompt: _pendiente de documentar_. Se usa como segundo vídeo del ciclo del login y como fondo de `/dashboard` (`opacity-40`, `blur-[2px]`).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Historial de cambios
+
+Ver [`CHANGES.md`](./CHANGES.md).
+
+## Pendientes conocidos
+
+- `public/photos/container.jpg` lleva marca de agua de Freepik: solo apta para demo.
+- `public/invoice-MDS-2025.pdf` conserva el nombre antiguo del proveedor (SinoTrans) y `package.json` se llama `sinotrans-portal`.
