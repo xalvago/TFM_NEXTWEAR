@@ -21,50 +21,57 @@ export default async function ProveedoresPage() {
     <div className="flex flex-col gap-4">
       <Block
         tint="logo"
+        className="gap-0"
         heading={
-          <div className="flex flex-col gap-2">
-            <span className="eyebrow">Proveedores</span>
-            <h1 className="font-display text-3xl tracking-tight sm:text-[2.1rem] leading-[1.1] pb-0.5">
-              Ficha de <span className="gradient-text">proveedores</span>
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {formatInt(proveedores.length)} proveedores · {activos} activos ·{" "}
-              {conIban} con IBAN registrado
-            </p>
+          <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-col gap-2">
+              <span className="eyebrow">Proveedores</span>
+              <h1 className="font-display text-3xl tracking-tight sm:text-[2.1rem] leading-[1.1] pb-0.5">
+                Ficha de <span className="gradient-text">proveedores</span>
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                {formatInt(proveedores.length)} proveedores · {activos} activos ·{" "}
+                {conIban} con IBAN registrado
+              </p>
+            </div>
+            <StatGrid
+              label="Indicadores de proveedores"
+              className="w-full [grid-template-columns:repeat(2,minmax(0,1fr))] lg:max-w-[34rem]"
+            >
+              <StatTile
+                label="Gasto total"
+                value={formatEUR(gastoTotalEur)}
+                note="acumulado, facturas no anuladas"
+                info="Suma de total_factura_eur de todas las facturas del proveedor, excluyendo anuladas y cargas en curso del robot."
+                icon={Landmark}
+              />
+              <StatTile
+                label="Saldo pendiente"
+                value={formatEUR(saldoTotalEur)}
+                note={`${formatInt(conSaldo)} proveedores con deuda`}
+                info="Suma de saldo_pendiente_eur por proveedor."
+                tone="pending"
+                icon={Scale}
+              />
+              <StatTile
+                label="Proveedores activos"
+                value={formatInt(activos)}
+                note={`de ${formatInt(proveedores.length)} en el maestro`}
+                tone="ok"
+                icon={Building2}
+              />
+              <StatTile
+                label="Con IBAN registrado"
+                value={formatInt(conIban)}
+                note="usado en conciliación de pagos"
+                tone="credit"
+                icon={Wallet}
+              />
+          </StatGrid>
           </div>
         }
       >
-        <StatGrid label="Indicadores de proveedores">
-          <StatTile
-            label="Gasto total"
-            value={formatEUR(gastoTotalEur)}
-            note="acumulado, facturas no anuladas"
-            info="Suma de total_factura_eur de todas las facturas del proveedor, excluyendo anuladas y cargas en curso del robot."
-            icon={Landmark}
-          />
-          <StatTile
-            label="Saldo pendiente"
-            value={formatEUR(saldoTotalEur)}
-            note={`${formatInt(conSaldo)} proveedores con deuda`}
-            info="Suma de saldo_pendiente_eur por proveedor."
-            tone="pending"
-            icon={Scale}
-          />
-          <StatTile
-            label="Proveedores activos"
-            value={formatInt(activos)}
-            note={`de ${formatInt(proveedores.length)} en el maestro`}
-            tone="ok"
-            icon={Building2}
-          />
-          <StatTile
-            label="Con IBAN registrado"
-            value={formatInt(conIban)}
-            note="usado en conciliación de pagos"
-            tone="credit"
-            icon={Wallet}
-          />
-        </StatGrid>
+        {null}
       </Block>
 
       <div className="grid items-start gap-4 xl:grid-cols-[22rem_minmax(0,1fr)]">
