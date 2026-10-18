@@ -4,6 +4,9 @@
 -- NO es una migración a ejecutar: es referencia exacta de columnas, tipos,
 -- nullability, defaults, PK/FK y CHECK constraints, para que UiPath no falle
 -- por nombre de columna o valor de enum inventado.
+-- Revisado contra la BD viva el 2026-10-18 (migraciones hasta 29). Solo recoge
+-- las 6 tablas que escribe UiPath; el resto del esquema esta en
+-- esquema_bd_nextwear.md y supabase/migrations/.
 -- ============================================================================
 
 -- ── maestro_proveedores ─────────────────────────────────────────────────────
@@ -23,7 +26,9 @@ CREATE TABLE maestro_proveedores (
   iban                      text,
   activo                    boolean DEFAULT true,
   iban_fecha_actualizacion  date,
-  direccion_sede            text
+  direccion_sede            text,
+  swift_bic                 text,
+  banco_corresponsal        text
 );
 
 -- ── productos ────────────────────────────────────────────────────────────────
@@ -88,7 +93,7 @@ CREATE TABLE facturas (
   factura_original_id               text REFERENCES facturas(factura_id),
   estado                             text
     CHECK (estado = ANY (ARRAY[
-      'pendiente_captura','pendiente_conciliacion','conciliada_ok',
+      'nueva_entrada','pendiente_captura','pendiente_conciliacion','conciliada_ok',
       'en_excepcion','pendiente_aprobacion','aprobada','rechazada',
       'contabilizada','pagada','anulada'
     ])),
@@ -143,8 +148,9 @@ CREATE TABLE facturas_lineas (
 );
 
 -- ── casos_excepcion ──────────────────────────────────────────────────────────
--- Polimórfica: chk_una_referencia obliga a que EXACTAMENTE UNA de
--- factura_id / albaran_id / pedido_id esté rellena (linea_id no cuenta).
+-- Polimórfica: chk_al_menos_una_referencia exige AL MENOS UNA de
+-- factura_id / albaran_id / pedido_id rellena (pueden coexistir; linea_id no
+-- cuenta). Ej.: entrega_incompleta rellena factura_id y albaran_id a la vez.
 -- uq_caso_factura_tipo: no puede haber dos casos con mismo (factura_id, tipo_excepcion).
 CREATE TABLE casos_excepcion (
   caso_id                        text PRIMARY KEY,
@@ -152,14 +158,11 @@ CREATE TABLE casos_excepcion (
   linea_id                       text,
   albaran_id                     text REFERENCES albaranes(albaran_id),
   pedido_id                      text REFERENCES pedidos(pedido_id),
-  -- El CHECK de BD admite 'entrega_parcial', pero es valor muerto: 0 filas lo
-  -- usan en el dataset real. El tipo real de negocio pa' albarán incompleto
-  -- es 'entrega_incompleta' (25 filas, siempre con albaran_id). UiPath debe
-  -- usar SIEMPRE 'entrega_incompleta', nunca 'entrega_parcial'.
+  -- 7 valores. 'entrega_parcial' se eliminó por redundante con 'entrega_incompleta'.
   tipo_excepcion                 text
     CHECK (tipo_excepcion IS NULL OR tipo_excepcion = ANY (ARRAY[
       'duplicado','importe_distinto','sin_pedido','nota_credito',
-      'entrega_parcial','salto_divisa','entrega_incompleta','iban_no_coincide'
+      'salto_divisa','entrega_incompleta','iban_no_coincide'
     ])),
   descripcion                    text,
   estado_resolucion              text DEFAULT 'abierto'
@@ -170,9 +173,10 @@ CREATE TABLE casos_excepcion (
   fecha_resolucion               timestamptz,
   notas_resolucion               text,
   requiere_intervencion_humana   boolean NOT NULL DEFAULT true,
-  factura_relacionada_id         text REFERENCES facturas(factura_id),
-  CONSTRAINT chk_una_referencia CHECK (
-    (factura_id IS NOT NULL)::int + (albaran_id IS NOT NULL)::int + (pedido_id IS NOT NULL)::int = 1
+  -- Texto libre que rellena el Conciliador (hoy 'factura' o 'albaran').
+  origen_deteccion               text,
+  CONSTRAINT chk_al_menos_una_referencia CHECK (
+    (factura_id IS NOT NULL)::int + (albaran_id IS NOT NULL)::int + (pedido_id IS NOT NULL)::int >= 1
   ),
   CONSTRAINT uq_caso_factura_tipo UNIQUE (factura_id, tipo_excepcion)
 );

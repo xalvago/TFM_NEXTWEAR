@@ -4,7 +4,9 @@ Proyecto Supabase `EBIS_TFM_RETAIL_NEXTWEAR` (ref `rnmidwhumdrpxulfsbjo`, `eu-we
 
 Cadena del proceso: **Proveedor → Pedido → Albarán → Factura → Asiento contable → Pago**, con `productos`, `centros_coste`, `tipos_cambio` y `cuentas_contables` como dimensiones, `casos_excepcion` para conciliación, `stock_movimientos` para inventario, `aprobaciones`/`comunicaciones` para HITL y `log_agentes` como base del Copiloto RAG.
 
-**21 tablas + 2 vistas** (13 originales + 8 de la migración; vistas `stock_actual` + `asientos_descuadrados`).
+**23 tablas + 2 vistas** (13 originales + 8 de la migración inicial + 2 de la matriz de estados: `parametros_sistema`, `transiciones_estado_factura`, `historial_estado_factura` — ver §1b; vistas `stock_actual` + `asientos_descuadrados`).
+
+> **Actualización 2026-10-18** (migraciones hasta la 29): recuentos de filas al día; `facturas.estado` incluye `nueva_entrada`; `casos_excepcion` con 7 tipos, `chk_al_menos_una_referencia`, `requiere_intervencion_humana` y `origen_deteccion`; `maestro_proveedores` con `direccion_sede`, `swift_bic`, `banco_corresponsal`; políticas `SELECT` para `anon` (migraciones 22–23, usadas por el Copiloto) salvo `parametros_sistema`. Donde el texto de abajo diga «RLS sin políticas» o «exactamente una referencia», prevalece esta nota.
 
 ---
 
@@ -26,6 +28,9 @@ Cadena del proceso: **Proveedor → Pedido → Albarán → Factura → Asiento 
 | iban | text | nullable |
 | activo | boolean | default true |
 | **iban_fecha_actualizacion** | date | nullable — cuándo se validó el IBAN por última vez *(migración)* |
+| direccion_sede | text | nullable — sede del proveedor (geocodificada en el globo de `/proveedores`) |
+| swift_bic | text | nullable (migración 29) |
+| banco_corresponsal | text | nullable (migración 29) |
 
 ### `productos` (20 filas) — PK `sku`
 | Campo | Tipo | Notas |
@@ -58,7 +63,7 @@ Cadena del proceso: **Proveedor → Pedido → Albarán → Factura → Asiento 
 
 Sin FKs entrantes/salientes declaradas (se cruza por `fecha`+`moneda_origen` desde `facturas.fecha_tipo_cambio`/`moneda_original`).
 
-### `pedidos` (363 filas) — PK `pedido_id`
+### `pedidos` (371 filas) — PK `pedido_id`
 | Campo | Tipo | Notas |
 |---|---|---|
 | pedido_id | text | PK |
@@ -69,7 +74,7 @@ Sin FKs entrantes/salientes declaradas (se cruza por `fecha`+`moneda_origen` des
 | moneda | text | nullable |
 | estado | text | check ∈ {abierto,parcialmente_recibido,recibido_completo,cerrado,cancelado}, nullable |
 
-### `pedidos_lineas` (906 filas) — PK compuesta (`pedido_id`, `sku`)
+### `pedidos_lineas` (918 filas) — PK compuesta (`pedido_id`, `sku`)
 | Campo | Tipo | Notas |
 |---|---|---|
 | pedido_id | text | PK, FK → pedidos |
@@ -77,7 +82,7 @@ Sin FKs entrantes/salientes declaradas (se cruza por `fecha`+`moneda_origen` des
 | cantidad_pedida | integer | |
 | precio_unitario_acordado | numeric | nullable |
 
-### `albaranes` (369 filas) — PK `albaran_id`
+### `albaranes` (378 filas) — PK `albaran_id`
 | Campo | Tipo | Notas |
 |---|---|---|
 | albaran_id | text | PK |
@@ -87,14 +92,14 @@ Sin FKs entrantes/salientes declaradas (se cruza por `fecha`+`moneda_origen` des
 | fecha_entrega | date | nullable |
 | estado | text | check ∈ {registrado,conciliado,discrepancia}, nullable |
 
-### `albaranes_lineas` (797 filas) — PK compuesta (`albaran_id`, `sku`)
+### `albaranes_lineas` (809 filas) — PK compuesta (`albaran_id`, `sku`)
 | Campo | Tipo | Notas |
 |---|---|---|
 | albaran_id | text | PK, FK → albaranes |
 | sku | text | PK, FK → productos |
 | cantidad_entregada | integer | |
 
-### `facturas` (334 filas, 2 en estado `pagada` vía seed demo) — PK `factura_id` — tabla central
+### `facturas` (351 filas, 2 en estado `pagada` vía seed demo) — PK `factura_id` — tabla central
 | Campo | Tipo | Notas |
 |---|---|---|
 | factura_id | text | PK |
@@ -126,7 +131,7 @@ Sin FKs entrantes/salientes declaradas (se cruza por `fecha`+`moneda_origen` des
 | tipo_iva | numeric | nullable |
 | es_nota_credito | boolean | default false |
 | factura_original_id | text | FK → facturas (self), nullable |
-| estado | text | check ∈ {pendiente_captura,pendiente_conciliacion,conciliada_ok,en_excepcion,pendiente_aprobacion,aprobada,rechazada,contabilizada,pagada,anulada} |
+| estado | text | check ∈ {nueva_entrada,pendiente_captura,pendiente_conciliacion,conciliada_ok,en_excepcion,pendiente_aprobacion,aprobada,rechazada,contabilizada,pagada,anulada} |
 | motivo_excepcion | text | nullable |
 | **documento_url** | text | ruta del PDF en Storage (`facturas-pdf`) *(migración)* |
 | **hash_documento** | text | **UNIQUE**, nullable — idempotencia de ingesta *(migración)* |
@@ -135,8 +140,16 @@ Sin FKs entrantes/salientes declaradas (se cruza por `fecha`+`moneda_origen` des
 | **confianza_tipo_documento** | numeric | 0–1, factura vs nota de crédito *(migración)* |
 | **canal_entrada** | text | check ∈ {email,portal_web,api,manual} *(migración)* |
 | **motor_extraccion** | text | `uipath_du` / `llm_vision` *(migración)* |
+| razon_social_cliente | text | nullable |
+| id_fiscal_extranjero | text | nullable (facturas de proveedores no españoles) |
+| tipo_id_fiscal | text | check ∈ {nif,uscc,vat,otro}, nullable |
+| swift_bic | text | nullable |
+| banco_corresponsal | text | nullable |
+| incoterm | text | check ∈ {EXW,FOB,CIF,CFR,DDP,DAP,FCA}, nullable |
+| pais_origen_mercancia | text | nullable |
+| regimen_iva | text | check ∈ {nacional,exportacion,intracomunitario}, nullable |
 
-### `facturas_lineas` (804 filas) — PK compuesta (`factura_id`, `linea_id`)
+### `facturas_lineas` (828 filas) — PK compuesta (`factura_id`, `linea_id`)
 | Campo | Tipo | Notas |
 |---|---|---|
 | factura_id | text | PK, FK → facturas |
@@ -172,7 +185,7 @@ Sin FKs entrantes/salientes declaradas (se cruza por `fecha`+`moneda_origen` des
 | referencia_documento | text | nullable |
 | stock_resultante | integer | nullable |
 
-### `casos_excepcion` (84 filas) — PK `caso_id` — **polimórfica**
+### `casos_excepcion` (73 filas) — PK `caso_id` — **polimórfica**
 | Campo | Tipo | Notas |
 |---|---|---|
 | caso_id | text | PK |
@@ -180,17 +193,19 @@ Sin FKs entrantes/salientes declaradas (se cruza por `fecha`+`moneda_origen` des
 | linea_id | text | nullable (no FK real, referencia lógica a facturas_lineas) |
 | albaran_id | text | FK → albaranes, nullable |
 | pedido_id | text | FK → pedidos, nullable |
-| tipo_excepcion | text | check ∈ {duplicado,importe_distinto,sin_pedido,nota_credito,entrega_parcial,salto_divisa,producto_no_reconocido,entrega_incompleta,mercancia_danada,**iban_no_coincide**}, nullable |
+| tipo_excepcion | text | check ∈ {duplicado,importe_distinto,sin_pedido,nota_credito,salto_divisa,entrega_incompleta,iban_no_coincide} (7 valores; `entrega_parcial`, `producto_no_reconocido` y `mercancia_danada` ya no existen), nullable |
 | descripcion | text | nullable |
 | **estado_resolucion** | text | check ∈ {abierto,en_revision,resuelto_ok,resuelto_fraude,descartado}, default 'abierto' *(migración)* |
 | **resuelto_por** | text | nullable — `agente` o id humano *(migración)* |
 | **fecha_resolucion** | timestamptz | nullable *(migración)* |
 | **notas_resolucion** | text | nullable *(migración)* |
+| requiere_intervencion_humana | boolean | NOT NULL, default true |
+| origen_deteccion | text | texto libre que rellena el Conciliador (hoy `factura` / `albaran`) |
 
-Regla: exactamente **una** de `factura_id`/`albaran_id`/`pedido_id` rellena por fila — impuesta en BD por el constraint `chk_una_referencia`.
+Regla: **al menos una** de `factura_id`/`albaran_id`/`pedido_id` rellena por fila (pueden coexistir; `entrega_incompleta` rellena `factura_id` y `albaran_id`) — impuesta en BD por `chk_al_menos_una_referencia`. Además `uq_caso_factura_tipo` UNIQUE (`factura_id`, `tipo_excepcion`).
 `iban_no_coincide`: se dispara cuando `facturas.iban_proveedor <> maestro_proveedores.iban`. Fraude o cambio de banco legítimo son indistinguibles desde los datos; la distinción vive en `estado_resolucion` tras verificación humana fuera de banda.
 
-### `facturas_albaranes` (370 filas, backfill) — PK compuesta (`factura_id`, `albaran_id`) *(migración)*
+### `facturas_albaranes` (382 filas) — PK compuesta (`factura_id`, `albaran_id`) *(migración)*
 Tabla puente factura↔albarán. Reemplaza como fuente de verdad al texto libre `facturas.albaran_ids_ref` (que se conserva, deprecado). Permite JOIN real para el matching a 3 bandas.
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -235,7 +250,7 @@ Tabla puente factura↔albarán. Reemplaza como fuente de verdad al texto libre 
 | descripcion | text | |
 | tipo | text | check ∈ {activo,pasivo,gasto,ingreso} |
 
-### `asientos_contables` (0 filas) — PK `asiento_id` *(migración)*
+### `asientos_contables` (291 filas) — PK `asiento_id` *(migración)*
 Cabecera del asiento. Idempotencia real vía `clave_idempotencia UNIQUE NOT NULL` (no solo código).
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -250,7 +265,7 @@ Cabecera del asiento. Idempotencia real vía `clave_idempotencia UNIQUE NOT NULL
 | id_erp_externo | text | nullable |
 | fecha_registro | timestamptz | nullable |
 
-### `asientos_lineas` (0 filas) — PK compuesta (`asiento_id`, `linea_num`) *(migración)*
+### `asientos_lineas` (871 filas) — PK compuesta (`asiento_id`, `linea_num`) *(migración)*
 Debe cuadrar: `sum(debe_eur) = sum(haber_eur)` por asiento (control vía vista `asientos_descuadrados`).
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -282,7 +297,7 @@ Cancelación de la obligación registrada en `asientos_contables` (400 contra 57
 | estado_pago | text | check ∈ {programado,retenido,ejecutado,rechazado,anulado} |
 | motivo_retencion | text | nullable |
 
-### `log_agentes` (0 filas) — PK `log_id` *(migración)*
+### `log_agentes` (15 filas) — PK `log_id` *(migración)*
 Trazabilidad de decisiones de n8n/Make/Copiloto (Orchestrator ya cubre UiPath) — base de conocimiento del Copiloto RAG.
 | Campo | Tipo | Notas |
 |---|---|---|
@@ -299,6 +314,17 @@ Trazabilidad de decisiones de n8n/Make/Copiloto (Orchestrator ya cubre UiPath) �
 | duracion_ms | integer | nullable |
 | resultado | text | check ∈ {ok,error,escalado} |
 | creado_en | timestamptz | default now() |
+
+## 1b. Matriz de estados de factura (migración 24)
+
+### `parametros_sistema` (2 filas) — PK `clave`
+`valor`, `descripcion`, `actualizado_en`. Contiene `modo_validacion_estados` (`aviso` = registra la transición no prevista y la deja pasar; `bloqueo` = la rechaza). No se expone a `anon`.
+
+### `transiciones_estado_factura` (24 filas) — PK `transicion_id`
+`estado_origen`, `estado_destino`, `disparador` ∈ {captador,conciliador,hitl,rpa_contable,rpa_pagos}, `descripcion`, `activa`. Matriz de transiciones permitidas (T-02 … T-18e; las reflexivas no se listan). Los estados válidos incluyen `nueva_entrada` desde la migración 27.
+
+### `historial_estado_factura` (0 filas) — PK `historial_id` (identity)
+`factura_id` (FK → facturas), `estado_origen`, `estado_destino`, `transicion_id`, `permitida`, `modo`, `actor`, `aplicacion`, `ocurrido_en`. Lo rellena el trigger `trg_valida_transicion_factura` (BEFORE UPDATE OF estado en `facturas`).
 
 ### `asientos_descuadrados` (VISTA) *(migración)*
 `asiento_id`, `total_debe`, `total_haber` — asientos donde `sum(debe) <> sum(haber)`. Control de calidad pintable directamente en dashboard.
@@ -352,6 +378,7 @@ facturas 1───N comunicaciones
 facturas 1───N asientos_contables
 facturas 1───N pagos
 facturas 1───N log_agentes
+facturas 1───N historial_estado_factura
 casos_excepcion 1───N aprobaciones
 casos_excepcion 1───N comunicaciones
 casos_excepcion 1───N log_agentes
@@ -381,9 +408,10 @@ centros_coste 1───N asientos_lineas
 2. `saldo_pendiente_eur` = deuda real pendiente (no `total_factura_eur`).
 3. Notas de crédito ya vienen con importes negativos — sumar directo resta.
 4. `stock_actual` es vista, no tabla — no escribir, solo consultar.
-5. `casos_excepcion`: solo una de las 3 FKs rellena por fila.
+5. `casos_excepcion`: al menos una de las 3 FKs rellena por fila (pueden coexistir).
 6. `facturas.albaran_ids_ref` es texto libre y queda **deprecado**; la fuente de verdad para factura↔albarán es `facturas_albaranes` (migración, 370 filas backfilleadas, 0 huérfanos).
 7. `asientos_lineas`: un asiento debe cuadrar (`sum(debe_eur) = sum(haber_eur)`); vigilar via vista `asientos_descuadrados`.
 8. `asientos_contables.clave_idempotencia` es UNIQUE NOT NULL — la idempotencia del registro contable vive en la BD, no solo en código.
 9. `pagos` no es control antifraude (eso vive en la conciliación IBAN); es el cierre contable de la obligación registrada en `asientos_contables`.
-10. Vistas nuevas (`asientos_descuadrados`) deben crearse con `security_invoker = on` explícito — por defecto Postgres las crea `SECURITY DEFINER`, lo que salta el RLS de las tablas base y expone datos a `anon`/`authenticated` sin querer (ver hallazgo de auditoría arriba).
+10. El estado de `facturas` solo debe cambiar por transiciones de `transiciones_estado_factura`; el trigger las audita en `historial_estado_factura` (modo según `parametros_sistema`).
+11. Vistas nuevas (`asientos_descuadrados`) deben crearse con `security_invoker = on` explícito — por defecto Postgres las crea `SECURITY DEFINER`, lo que salta el RLS de las tablas base y expone datos a `anon`/`authenticated` sin querer (ver hallazgo de auditoría arriba).
