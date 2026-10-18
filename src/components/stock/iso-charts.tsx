@@ -156,8 +156,8 @@ export function IsoColumns({
   const maxH = 115;
   // Fuentes en unidades del viewBox: el gráfico se reduce al encajar, así que se compensa
   // para que se vean al mismo tamaño que las barras horizontales de al lado.
-  const FN = 23.6; // nombres de centro y marcas del eje
-  const FV = 22.9; // valores sobre las columnas
+  const FN = 23.1; // nombres de centro y marcas del eje
+  const FV = 22.3; // valores sobre las columnas
   const FE = 21; // títulos de eje
   const L = (n - 1) * step + w + 2 * pad;
   const D = d + 2 * pad;
@@ -178,7 +178,7 @@ export function IsoColumns({
   const mxL = 92; // hueco para las marcas del eje
   const mxR = 8;
   const ox = mxL - Math.min(...xs);
-  const mTop = ejeY ? 80 : 56; // título del eje Y en su propia fila, sobre los valores
+  const mTop = ejeY ? 60 : 40; // título del eje Y en su propia fila, sobre los valores
   const oy = mTop - Math.min(...ys);
   // Cada nombre queda step/2 más arriba que el anterior (eje isométrico): con step/2 > FN
   // nunca se pisan aunque se solapen en horizontal.
