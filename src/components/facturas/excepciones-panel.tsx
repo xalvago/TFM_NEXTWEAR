@@ -66,7 +66,7 @@ export function ExcepcionesPanel({
 
   return (
     <section
-      className="relative flex min-h-0 flex-col overflow-hidden border-b border-border/60 xl:h-full xl:border-b-0 xl:border-l"
+      className="relative flex min-h-0 flex-col overflow-hidden border-b border-border/60 pb-4 xl:h-full xl:border-b-0 xl:border-l"
       style={{
         background:
           "linear-gradient(180deg, color-mix(in oklab, var(--exception) 6%, var(--card)) 0%, var(--card) 38%)",
@@ -157,7 +157,7 @@ export function ExcepcionesPanel({
         </div>
       </header>
 
-      <ul className="grid max-h-[320px] min-h-0 overflow-y-auto border-t border-border/50 py-3 lg:grid-cols-2 xl:max-h-none xl:flex-1 xl:grid-cols-1 xl:content-start">
+      <ul className="grid max-h-[320px] min-h-0 overflow-y-auto border-y border-border/50 py-1 lg:grid-cols-2 xl:max-h-none xl:flex-1 xl:grid-cols-1 xl:content-start">
         {visibles.map((c) => (
           <li
             key={c.caso_id}
