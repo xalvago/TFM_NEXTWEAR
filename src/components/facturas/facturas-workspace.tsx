@@ -31,6 +31,7 @@ export function FacturasWorkspace({
   totalIntervencion,
   totalAutomatico,
   kpis,
+  header,
 }: {
   rows: FacturaListItem[];
   proveedores: ProveedorOption[];
@@ -40,6 +41,8 @@ export function FacturasWorkspace({
   totalIntervencion: number;
   totalAutomatico: number;
   kpis: React.ReactNode;
+  /** Cabecera de la página, integrada en la parte superior del contenedor de la tabla. */
+  header?: React.ReactNode;
 }) {
   // Si se llega con ?exc=tipo, el panel arranca abierto para mostrar el filtro.
   const [open, setOpen] = useState(!!activeTipo);
@@ -70,6 +73,9 @@ export function FacturasWorkspace({
       </div>
 
       <div className="card-wash relative overflow-hidden rounded-2xl shadow-card">
+        {header && (
+          <header className="tint-logo border-b border-border/60 px-4 py-3.5">{header}</header>
+        )}
         <FacturasFilters
           proveedores={proveedores}
           embedded

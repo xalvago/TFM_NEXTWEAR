@@ -98,22 +98,23 @@ export default async function FacturasPage({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="flex flex-col gap-2">
-          <span className="eyebrow">Facturas y conciliación</span>
-          <h1 className="font-display text-3xl tracking-tight sm:text-[2.1rem] leading-[1.1] pb-0.5">
-            Facturas y <span className="gradient-text">conciliación</span>
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {formatInt(facturas.length)} facturas · conciliación a tres bandas
-            (factura ↔ pedido ↔ albarán)
-          </p>
-        </div>
-        <BorrarNuevasDialog />
-      </div>
-
       {/* Filtros + panel de alertas plegable + tabla en un solo contenedor */}
       <FacturasWorkspace
+        header={
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex flex-col gap-2">
+              <span className="eyebrow">Facturas y conciliación</span>
+              <h1 className="font-display text-3xl tracking-tight sm:text-[2.1rem] leading-[1.1] pb-0.5">
+                Facturas y <span className="gradient-text">conciliación</span>
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                {formatInt(facturas.length)} facturas · conciliación a tres bandas
+                (factura ↔ pedido ↔ albarán)
+              </p>
+            </div>
+            <BorrarNuevasDialog />
+          </div>
+        }
         rows={facturas}
         proveedores={proveedores}
         casos={casos}

@@ -157,7 +157,7 @@ export function ExcepcionesPanel({
         </div>
       </header>
 
-      <ul className="grid max-h-[320px] min-h-0 overflow-y-auto border-t border-border/50  lg:grid-cols-2 xl:max-h-none xl:flex-1 xl:grid-cols-1 xl:content-start">
+      <ul className="grid max-h-[320px] min-h-0 overflow-y-auto border-t border-border/50 py-3 lg:grid-cols-2 xl:max-h-none xl:flex-1 xl:grid-cols-1 xl:content-start">
         {visibles.map((c) => (
           <li
             key={c.caso_id}
