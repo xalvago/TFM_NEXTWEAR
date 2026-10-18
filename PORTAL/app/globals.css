@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-brand-red: #e60012;
+  --color-brand-gold: #c8a24b;
+  --color-neutral-bg: #f5f5f7;
+  --color-neutral-card: #ffffff;
+  --color-neutral-text: #1a1a1a;
+  --color-brand-amber: #f5a623;
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-display);
+}
+
+body {
+  background:
+    radial-gradient(1100px 700px at 8% -8%, rgba(230, 0, 18, 0.10), transparent 60%),
+    radial-gradient(900px 640px at 108% 6%, rgba(200, 162, 75, 0.16), transparent 62%),
+    radial-gradient(1000px 800px at 90% 108%, rgba(245, 166, 35, 0.12), transparent 60%),
+    radial-gradient(800px 600px at -6% 96%, rgba(230, 0, 18, 0.07), transparent 60%),
+    linear-gradient(180deg, #fbfaf8 0%, #f4f2ee 45%, #f6efe6 100%);
+  background-attachment: fixed;
+  color: var(--color-neutral-text);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+}
+
+@keyframes drift-x {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-56px); }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes notify-in {
+  0% { opacity: 0; transform: translateY(-16px) scale(0.97); filter: blur(6px); }
+  60% { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes letter-in {
+  from { opacity: 0; transform: translateY(0.6em); filter: blur(8px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes page-out {
+  to { opacity: 0; transform: translateY(-12px) scale(0.98); filter: blur(6px); }
+}
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); filter: blur(6px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes sail-across {
+  0% { transform: translateX(-10%); }
+  100% { transform: translateX(110%); }
+}
+
+@keyframes draw-line {
+  from { stroke-dashoffset: 120; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes draw-path {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes chart-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.985); filter: blur(3px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes tooltip-in {
+  from { opacity: 0; transform: translateY(3px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-drift {
+  animation: drift-x 14s linear infinite;
+}
+
+.animate-float {
+  animation: float-y 4.5s ease-in-out infinite;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-notify {
+  animation: notify-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-letter {
+  display: inline-block;
+  animation: letter-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-out {
+  animation: page-out 0.5s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+.animate-page-in {
+  animation: page-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-sail {
+  animation: sail-across 16s linear infinite;
+}
+
+.animate-draw {
+  stroke-dasharray: 120;
+  animation: draw-line 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-draw-line {
+  animation: draw-path 1.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-chart-in {
+  animation: chart-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-tooltip-in {
+  animation: tooltip-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.card-elevated {
+  box-shadow:
+    0 1px 1px rgba(26, 26, 26, 0.03),
+    0 10px 24px -14px rgba(26, 26, 26, 0.16),
+    0 24px 48px -28px rgba(230, 0, 18, 0.10);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card-elevated:hover {
+  box-shadow:
+    0 1px 1px rgba(26, 26, 26, 0.04),
+    0 16px 32px -14px rgba(26, 26, 26, 0.20),
+    0 30px 60px -24px rgba(230, 0, 18, 0.16);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-drift,
+  .animate-float,
+  .animate-fade-up,
+  .animate-notify,
+  .animate-letter,
+  .animate-out,
+  .animate-page-in,
+  .animate-sail,
+  .animate-draw,
+  .animate-draw-line,
+  .animate-chart-in,
+  .animate-tooltip-in {
+    animation: none;
+  }
+}

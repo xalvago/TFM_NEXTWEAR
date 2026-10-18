@@ -1,0 +1,5 @@
+# Binarios: evitar que git normalice saltos de linea y corrompa los PDF
+*.pdf binary
+*.mp4 binary
+*.png binary
+*.jpg binary
