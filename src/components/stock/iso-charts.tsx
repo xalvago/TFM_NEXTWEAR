@@ -151,9 +151,14 @@ export function IsoColumns({
   const n = items.length;
   const w = 30;
   const d = 30;
-  const step = 46;
+  const step = 58;
   const pad = 12;
   const maxH = 115;
+  // Fuentes en unidades del viewBox: el gráfico se reduce al encajar, así que se compensa
+  // para que se vean al mismo tamaño que las barras horizontales de al lado.
+  const FN = 23.6; // nombres de centro y marcas del eje
+  const FV = 22.9; // valores sobre las columnas
+  const FE = 21; // títulos de eje
   const L = (n - 1) * step + w + 2 * pad;
   const D = d + 2 * pad;
   const maxV = Math.max(...items.map((i) => i.value), 1);
@@ -170,18 +175,15 @@ export function IsoColumns({
     iso([pad + i * step + w, pad, Math.max(4, (it.value / maxV) * maxH)])[1]
   );
   const ys = [Math.min(...tops, iso([L, -atras, zTop])[1] - 6), iso([0, D, -5])[1]];
-  const mxL = 50; // hueco para las marcas del eje
+  const mxL = 92; // hueco para las marcas del eje
   const mxR = 8;
   const ox = mxL - Math.min(...xs);
-  const mTop = ejeY ? 56 : 40; // título del eje Y en su propia fila, sobre los valores
+  const mTop = ejeY ? 80 : 56; // título del eje Y en su propia fila, sobre los valores
   const oy = mTop - Math.min(...ys);
-  // Si los nombres no caben uno junto a otro, se escalonan en dos filas.
-  const FN = 14;
-  const separacion = step * 0.866;
-  const escalonar = items.some((it) => anchoTexto(corto(it.label), FN) > separacion - 4);
-  const filaExtra = escalonar ? 16 : 0;
+  // Cada nombre queda step/2 más arriba que el anterior (eje isométrico): con step/2 > FN
+  // nunca se pisan aunque se solapen en horizontal.
   const W = Math.max(...xs) - Math.min(...xs) + mxL + mxR;
-  const H = Math.max(...ys) - Math.min(...ys) + mTop + 44 + filaExtra + (ejeX ? 18 : 0);
+  const H = Math.max(...ys) - Math.min(...ys) + mTop + 24 + FN + 6 + (ejeX ? FE + 14 : 0);
 
   const at = (x: number, y: number, z: number): [number, number] => {
     const [X, Y] = iso([x, y, z]);
@@ -234,7 +236,7 @@ export function IsoColumns({
             y={ly + 3}
             textAnchor="end"
             className="fill-muted-foreground/80 font-numeric"
-            style={{ fontSize: 13 }}
+            style={{ fontSize: FN }}
           >
             {compactCorto(v)}
           </text>
@@ -243,9 +245,9 @@ export function IsoColumns({
       {ejeY && (
         <text
           x={2}
-          y={14}
+          y={FE + 4}
           className="fill-muted-foreground"
-          style={{ fontSize: 13, fontWeight: 500 }}
+          style={{ fontSize: FE, fontWeight: 500 }}
         >
           {ejeY}
         </text>
@@ -253,10 +255,10 @@ export function IsoColumns({
       {ejeX && (
         <text
           x={at(L / 2, D, 0)[0]}
-          y={at(L / 2, D, 0)[1] + 42 + filaExtra}
+          y={at(0, D, 0)[1] + 2 * FN + 16}
           textAnchor="middle"
           className="fill-muted-foreground"
-          style={{ fontSize: 13, fontWeight: 500 }}
+          style={{ fontSize: FE, fontWeight: 500 }}
         >
           {ejeX}
         </text>
@@ -294,19 +296,19 @@ export function IsoColumns({
           <g key={`l-${it.key}`} className="pointer-events-none">
             <text
               x={tx + ox}
-              y={ty + oy - 17}
+              y={ty + oy - 22}
               textAnchor="middle"
               className="fill-foreground font-numeric"
-              style={{ fontSize: 15, fontWeight: 600, paintOrder: "stroke" }}
+              style={{ fontSize: FV, fontWeight: 600, paintOrder: "stroke" }}
               stroke="var(--card)"
-              strokeWidth={4}
+              strokeWidth={5}
               strokeLinejoin="round"
             >
               {compactCorto(it.value)}
             </text>
             <text
               x={lx + ox}
-              y={ly + oy + 19 + (escalonar && i % 2 ? filaExtra : 0)}
+              y={ly + oy + FN + 4}
               textAnchor="middle"
               className="fill-muted-foreground"
               style={{ fontSize: FN }}

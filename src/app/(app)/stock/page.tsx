@@ -132,7 +132,7 @@ export default async function StockPage({
         <div className="grid items-start gap-x-6 gap-y-4 lg:grid-cols-2">
           <div className="flex flex-col gap-1">
             <span className="eyebrow">Por centro de coste</span>
-            <div className="h-[19rem] [&>svg]:!h-full [&>svg]:!max-h-full">
+            <div className="h-[24rem] [&>svg]:!h-full [&>svg]:!max-h-full">
               <IsoColumns
                 items={porCentro}
                 from="var(--chart-2)"
@@ -146,7 +146,7 @@ export default async function StockPage({
 
           <div className="flex flex-col gap-1">
             <span className="eyebrow">Por categoría</span>
-            <div className="h-[19rem] [&>svg]:!h-full [&>svg]:!max-h-full">
+            <div className="h-[24rem] [&>svg]:!h-full [&>svg]:!max-h-full">
               <IsoHBars
                 items={porCategoria}
                 from="var(--chart-1)"
