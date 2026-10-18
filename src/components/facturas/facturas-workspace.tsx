@@ -101,6 +101,8 @@ export function FacturasWorkspace({
               inert={open}
               className={cn(
                 "absolute inset-0 grid grid-cols-2 grid-rows-2 gap-3 p-4 transition-[opacity,transform] duration-700 max-xl:hidden [&_.font-numeric]:text-[1.7rem]",
+                // Columna estrecha: icono sobre las cifras para ganar ancho y no cortar el valor.
+                "[&>div]:!flex-col [&>div]:!justify-center [&>div]:!gap-1 [&>div>div]:items-center [&>div>div]:text-center",
                 EASE,
                 open
                   ? "pointer-events-none translate-x-3 opacity-0"
