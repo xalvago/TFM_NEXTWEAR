@@ -250,7 +250,7 @@ export default function DashboardPage() {
                   className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white p-1.5 shadow-md ring-1 ring-white/40 lg:h-14 lg:w-14"
                 >
                   <Image
-                    src="/nextwear-logo.png"
+                    src={asset("/nextwear-logo.png")}
                     alt="Nextwear"
                     width={160}
                     height={92}
