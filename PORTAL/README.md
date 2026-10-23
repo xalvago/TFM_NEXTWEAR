@@ -73,4 +73,4 @@ Ver [`CHANGES.md`](./CHANGES.md).
 ## Pendientes conocidos
 
 - `public/photos/container.jpg` lleva marca de agua de Freepik: solo apta para demo.
-- `public/invoice-MDS-2025.pdf` conserva el nombre antiguo del proveedor (SinoTrans) y `package.json` se llama `sinotrans-portal`.
+- `public/invoice-MDS-2025.pdf` conserva el nombre antiguo del proveedor (SinoTrans).

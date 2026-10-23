@@ -132,10 +132,27 @@ async function buscarLogsCapturaHuerfanos(): Promise<string[]> {
   return (data ?? []).map((l) => l.log_id);
 }
 
+// Protección por variable de entorno: la ruta (GET y DELETE) solo responde si
+// ENABLE_BORRADO_FACTURAS === "true". Sin la variable (p. ej. en producción)
+// queda desactivada: falla cerrado.
+function borradoDeshabilitado(): NextResponse | null {
+  if (process.env.ENABLE_BORRADO_FACTURAS === "true") return null;
+  return NextResponse.json(
+    {
+      ok: false,
+      error:
+        "Borrado de facturas nuevas deshabilitado. Define ENABLE_BORRADO_FACTURAS=true en el entorno del servidor.",
+    },
+    { status: 403 }
+  );
+}
+
 // GET /api/facturas/nuevas
 // Devuelve las facturas insertadas por encima del dataset base de 340, para
 // que el diálogo de confirmación muestre exactamente qué se va a borrar.
 export async function GET() {
+  const bloqueado = borradoDeshabilitado();
+  if (bloqueado) return bloqueado;
   try {
     const facturas = await buscarFacturasNuevas();
     const logsCapturaHuerfanos = (await buscarLogsCapturaHuerfanos()).length;
@@ -152,6 +169,9 @@ export async function GET() {
 // con factura_ids recibido: así el cliente no puede colar IDs fuera del
 // conjunto que el usuario vio y confirmó en el diálogo.
 export async function DELETE(request: Request) {
+  const bloqueado = borradoDeshabilitado();
+  if (bloqueado) return bloqueado;
+
   let body: { factura_ids?: string[] };
   try {
     body = await request.json();
