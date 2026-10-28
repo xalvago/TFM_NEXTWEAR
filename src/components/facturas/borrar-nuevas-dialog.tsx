@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { Trash2Icon, Loader2Icon, AlertTriangleIcon } from "lucide-react";
+import { Loader2Icon, AlertTriangleIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -28,7 +28,7 @@ interface FacturaNueva {
 
 type Paso = "buscando" | "confirmar" | "borrando" | "hecho" | "vacio";
 
-export function BorrarNuevasDialog() {
+export function BorrarNuevasDialog({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [paso, setPaso] = useState<Paso>("buscando");
@@ -100,15 +100,14 @@ export function BorrarNuevasDialog() {
 
   return (
     <Dialog open={open} onOpenChange={cerrar}>
-      <Button
-        variant="outline"
-        size="sm"
-        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+      {/* Disparador camuflado: se ve como texto normal (sin apariencia de botón). */}
+      <button
+        type="button"
         onClick={abrirYBuscar}
+        className="cursor-[inherit] border-0 bg-transparent p-0 font-[inherit] text-[length:inherit] leading-[inherit] tracking-[inherit] outline-none focus-visible:outline-none"
       >
-        <Trash2Icon data-icon="inline-start" />
-        Borrar facturas nuevas
-      </Button>
+        {children}
+      </button>
 
       <DialogContent className="sm:max-w-lg">
         {paso === "buscando" && (
