@@ -35,7 +35,7 @@ La consulta #4 devuelve 0 filas: **no hay ningún caso de IBAN divergente en los
 
 ## Correspondencia ficheros del repo ↔ versiones aplicadas en Supabase (actualizado 2026-10-18)
 
-La numeración de los ficheros es del repo; la versión (timestamp) es la que figura en `supabase_migrations.schema_migrations`. Los ficheros 01–09 son los bloques de esta migración inicial; 10–21 se aplicaron a mano y se exportaron al repo; 22–29 se exportaron el 2026-10-18 desde `schema_migrations.statements`.
+La numeración de los ficheros es del repo; la versión (timestamp) es la que figura en `supabase_migrations.schema_migrations`. Los ficheros 01–09 son los bloques de esta migración inicial; 10–21 se aplicaron a mano y se exportaron al repo; 22–29 se exportaron el 2026-10-18 y 30–32 el 2026-11-04, desde `schema_migrations.statements`.
 
 | Fichero | Versión en Supabase | Nota |
 |---|---|---|
@@ -53,4 +53,24 @@ La numeración de los ficheros es del repo; la versión (timestamp) es la que fi
 | 27_transiciones_nueva_entrada | 20260927113143 | |
 | 28_aprobaciones_tipo_baja_confianza | 20261005144732 | |
 | 29_maestro_proveedores_swift_banco_corresponsal | 20261006102737 | |
-| — | 20260924081019 / 20260924083227 | `create_facturas_tc_portal` y `drop_facturas_tc_portal`: tabla creada y eliminada, efecto neto nulo; sin fichero |
+| 30_create_facturas_tc_portal | 20260924081019 | crea la tabla de staging `facturas_tc_portal` (exportado 2026-11-04) |
+| 31_drop_facturas_tc_portal | 20260924083227 | elimina `facturas_tc_portal`; efecto neto de 30 + 31 nulo (exportado 2026-11-04) |
+| 32_casos_excepcion_tipo_multifactura | 20261022143230 | añade `multifactura` al CHECK de `tipo_excepcion` (8 valores) (exportado 2026-11-04) |
+
+### Notas de la revisión del 2026-11-04
+
+Comparado el SQL de las 35 migraciones del historial con los ficheros (hash md5 del SQL sin comentarios ni espacios):
+
+- **26 de 35**: SQL idéntico; los ficheros solo añaden comentarios.
+- **Fichero 21 (agrupa las tres del 03/09)**: cubre el efecto neto, **no literalmente**. Crea `origen_deteccion` como `text` plano (el historial la crea como columna generada y luego hace `drop expression`), no incluye el `comment on column` ni el `update … set origen_deteccion = null`, y añade un `UPDATE factura_id = factura_relacionada_id` que no está en el historial.
+- **`15_asientos_contables_erp`** difiere del historial (20260721143010) en el bloque 4 (notas de crédito). El historial agrega por `facturas_lineas`, que las NC no tienen, así que `708` y `472` no se generaban. El fichero usa importes de cabecera (`708` en línea 2, `472` en línea 3): es la versión corregida, aplicada fuera del historial.
+- **`18_direccion_sede_proveedores`** difiere del historial (20260730161233): el fichero añade al final un `UPDATE facturas SET direccion_proveedor = mp.direccion_sede …` que no figura en el historial.
+- Los ficheros existentes no se han modificado; las diferencias quedan solo documentadas aquí.
+
+### Cambios manuales fuera del historial
+
+Documentados en `supabase/cambios_manuales_2026-11-04.sql` (T-07, borrado de asientos sembrados, alta de la 608, baja de la 708).
+
+Corrección posterior (2026-11-04, tras la verificación): la descripción de `T-07` en `transiciones_estado_factura` tenía **3 espacios al inicio** (114 caracteres). Se corrigió con `UPDATE transiciones_estado_factura SET descripcion = btrim(descripcion) WHERE transicion_id = 'T-07';` (ahora 111 caracteres, igual al texto del `UPDATE` documentado). **Para revertir** (no recomendable): `UPDATE transiciones_estado_factura SET descripcion = '   ' || descripcion WHERE transicion_id = 'T-07';`.
+
+**Historial de Supabase: 35 migraciones. Repositorio: 32 ficheros (el 21 agrupa 3 migraciones, por lo que cubren las 35). Cambios manuales: `cambios_manuales_2026-11-04.sql`.**
