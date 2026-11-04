@@ -125,7 +125,7 @@ export function CopilotChat({ onClose, wide, onToggleWide }: {
       <div className="gradient-brand-soft flex h-9 shrink-0 items-center justify-between border-b border-border/50 pl-3 pr-1">
         <span className="flex items-center gap-1.5 text-xs font-semibold">
           <Bot aria-hidden size={14} className="text-primary" />
-          Copiloto
+          Finflow Bot - Copiloto
         </span>
         <div className="flex items-center gap-0.5">
           <Pop

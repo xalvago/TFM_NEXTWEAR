@@ -29,7 +29,7 @@ export function CopilotLauncher() {
       {open && (
         <div
           role="dialog"
-          aria-label="Copiloto NextWear"
+          aria-label="Finflow Bot - Copiloto"
           className={cn(
             "card-wash fixed z-50 flex flex-col overflow-hidden rounded-2xl border border-border/60 shadow-[var(--shadow-lift)] animate-in fade-in-0 slide-in-from-bottom-2 duration-200",
             // Móvil: casi pantalla completa. Escritorio: panel alto anclado al botón.
